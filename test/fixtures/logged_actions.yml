@@ -1,0 +1,49 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  event_id: 1
+  schema_name: MyText
+  table_name: MyText
+  full_name: MyText
+  relid: MyText
+  session_user_name: MyText
+  app_user_id: 1
+  app_user_type: MyText
+  app_ip_address: MyText
+  action_tstamp_tx: 2020-02-25 17:04:42
+  action_tstamp_stm: 2020-02-25 17:04:42
+  action_tstamp_clk: 2020-02-25 17:04:42
+  transaction_id: 1
+  application_name: MyText
+  client_addr: MyText
+  client_port: 1
+  client_query: MyText
+  action: MyText
+  row_id: MyText
+  row_data: 
+  changed_fields: 
+  statement_only: false
+
+two:
+  event_id: 1
+  schema_name: MyText
+  table_name: MyText
+  full_name: MyText
+  relid: MyText
+  session_user_name: MyText
+  app_user_id: 1
+  app_user_type: MyText
+  app_ip_address: MyText
+  action_tstamp_tx: 2020-02-25 17:04:42
+  action_tstamp_stm: 2020-02-25 17:04:42
+  action_tstamp_clk: 2020-02-25 17:04:42
+  transaction_id: 1
+  application_name: MyText
+  client_addr: MyText
+  client_port: 1
+  client_query: MyText
+  action: MyText
+  row_id: MyText
+  row_data: 
+  changed_fields: 
+  statement_only: false

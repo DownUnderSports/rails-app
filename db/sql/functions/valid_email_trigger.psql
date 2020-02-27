@@ -1,0 +1,10 @@
+CREATE OR REPLACE FUNCTION valid_email_trigger()
+  RETURNS TRIGGER AS
+$BODY$
+BEGIN
+  NEW.email = validate_email(NEW.email);
+
+  RETURN NEW;
+END;
+$BODY$
+LANGUAGE plpgsql;
