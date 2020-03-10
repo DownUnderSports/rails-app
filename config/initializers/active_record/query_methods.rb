@@ -129,11 +129,11 @@ ActiveSupport.on_load(:active_record) do
       end
 
       def default_order_values
-        get_value(:default_order)
+        @values.fetch(:default_order, FROZEN_EMPTY_ARRAY)
       end
 
       def default_order_values=(value)
-        set_value(:default_order, value)
+        @values[:default_order] = value
       end
 
       def default_order(*args)

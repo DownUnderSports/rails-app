@@ -362,8 +362,8 @@ CREATE OR REPLACE VIEW auditing.table_list AS
     triggers.event_object_table AS table
    FROM information_schema.triggers
     WHERE triggers.trigger_name::text IN ('audit_trigger_row'::text, 'audit_trigger_stm'::text)
-ORDER BY schema, table;
+ORDER BY "schema", "table";
 
-COMMENT ON VIEW audit.table_list IS $body$
+COMMENT ON VIEW auditing.table_list IS $body$
 View showing all tables with auditing set up. Ordered by schema, then table.
 $body$;

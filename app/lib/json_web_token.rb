@@ -6,7 +6,7 @@ require 'jwe'
 require 'openssl'
 require 'active_support/concern'
 
-class JSONWebToken
+class JsonWebToken
   CHARACTERS = [*('a'..'z'), *('A'..'Z'), *(0..9).map(&:to_s), *'!@#$%^&*()'.split('')]
   DEFAULT_OPTIONS = { enc:  'A256GCM', alg: 'dir', zip: 'DEF' }
 
@@ -107,7 +107,7 @@ class JSONWebToken
           created_at: Time.now.to_i,
           token_device_id: requesting_device_id
         }
-        JSONWebToken.encode(data.merge(additional_headers.except(*data.keys)))
+        JsonWebToken.encode(data.merge(additional_headers.except(*data.keys)))
       end
 
       def create_session_from_certificate(cert)
@@ -132,7 +132,7 @@ class JSONWebToken
       end
 
       def current_user_session_data
-        logged_in? ? JSONWebToken.decode(current_token).deep_symbolize_keys : {}
+        logged_in? ? JsonWebToken.decode(current_token).deep_symbolize_keys : {}
       rescue
         {}
       end

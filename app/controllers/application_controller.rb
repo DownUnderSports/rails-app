@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   # == Modules ============================================================
-  include JSONWebToken::ControllerMethods
+  include JsonWebToken::ControllerMethods
   include Pundit
   include Fetchable
   helper ViewAndControllerMethods
@@ -20,6 +20,9 @@ class ApplicationController < ActionController::Base
   # == Actions ============================================================
   def version
     render plain: DownUnderSports::VERSION
+  end
+
+  def index
   end
 
   # == Cleanup ============================================================
