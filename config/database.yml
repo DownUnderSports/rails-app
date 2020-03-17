@@ -1,0 +1,37 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  # For details on connection pooling, see rails configuration guide
+  # http://guides.rubyonrails.org/configuring.html#database-pooling
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 10 } %>
+  schema_search_path: public
+
+development: &development
+  <<: *default
+  database: down_under_sports_six_development
+  # permanent:
+  #   <<: *default
+  #   database: down_under_sports_development_permanent
+  # yearly:
+  #   <<: *default
+  #   database: down_under_sports_development_yearly
+
+test: &test
+  <<: *default
+  database: down_under_sports_six_test
+  # permanent:
+  #   <<: *default
+  #   database: down_under_sports_test_permanent
+  # yearly:
+  #   <<: *default
+  #   database: down_under_sports_test_yearly
+
+production: &production
+  <<: *default
+  url: <%= ENV['DATABASE_URL'] %>
+  # permanent:
+  #   <<: *default
+  #   url: <%= ENV['PERMANENT_DATABASE_URL'] %>
+  # yearly:
+  #   <<: *default
+  #   url: <%= ENV['DATABASE_URL'] %>

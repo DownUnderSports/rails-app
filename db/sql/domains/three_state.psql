@@ -1,0 +1,7 @@
+DO $$
+  BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'three_state') THEN
+      CREATE TYPE three_state AS ENUM ('Y', 'N', 'U');
+    END IF;
+  END
+$$;

@@ -1,0 +1,7 @@
+DO $$
+  BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'exchange_rate_integer') THEN
+      CREATE DOMAIN exchange_rate_integer AS BIGINT NOT NULL DEFAULT 0;
+    END IF;
+  END
+$$;
