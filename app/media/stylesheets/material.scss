@@ -1,0 +1,21 @@
+// Material Theming
+@use "stylesheets/material/theme" as dus-theme;
+
+// @use "@material/theme/variables" as theme-variables with (
+@use "@material/theme" with (
+  $primary: dus-theme.$primary,
+  $secondary: dus-theme.$secondary,
+  $error: dus-theme.$error,
+  $on-error: dus-theme.$on-error
+);
+
+// @use "@material/typography/variables" as typography-variables with (
+@use "@material/typography" with (
+  $font-family: dus-theme.$font-family
+);
+
+@use "material-components-web/material-components-web";
+
+// Import site-specific CSS files
+@use "stylesheets/material/components";
+@use "stylesheets/material/layout";

@@ -1,5 +1,5 @@
 const path = require('path'),
-      root = path.resolve(__dirname, '../../', 'app/javascript')
+      root = path.resolve(__dirname, '../../', 'app/media')
 
 module.exports = {
   resolve: {

@@ -30,9 +30,9 @@ module S3AssetManager
     # verbose - Verbose info (default: false)
     #
     # Examples
-    #   => uploader.upload(thread_count: 20)
+    #   => uploader.upload!(thread_count: 20)
     #     true
-    #   => uploader.upload
+    #   => uploader.upload!
     #     true
     #
     # Returns true when finished the process

@@ -3,7 +3,7 @@
 
 module S3AssetManager
   def self.upload_folder(folder_path, include_folder: false, bucket: nil, prefix: '', **opts)
-    self::FolderUpload.new(folder_path: folder_path, bucket: bucket || s3_bucket, include_folder: Boolean.parse(include_folder), prefix: prefix).upload! **opts
+    self::FolderUpload.new(folder_path: folder_path, bucket: bucket || s3_bucket, include_folder: Boolean.parse(include_folder), prefix: prefix).upload **opts
   end
 
   def self.object_if_exists(file_path, asset_prefix = '')
