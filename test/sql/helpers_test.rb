@@ -35,5 +35,4 @@ class HelpersTest < ActiveSupport::TestCase
       where("pronamespace = 'public'::regnamespace::oid").
       exists?
   end
-
 end

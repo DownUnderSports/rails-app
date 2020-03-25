@@ -224,11 +224,11 @@ class String
     self
   end
 
-  def rrd_safe
-    dup.rrd_safe!
+  def print_safe
+    dup.print_safe!
   end
 
-  def rrd_safe!
+  def print_safe!
     tr!(TR_REPLACE, TR_REPLACE_WITH)
     self
   end

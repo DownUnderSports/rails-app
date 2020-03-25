@@ -6,17 +6,6 @@ module CoreExtensions
           assert_equal distance, String.levenshtein_distance(a, b)
         end
 
-        test '.min_of_trio returns the first of three strings alphabetically' do
-          assert_equal 'a', String.min_of_trio('a', 'b', 'c')
-          assert_equal 'a', String.min_of_trio('b', 'a', 'c')
-          assert_equal 'a', String.min_of_trio('b', 'c', 'a')
-          assert_equal 'a', String.min_of_trio('c', 'b', 'a')
-          assert_equal 'a', String.min_of_trio('c', 'a', 'b')
-          assert_equal 'a', String.min_of_trio('a', 'c', 'b')
-          assert_equal 'babe', String.min_of_trio('zebra', 'babe', 'charlie')
-          assert_equal 'abbacus', String.min_of_trio('actual', 'abra', 'abbacus')
-        end
-
         test  '.levenshtein_distance returns the minimum number of changes' \
               'required to make two strings equal' do
           # test add distance
@@ -37,6 +26,17 @@ module CoreExtensions
           assert_distance 2, "zentest", "ZenTest"
           assert_distance 7, "xxxxxxx", "ZenTest"
           assert_distance 7, "zentest", "xxxxxxx"
+        end
+
+        test '.min_of_trio returns the first of three strings alphabetically' do
+          assert_equal 'a', String.min_of_trio('a', 'b', 'c')
+          assert_equal 'a', String.min_of_trio('b', 'a', 'c')
+          assert_equal 'a', String.min_of_trio('b', 'c', 'a')
+          assert_equal 'a', String.min_of_trio('c', 'b', 'a')
+          assert_equal 'a', String.min_of_trio('c', 'a', 'b')
+          assert_equal 'a', String.min_of_trio('a', 'c', 'b')
+          assert_equal 'babe', String.min_of_trio('zebra', 'babe', 'charlie')
+          assert_equal 'abbacus', String.min_of_trio('actual', 'abra', 'abbacus')
         end
       end
 
@@ -78,10 +78,6 @@ module CoreExtensions
         end
 
         class PredicateMethodsTest < InstanceMethodsTest
-            def is_time_interval?
-              TIME_REGEX.match? self
-            end
-
             test '#is_time_interval? returns whether string is an interval' do
               assert "00:00:00".is_time_interval?
               refute "asdf 00:00:00".is_time_interval?
@@ -180,6 +176,10 @@ module CoreExtensions
             "\xff\xef",
           ]
 
+          def sample_unsafe_print
+            String::TR_REPLACE.split("").shuffle[0..10].join
+          end
+
           test '#from_b64 strict decodes a base64 encoded string' do
             assert_equal "", "".from_b64
 
@@ -206,7 +206,7 @@ module CoreExtensions
           end
 
           test '#from_b64! is a bang method for #from_b64' do
-            assert_equal "", "".from_b64
+            assert_equal "", "".from_b64!
 
             rounds = 0
             arr = BASE64_ENCODED.map(&:dup)
@@ -219,21 +219,32 @@ module CoreExtensions
             assert_equal BASE64_DECODED, arr
           end
 
-          test '#rrd_safe' do
-            skip '#rrd_safe test needed'
+          test '#print_safe' do
+            10.times do
+              str = sample_unsafe_print
+              safe = str.print_safe
+              str.split("").each_with_index do |char, idx|
+                loc = String::TR_REPLACE.index(char)
+                assert_equal String::TR_REPLACE_WITH[loc], safe[idx]
+              end
+            end
           end
-          #   def rrd_safe
-          #     dup.rrd_safe!
-          #   end
-          #
 
-          test '#rrd_safe!' do
-            skip '#rrd_safe! test needed'
+          test '#print_safe!' do
+            arr = []
+            10.times { arr << sample_unsafe_print }
+
+            rounds = 0
+            ran = arr.map(&:dup)
+
+            ran.each do |str|
+              rounds += 1
+              assert_bang_variant str, :print_safe!
+            end
+
+            assert_equal 10, rounds
+            assert_equal arr.map(&:print_safe), ran
           end
-          #   def rrd_safe!
-          #     tr!(TR_REPLACE, TR_REPLACE_WITH)
-          #     self
-          #   end
 
           test '#to_b64 strict encodes a string as base64' do
             assert_equal "", "".to_b64
