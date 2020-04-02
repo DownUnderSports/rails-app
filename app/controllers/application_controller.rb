@@ -1,6 +1,5 @@
 class ApplicationController < ActionController::Base
   # == Modules ============================================================
-  include JsonWebToken::ControllerMethods
   include Pundit
   helper DateHelper
 

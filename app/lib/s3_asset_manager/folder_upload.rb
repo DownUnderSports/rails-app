@@ -41,7 +41,9 @@ module S3AssetManager
       mutex       = Mutex.new
       threads     = []
 
-      puts "Total files: #{total_files}... uploading (folder #{folder_path} #{include_folder ? '' : 'not '}included)"
+      puts "Total files: #{total_files}... (folder #{folder_path} #{include_folder ? '' : 'not '}included)" unless verbose == :silence
+
+      verbose = false if verbose == :silence
 
       thread_count.times do |i|
         threads[i] = Thread.new {

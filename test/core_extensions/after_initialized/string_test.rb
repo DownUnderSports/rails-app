@@ -258,7 +258,7 @@ module CoreExtensions
           end
 
           test '#to_b64! is a bang method for #to_b64' do
-            assert_equal "", "".to_b64
+            assert_equal "", "".to_b64!
 
             rounds = 0
             arr = BASE64_DECODED.map(&:dup)
@@ -271,63 +271,172 @@ module CoreExtensions
             assert_equal BASE64_ENCODED, arr
           end
 
-          test '#unescape' do
-            skip '#unescape test needed'
-          end
-          #   def unescape
-          #     CGI.unescape(self)
-          #   end
-          #
+          test '#unescape url-decodes the string' do
+            input    = "+%21%22%23%24%25%26%27%28%29%2A%2B%2C-.%2F0123456789" \
+                       "%3A%3B%3C%3D%3E%3F%40ABCDEFGHIJKLMNOPQRSTUVWXYZ%5B%5" \
+                       "C%5D%5E_%60abcdefghijklmnopqrstuvwxyz%7B%7C%7D%7E"
 
-          test '#unescape!' do
-            skip '#unescape! test needed'
+            expected = " !\"\#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQ" \
+                       "RSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
+
+            assert_equal expected, input.unescape
+            assert_equal CGI.unescape(input), input.unescape
+
+            input    = 'http%3A%2F%2Fja.wikipedia.org%2Fwiki%2F%E3%83%AD%E3' \
+                       '%83%A0%E3%82%B9%E3%82%AB%E3%83%BB%E3%83%91%E3%83%AD' \
+                       '%E3%83%BB%E3%82%A6%E3%83%AB%E3%83%BB%E3%83%A9%E3%83' \
+                       '%94%E3%83%A5%E3%82%BF'
+            expected = "http://ja.wikipedia.org/wiki/\343\203\255\343\203" \
+                       "\240\343\202\271\343\202\253\343\203\273\343\203" \
+                       "\221\343\203\255\343\203\273\343\202\246\343\203" \
+                       "\253\343\203\273\343\203\251\343\203\224\343\203" \
+                       "\245\343\202\277"
+
+            assert_equal expected, input.unescape
+            assert_equal CGI.unescape(input), input.unescape
           end
-          #   def unescape!
-          #     self.replace CGI.unescape(self)
-          #   end
+
+          test '#unescape passes self to CGI.unescape' do
+            str = "#{rand} random string"
+            called = called_with = false
+            test_value = ->(*args) do
+              called = true
+              called_with = args
+              "WAS CALLED"
+            end
+            CGI.stub(:unescape, test_value) do
+              assert_equal "WAS CALLED", str.unescape
+            end
+
+            assert called
+
+            assert_equal [ str ], called_with
+          end
+
+          test '#unescape! is a bang method for unescape' do
+            base = "+%21%22%23%24%25%26%27%28%29%2A%2B%2C-.%2F0123456789" \
+                   "%3A%3B%3C%3D%3E%3F%40ABCDEFGHIJKLMNOPQRSTUVWXYZ%5B%5" \
+                   "C%5D%5E_%60abcdefghijklmnopqrstuvwxyz%7B%7C%7D%7E"
+            input = base.dup
+
+            assert_equal base.unescape, input.unescape!
+            refute_equal base, input
+            assert_equal base.unescape, input
+
+            assert_bang_variant base, :unescape!
+          end
         end
 
         class FormatingMethodsTest < InstanceMethodsTest
-          test '#abbr_format' do
-            skip '#abbr_format test needed'
-          end
-          #   def abbr_format
-          #     dup.abbr_format!
-          #   end
+          TO_TITLECASE_WITH_ID = {
+            "this_is_a_string_ending_with_id" => "This Is A String Ending With Id",
+            "EmployeeId"                      => "Employee Id",
+            "Author Id"                       => "Author Id"
+          }
 
-          test '#abbr_format!' do
-            skip '#abbr_format! test needed'
-          end
-          #   def abbr_format!
-          #     upcase!
-          #     gsub!(/[^A-Z]/, '')
-          #     slice!(3..-1)
-          #     self
-          #   end
+          TO_TITLECASE = {
+            "active_record"         => "Active Record",
+            "ActiveRecord"          => "Active Record",
+            "action web service"    => "Action Web Service",
+            "Action Web Service"    => "Action Web Service",
+            "Action web service"    => "Action Web Service",
+            "actionwebservice"      => "Actionwebservice",
+            "Actionwebservice"      => "Actionwebservice",
+            "david's code"          => "David's Code",
+            "David's code"          => "David's Code",
+            "david's Code"          => "David's Code",
+            "sgt. pepper's"         => "Sgt. Pepper's",
+            "i've just seen a face" => "I've Just Seen A Face",
+            "maybe you'll be there" => "Maybe You'll Be There",
+            "¿por qué?"             => "¿Por Qué?",
+            "Fred’s"                => "Fred’s",
+            "Fred`s"                => "Fred`s",
+            "this was 'fake news'"  => "This Was 'Fake News'",
+            "string_ending_with_id" => "String Ending With",
+            ActiveSupport::SafeBuffer.new("confirmation num") => "Confirmation Num",
+          }
 
-          test '#cleanup' do
-            skip '#cleanup test needed'
+          test '#abbr_format upcases and returns a max of 3 letters' do
+            assert_equal "ASD", "asdf".abbr_format
+            assert_equal "AF", "af".abbr_format
+            assert_equal "ASD", "asDf".abbr_format
+            assert_equal "ASD", "a-S%^90df".abbr_format
+            assert_equal "AD", "1243A-%^90d8".abbr_format
+            assert_equal "AAD", "a1243A-%^90d8".abbr_format
           end
-          #   def cleanup
-          #     dup.cleanup!
-          #   end
 
-          test '#cleanup!' do
-            skip '#cleanup! test needed'
-          end
-          #   def cleanup!
-          #     gsub!(/\s*(?:\r?\n\s*|\s+)/, ' ')
-          #     self
-          #   end
+          test '#abbr_format! is a bang method for #abbr_format' do
+            assert_equal "ASD", "asdf".abbr_format!
+            assert_equal "AF", "af".abbr_format!
+            assert_equal "ASD", "asDf".abbr_format!
+            assert_equal "ASD", "a-S%^90df".abbr_format!
+            assert_equal "AD", "1243A-%^90d8".abbr_format!
+            assert_equal "AAD", "a1243A-%^90d8".abbr_format!
 
-          test '#cleanup_production' do
-            skip '#cleanup_production test needed'
+            assert_bang_variant "1243a-%^90d8F", :abbr_format!
           end
-          #   def cleanup_production
-          #     Rails.env.production? \
-          #       ? cleanup
-          #       : self
-          #   end
+
+          test '#cleanup converts all whitespace to a single space' do
+            assert_equal " ", "\s\s".cleanup
+            assert_equal " ", "\n".cleanup
+            assert_equal " ", "\r\s\n\n \s\n".cleanup
+            assert_equal " b ", "\r\s\n\n b\s\n".cleanup
+            assert_equal " a b c", "\ra\s\nb c".cleanup
+            assert_equal "1243a- %^ 90 d 8F", "1243a-\s%^\n90 d\r8F".cleanup
+          end
+
+          test '#cleanup! is a bang method for #cleanup' do
+            assert_equal " ", "\s\s".cleanup!
+            assert_equal " ", "\n".cleanup!
+            assert_equal " ", "\r\s\n\n \s\n".cleanup!
+            assert_equal " b ", "\r\s\n\n b\s\n".cleanup!
+            assert_equal " a b c", "\ra\s\nb c".cleanup!
+            assert_equal "1243a- %^ 90 d 8F", "1243a-\s%^\n90 d\r8F".cleanup!
+
+            assert_bang_variant "1243a-\s%^\n90 d\r8F", :cleanup!
+          end
+
+          test '#cleanup_production calls cleanup only in development' do
+            # #cleanup should not be called in test or development
+            # incorrectly calling will raise an error and stop tests
+            raise_if_called = ->() { raise StandardError.new('#cleanup was called') }
+            String.stub_instances(:cleanup, raise_if_called) do
+              Rails.stub(:env, ActiveSupport::StringInquirer.new("development")) do
+                "".cleanup_production
+              end
+              Rails.stub(:env, ActiveSupport::StringInquirer.new("test")) do
+                "".cleanup_production
+              end
+              Rails.stub(:env, ActiveSupport::StringInquirer.new("production")) do
+                error = assert_raises(StandardError) do
+                  "".cleanup_production
+                end
+                assert_equal '#cleanup was called', error.message
+              end
+            end
+
+            [
+              "\s\s",
+              "\n",
+              "\r\s\n\n \s\n",
+              "\r\s\n\n b\s\n",
+              "\ra\s\nb c",
+              "1243a-\s%^\n90 d\r8F",
+            ].each do |value|
+              Rails.stub(:env, ActiveSupport::StringInquirer.new("development")) do
+                assert_equal value, value.cleanup_production
+                refute_equal value.cleanup, value.cleanup_production
+              end
+              Rails.stub(:env, ActiveSupport::StringInquirer.new("test")) do
+                assert_equal value, value.cleanup_production
+                refute_equal value.cleanup, value.cleanup_production
+              end
+              Rails.stub(:env, ActiveSupport::StringInquirer.new("production")) do
+                refute_equal value, value.cleanup_production
+                assert_equal value.cleanup, value.cleanup_production
+              end
+            end
+          end
 
           test '#decrypt_token' do
             skip '#decrypt_token test needed'
@@ -343,29 +452,32 @@ module CoreExtensions
           #     self.replace decrypt_token
           #   end
 
-          test '#dup' do
-            skip '#dup test needed'
-          end
-          #   def dup
-          #     self + ''
-          #   end
+          test '#fast_dup creates a new string by adding a blank string' do
+            String.stub_instances(:+, 'asdf') do
+              assert_equal "asdf", ''.fast_dup
+            end
 
-          test '#dus_id_format' do
-            skip '#dus_id_format test needed'
-          end
-          #   def dus_id_format
-          #     dup.dus_id_format!
-          #   end
+            str = 'asdf'
 
-          test '#dus_id_format!' do
-            skip '#dus_id_format! test needed'
+            refute_same str, str.fast_dup
+            assert_equal str, str.fast_dup
+
+            str = "#{rand} random string"
+
+            refute_same str, str.fast_dup
+            assert_equal str, str.fast_dup
           end
-          #   def dus_id_format!
-          #     upcase!
-          #     gsub!(/[^A-Z]/, '')
-          #     slice!(6..-1)
-          #     self
-          #   end
+
+          test '#dus_id_format upcases and returns the first 6 letters' do
+            assert_equal "AB", "1234567890a!@#$%^&*()_+{}|b:\"\"''".dus_id_format
+            assert_equal "ABCDEF", "abcDEFgHIJkl".dus_id_format
+          end
+
+          test '#dus_id_format! is a bang method for #dus_id_format' do
+            assert_equal "AB", "1234567890a!@#$%^&*()_+{}|b:\"\"''".dus_id_format!
+            assert_equal "ABCDEF", "abcDEFgHIJkl".dus_id_format!
+            assert_bang_variant "abcDEFgHIJkl", :dus_id_format!
+          end
 
           test '#phone_format' do
             skip '#phone_format test needed'
@@ -398,12 +510,15 @@ module CoreExtensions
           #     self
           #   end
 
-          test '#titleize(name: true, keep_id_suffix: false)' do
-            skip '#titleize(name: true, keep_id_suffix: false) test needed'
+          test '#titleize calls ActiveSupport::Inflector#titleize with equal defaults' do
+            TO_TITLECASE.each do |(started_with, expected)|
+              assert_equal expected, started_with.titleize
+            end
+
+            TO_TITLECASE_WITH_ID.each do |(started_with, expected)|
+              assert_equal expected, started_with.titleize(keep_id_suffix: true)
+            end
           end
-          #   def titleize(name: true, keep_id_suffix: false)
-          #     ActiveSupport::Inflector.titleize(self, name: name, keep_id_suffix: name || keep_id_suffix)
-          #   end
 
           test '#us_date_to_iso' do
             skip '#us_date_to_iso test needed'

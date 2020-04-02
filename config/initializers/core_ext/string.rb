@@ -124,7 +124,7 @@ class String
 
   # == Instance Methods =====================================================
   def abbr_format
-    dup.abbr_format!
+    fast_dup.abbr_format!
   end
 
   def abbr_format!
@@ -135,7 +135,7 @@ class String
   end
 
   def clean_certificate
-    dup.clean_certificate!
+    fast_dup.clean_certificate!
   end
 
   def clean_certificate!
@@ -148,7 +148,7 @@ class String
   end
 
   def cleanup
-    dup.cleanup!
+    fast_dup.cleanup!
   end
 
   def cleanup!
@@ -174,12 +174,12 @@ class String
     self.class.levenshtein_distance(self, str)
   end
 
-  def dup
+  def fast_dup
     self + ''
   end
 
   def dus_id_format
-    dup.dus_id_format!
+    fast_dup.dus_id_format!
   end
 
   def dus_id_format!
@@ -190,7 +190,7 @@ class String
   end
 
   def from_b64
-    dup.from_b64!
+    fast_dup.from_b64!
   end
 
   def from_b64!
@@ -200,7 +200,7 @@ class String
   end
 
   def phone_format
-    dup.phone_format!
+    fast_dup.phone_format!
   end
 
   def phone_format!
@@ -225,7 +225,7 @@ class String
   end
 
   def print_safe
-    dup.print_safe!
+    fast_dup.print_safe!
   end
 
   def print_safe!
@@ -233,12 +233,12 @@ class String
     self
   end
 
-  def titleize(name: true, keep_id_suffix: false)
-    ActiveSupport::Inflector.titleize(self, name: name, keep_id_suffix: name || keep_id_suffix)
+  def titleize(keep_id_suffix: false)
+    ActiveSupport::Inflector.titleize(self, keep_id_suffix: keep_id_suffix)
   end
 
   def to_b64
-    dup.to_b64!
+    fast_dup.to_b64!
   end
 
   def to_b64!
@@ -256,7 +256,7 @@ class String
   end
 
   def us_date_to_iso
-    dup.us_date_to_iso!
+    fast_dup.us_date_to_iso!
   end
 
   def us_date_to_iso!
@@ -265,7 +265,7 @@ class String
   end
 
   def us_date_to_iso_if_needed
-    dup.us_date_to_iso_if_needed!
+    fast_dup.us_date_to_iso_if_needed!
   end
 
   def us_date_to_iso_if_needed!
