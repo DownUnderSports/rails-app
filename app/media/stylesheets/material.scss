@@ -4,7 +4,9 @@
 // @use "@material/theme/variables" as theme-variables with (
 @use "@material/theme" with (
   $primary: dus-theme.$primary,
+  $on-primary: dus-theme.$on-primary,
   $secondary: dus-theme.$secondary,
+  $on-secondary: dus-theme.$on-secondary,
   $error: dus-theme.$error,
   $on-error: dus-theme.$on-error
 );

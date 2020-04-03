@@ -87,8 +87,16 @@ const switchEls = Array.from(document.querySelectorAll('.mdc-switch'));
 switchEls.forEach((el) => new MDCSwitch(el));
 
 // Top app bar
-const topAppBarEls = Array.from(document.querySelectorAll('.mdc-top-app-bar'));
-topAppBarEls.forEach((el) => new MDCTopAppBar(el));
+let topAppBar = document.querySelector('.mdc-top-app-bar');
+if(topAppBar) topAppBar = new MDCTopAppBar(topAppBar);
+
+const drawerEl = document.querySelector('.mdc-drawer')
+if(topAppBar && drawerEl) {
+  const drawer = new MDCDrawer(drawerEl)
+  topAppBar.listen('MDCTopAppBar:nav', () => {
+    drawer.open = !drawer.open;
+  });
+}
 
 // List
 const listEls = Array.from(document.querySelectorAll('.mdc-list'));

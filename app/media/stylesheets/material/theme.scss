@@ -6,8 +6,16 @@
 // To change your theme's typography, we recommend importing a font from Google Fonts and setting the global font-family https://fonts.google.com
 
 @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500');
+$font-family: unquote("Roboto, sans-serif");
+
 $primary: #153e7c;
 $secondary: #d52027;
-$font-family: unquote("Roboto, sans-serif");
 $error: #333;
 $on-error: #ed8b8f;
+
+$primary: #ffffff;
+$on-primary: #153e7c;
+$secondary: #153e7c;
+$on-secondary: #ffffff;
+$error: #d52027;
+$on-error: #ffffff;
