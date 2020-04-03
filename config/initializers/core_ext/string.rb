@@ -162,14 +162,6 @@ class String
       : self
   end
 
-  def decrypt_token
-    JSON.parse(decrypt_gpg_base64(str.strip))
-  end
-
-  def decrypt_token!
-    self.replace decrypt_token
-  end
-
   def distance_from(str)
     self.class.levenshtein_distance(self, str)
   end

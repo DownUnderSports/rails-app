@@ -80,6 +80,10 @@ class ApplicationController < ActionController::Base
     end
 
     def set_values
-      requesting_device_id
+      device_id
+    end
+
+    def device_id
+      session[:device_id] ||= SecureRandom.uuid
     end
 end

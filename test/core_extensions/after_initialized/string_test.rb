@@ -438,20 +438,6 @@ module CoreExtensions
             end
           end
 
-          test '#decrypt_token' do
-            skip '#decrypt_token test needed'
-          end
-          #   def decrypt_token
-          #     JSON.parse(decrypt_gpg_base64(str.strip))
-          #   end
-
-          test '#decrypt_token!' do
-            skip '#decrypt_token! test needed'
-          end
-          #   def decrypt_token!
-          #     self.replace decrypt_token
-          #   end
-
           test '#fast_dup creates a new string by adding a blank string' do
             String.stub_instances(:+, 'asdf') do
               assert_equal "asdf", ''.fast_dup
@@ -480,35 +466,22 @@ module CoreExtensions
           end
 
           test '#phone_format' do
-            skip '#phone_format test needed'
+            assert_equal "435-753-4732", "+14357534732".phone_format
+            assert_equal "", "ASDF".phone_format
+            assert_equal "1", "A1SDF".phone_format
+            assert_equal "+61 404 068 889", "+610404068889".phone_format
+            assert_equal "0404 068 889", "0404068889".phone_format
           end
-          #   def phone_format
-          #     dup.phone_format!
-          #   end
 
-          test '#phone_format!' do
-            skip '#phone_format! test needed'
+          test '#phone_format! is a bang method for #phone_format' do
+            assert_equal "435-753-4732", "+14357534732".phone_format!
+            assert_equal "", "ASDF".phone_format!
+            assert_equal "1", "A1SDF".phone_format!
+            assert_equal "+61 404 068 889", "+610404068889".phone_format!
+            assert_equal "0404 068 889", "0404068889".phone_format!
+
+            assert_bang_variant "4357534732", :phone_format!
           end
-          #   def phone_format!
-          #     return '' unless present?
-          #
-          #     strip_phone_prefix!
-          #
-          #     return self if length < 10
-          #
-          #     case self
-          #     when /^\+6/
-          #       format_aussie_phone_six!
-          #     when /^04/
-          #       format_aussie_phone_four!
-          #     when /^0/
-          #       format_aussie_phone_other!
-          #     else
-          #       format_us_phone!
-          #     end
-          #
-          #     self
-          #   end
 
           test '#titleize calls ActiveSupport::Inflector#titleize with equal defaults' do
             TO_TITLECASE.each do |(started_with, expected)|
@@ -520,38 +493,31 @@ module CoreExtensions
             end
           end
 
-          test '#us_date_to_iso' do
-            skip '#us_date_to_iso test needed'
+          test '#us_date_to_iso splits the string on each forward slash and rearranges it to be ISO formatted' do
+            assert_equal '20EF-AB-CD', 'AB/CD/EF'.us_date_to_iso
+            assert_equal '2020-12-01', '12/01/20'.us_date_to_iso
+            assert_equal '2019-12-01', '12/01/2019'.us_date_to_iso
           end
-          #   def us_date_to_iso
-          #     dup.us_date_to_iso!
-          #   end
 
-          test '#us_date_to_iso!' do
-            skip '#us_date_to_iso! test needed'
+          test '#us_date_to_iso! is a bang method for #us_date_to_iso' do
+            assert_equal '20EF-AB-CD', 'AB/CD/EF'.us_date_to_iso!
+            assert_equal '2020-12-01', '12/01/20'.us_date_to_iso!
+            assert_equal '2019-12-01', '12/01/2019'.us_date_to_iso!
+            assert_bang_variant "12/01/2019", :us_date_to_iso!
           end
-          #   def us_date_to_iso!
-          #     m, d, y = self.split('/')
-          #     replace("20#{y.rjust(4, '0')[-2..-1]}-#{m.rjust(2, '0')}-#{d.rjust(2, '0')}")
-          #   end
 
-          test '#us_date_to_iso_if_needed' do
-            skip '#us_date_to_iso_if_needed test needed'
+          test '#us_date_to_iso_if_needed calls us_date_to_iso if the date if formatted \d+/\d+/\d+' do
+            assert_equal 'AB/CD/EF', 'AB/CD/EF'.us_date_to_iso_if_needed
+            assert_equal '2020-12-01', '12/01/20'.us_date_to_iso_if_needed
+            assert_equal '2019-12-01', '12/01/2019'.us_date_to_iso_if_needed
           end
-          #   def us_date_to_iso_if_needed
-          #     dup.us_date_to_iso_if_needed!
-          #   end
 
-          test '#us_date_to_iso_if_needed!' do
-            skip '#us_date_to_iso_if_needed! test needed'
+          test '#us_date_to_iso_if_needed! is a bang method for #us_date_to_iso_if_needed' do
+            assert_equal 'AB/CD/EF', 'AB/CD/EF'.us_date_to_iso_if_needed!
+            assert_equal '2020-12-01', '12/01/20'.us_date_to_iso_if_needed!
+            assert_equal '2019-12-01', '12/01/2019'.us_date_to_iso_if_needed!
+            assert_bang_variant "12/01/2019", :us_date_to_iso_if_needed!
           end
-          #   def us_date_to_iso_if_needed!
-          #     if self =~ /\d+\/\d+\/\d+/
-          #       us_date_to_iso!
-          #     else
-          #       self
-          #     end
-          #   end
         end
       end
     end
