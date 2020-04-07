@@ -133,12 +133,24 @@ module Libraries
         with_sample_upload do |sample_upload|
           Thread.stub(:new, thread_created) do
             sample_upload.s3_bucket.objects({prefix: sample_upload.prefix}).batch_delete!
-            expected_message += (1..5).map do |v|
-              "[#{v}/5] uploading..."
-            end.join("\n") + "\n"
-            assert_output(expected_message) do
+
+            expected_messages = [ expected_message.strip ] |
+              (1..5).map do |v|
+                [
+                  "[#{v}/5] uploading...",
+                  "[#{v}/5] uploaded"
+                ]
+              end.flatten
+
+            out, err = capture_io do
               sample_upload.upload verbose: true
             end
+
+            out = out.split("\n").sort
+
+            refute err.present?
+            assert_equal expected_messages.sort, out
+            assert_equal 11, out.size
           end
 
           assert_equal 5, i

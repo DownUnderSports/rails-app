@@ -71,6 +71,8 @@ module S3AssetManager
               obj.put({ acl: "public-read", body: data })
             end
 
+            puts "[#{Thread.current["file_number"]}/#{total_files}] uploaded" if verbose
+
             data.close
           end
         }

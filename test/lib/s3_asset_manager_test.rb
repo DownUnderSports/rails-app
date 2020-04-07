@@ -18,7 +18,7 @@ module Libraries
       s3_bucket.objects({ prefix: prefix }).batch_delete!
     end
 
-    test  '.upload_folder initializes a FolderUpload and calls #upload with' do
+    test '.upload_folder initializes a FolderUpload and calls #upload with' do
       original_new = S3AssetManager::FolderUpload.method(:new)
       given_args = given_opts = new_opts = upload_opts = nil
       stubbed_new = ->(*args, **opts) do

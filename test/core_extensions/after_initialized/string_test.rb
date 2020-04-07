@@ -6,7 +6,7 @@ module CoreExtensions
           assert_equal distance, String.levenshtein_distance(a, b)
         end
 
-        test  '.levenshtein_distance returns the minimum number of changes' \
+        test '.levenshtein_distance returns the minimum number of changes' \
               'required to make two strings equal' do
           # test add distance
           assert_distance 2, "zentest", "zntst"
@@ -51,7 +51,7 @@ module CoreExtensions
         end
 
         class BasicMethodsTest < InstanceMethodsTest
-          test  '#distance_from calls .levenshtein_distance' \
+          test '#distance_from calls .levenshtein_distance' \
                 ' with self and the provided string as args' do
             str = "asdf"
             str_2 = "fdsa"
@@ -119,6 +119,22 @@ module CoreExtensions
             assert_equal 3661.1, "1:1:1.1".to_d
             refute_equal 3661, "1:1:1.1".to_d
             assert_equal 1.to_d, "1:0:0".og_to_d
+          end
+
+          test '#fast_dup creates a new string by adding a blank string' do
+            String.stub_instances(:+, 'asdf') do
+              assert_equal "asdf", ''.fast_dup
+            end
+
+            str = 'asdf'
+
+            refute_same str, str.fast_dup
+            assert_equal str, str.fast_dup
+
+            str = "#{rand} random string"
+
+            refute_same str, str.fast_dup
+            assert_equal str, str.fast_dup
           end
         end
 
@@ -436,22 +452,6 @@ module CoreExtensions
                 assert_equal value.cleanup, value.cleanup_production
               end
             end
-          end
-
-          test '#fast_dup creates a new string by adding a blank string' do
-            String.stub_instances(:+, 'asdf') do
-              assert_equal "asdf", ''.fast_dup
-            end
-
-            str = 'asdf'
-
-            refute_same str, str.fast_dup
-            assert_equal str, str.fast_dup
-
-            str = "#{rand} random string"
-
-            refute_same str, str.fast_dup
-            assert_equal str, str.fast_dup
           end
 
           test '#dus_id_format upcases and returns the first 6 letters' do
