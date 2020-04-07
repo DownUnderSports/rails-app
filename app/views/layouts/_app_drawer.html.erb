@@ -1,81 +1,82 @@
-<aside class="mdc-drawer mdc-drawer--modal">
+<aside class="mdc-drawer mdc-drawer--modal" data-target="app-drawer.drawer">
   <div class="mdc-drawer__header">
-    <%= image_pack_tag 'media/images/dus-logo-original.png', alt: 'Down Under Sports', class: 'img' %>
+    <%= image_pack_tag 'media/images/dus-logo-original.png', alt: 'Down Under Sports', class: 'img', data: { target: 'app-drawer.logo' } %>
   </div>
   <hr class="mdc-list-divider">
   <div class="mdc-drawer__content">
+    <!-- <nav class="mdc-list pb-offset" tabindex="0" data-action="keydown->app-drawer#moveFocus"> -->
     <nav class="mdc-list pb-offset" tabindex="0">
-      <a class="mdc-list-item" href="/">
+      <a class="mdc-list-item" href="/" data-target="app-drawer.link" data-action="app-drawer#close">
         <i class="material-icons mdc-list-item__graphic" aria-hidden="true">home</i>
         <span class="mdc-list-item__text">Home</span>
       </a>
-      <a class="mdc-list-item" href="/payment">
+      <a class="mdc-list-item" href="/payment" data-target="app-drawer.link" data-action="app-drawer#close">
         <i class="material-icons mdc-list-item__graphic" aria-hidden="true">card_giftcard</i>
         <span class="mdc-list-item__text">Donate</span>
       </a>
-      <a class="mdc-list-item" href="/deposit">
+      <a class="mdc-list-item" href="/deposit" data-target="app-drawer.link" data-action="app-drawer#close">
         <i class="material-icons mdc-list-item__graphic" aria-hidden="true">card_travel</i>
         <span class="mdc-list-item__text">Sign Up</span>
       </a>
       <hr class="mdc-list-divider">
       <h6 class="mdc-list-group__subheader">Our Company</h6>
-      <a class="mdc-list-item" href="/about">
+      <a class="mdc-list-item" href="/about" data-target="app-drawer.link" data-action="app-drawer#close">
         <i class="material-icons mdc-list-item__graphic" aria-hidden="true">group</i>
         <span class="mdc-list-item__text">About Us</span>
       </a>
-      <a class="mdc-list-item" href="/story">
+      <a class="mdc-list-item" href="/story" data-target="app-drawer.link" data-action="app-drawer#close">
         <i class="material-icons mdc-list-item__graphic" aria-hidden="true">book</i>
         <span class="mdc-list-item__text">Our Story</span>
       </a>
-      <a class="mdc-list-item" href="/story">
+      <a class="mdc-list-item" href="/story" data-target="app-drawer.link" data-action="app-drawer#close">
         <i class="material-icons mdc-list-item__graphic" aria-hidden="true">ballot</i>
         <span class="mdc-list-item__text">F.A.Q.</span>
       </a>
       <hr class="mdc-list-divider">
       <h6 class="mdc-list-group__subheader">Sports</h6>
-      <a class="mdc-list-item" href="/basketball">
+      <a class="mdc-list-item" href="/basketball" data-target="app-drawer.link" data-action="app-drawer#close">
         <i class="material-icons mdc-list-item__graphic" aria-hidden="true">sports_basketball</i>
         <span class="mdc-list-item__text">Basketball</span>
       </a>
-      <a class="mdc-list-item" href="/cheer">
+      <a class="mdc-list-item" href="/cheer" data-target="app-drawer.link" data-action="app-drawer#close">
         <i class="material-icons mdc-list-item__graphic" aria-hidden="true">emoji_people</i>
         <span class="mdc-list-item__text">Cheer</span>
       </a>
-      <a class="mdc-list-item" href="/cross-country">
+      <a class="mdc-list-item" href="/cross-country" data-target="app-drawer.link" data-action="app-drawer#close">
         <i class="material-icons mdc-list-item__graphic" aria-hidden="true">landscape</i>
         <span class="mdc-list-item__text">Cross Country</span>
       </a>
-      <a class="mdc-list-item" href="/football">
+      <a class="mdc-list-item" href="/football" data-target="app-drawer.link" data-action="app-drawer#close">
         <i class="material-icons mdc-list-item__graphic" aria-hidden="true">sports_football</i>
         <span class="mdc-list-item__text">Football</span>
       </a>
-      <a class="mdc-list-item" href="/golf">
+      <a class="mdc-list-item" href="/golf" data-target="app-drawer.link" data-action="app-drawer#close">
         <i class="material-icons mdc-list-item__graphic" aria-hidden="true">sports_golf</i>
         <span class="mdc-list-item__text">Golf</span>
       </a>
-      <a class="mdc-list-item" href="/track-and-field">
+      <a class="mdc-list-item" href="/track-and-field" data-target="app-drawer.link" data-action="app-drawer#close">
         <i class="material-icons mdc-list-item__graphic" aria-hidden="true">directions_run</i>
         <span class="mdc-list-item__text">Track and Field</span>
       </a>
-      <a class="mdc-list-item" href="/volleyball">
+      <a class="mdc-list-item" href="/volleyball" data-target="app-drawer.link" data-action="app-drawer#close">
         <i class="material-icons mdc-list-item__graphic" aria-hidden="true">sports_volleyball</i>
         <span class="mdc-list-item__text">Volleyball</span>
       </a>
       <hr class="mdc-list-divider">
       <h6 class="mdc-list-group__subheader">More</h6>
-      <a class="mdc-list-item" href="/infokit">
+      <a class="mdc-list-item" href="/infokit" data-target="app-drawer.link" data-action="app-drawer#close">
         <i class="material-icons mdc-list-item__graphic" aria-hidden="true">assessment</i>
         <span class="mdc-list-item__text">Request Info</span>
       </a>
-      <a class="mdc-list-item" href="/open-tryouts">
+      <a class="mdc-list-item" href="/open-tryouts" data-target="app-drawer.link" data-action="app-drawer#close">
         <i class="material-icons mdc-list-item__graphic" aria-hidden="true">assignment</i>
         <span class="mdc-list-item__text">Open Tryout</span>
       </a>
-      <a class="mdc-list-item" href="/past-participants">
+      <a class="mdc-list-item" href="/past-participants" data-target="app-drawer.link" data-action="app-drawer#close">
         <i class="material-icons mdc-list-item__graphic" aria-hidden="true">history</i>
         <span class="mdc-list-item__text">Past Participants</span>
       </a>
     </nav>
   </div>
 </aside>
-<div class="mdc-drawer-scrim"></div>
+<div class="mdc-drawer-scrim" data-action="click->app-drawer#close"></div>

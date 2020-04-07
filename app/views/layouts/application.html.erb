@@ -13,25 +13,57 @@
    <%= stylesheet_pack_tag 'material', media: 'all', 'data-turbolinks-track': 'reload' %>
    <%= stylesheet_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+   <%= javascript_pack_tag 'stimulus', 'data-turbolinks-track': 'reload' %>
   </head>
-  <body class="mdc-typography">
+  <body class="mdc-typography" data-controller="app-drawer">
     <%= render partial: 'layouts/app_drawer' %>
-    <div class="mdc-drawer-app-content">
+    <section class="mdc-drawer-app-content">
       <%= render partial: 'layouts/top_bar' %>
-      <main class="main-content mdc-top-app-bar--prominent-fixed-adjust">
-        <button class="mdc-fab mdc-fab--extended site-fab" >
-          <span class="material-icons mdc-fab__icon">photo_filter</span>
-          <span class="mdc-fab__label">Sample Button</span>
-        </button>
-        <!-- Render textfield component -->
-        <label class="mdc-text-field">
-          <input type="text" class="mdc-text-field__input" aria-labelledby="my-label">
-          <span class="mdc-floating-label" id="my-label">Label</span>
-          <div class="mdc-line-ripple"></div>
-        </label>
-        <%= yield %>
+      <main class="main-content mdc-top-app-bar--prominent-fixed-adjust mdc-layout-grid">
+        <div class="mdc-layout-grid__inner">
+          <div class="mdc-layout-grid__cell">
+            <button class="mdc-fab mdc-fab--extended site-fab" >
+              <span class="material-icons mdc-fab__icon">photo_filter</span>
+              <span class="mdc-fab__label">Sample Button</span>
+            </button>
+            <!-- Render textfield component -->
+            <div class="mdc-text-field mdc-text-field--with-trailing-icon" data-controller="clipboard text-field" data-action="click->clipboard#copy">
+              <i class="material-icons mdc-text-field__icon mdc-text-field__icon--trailing clickable" data-target="text-field.icon">
+                file_copy
+              </i>
+              <input id="demo-mdc-text-field" type="text" class="mdc-text-field__input" data-target="text-field.input clipboard.source">
+              <div class="mdc-line-ripple"></div>
+              <label for="demo-mdc-text-field" class="mdc-floating-label mdc-floating-label--float-above" data-target="text-field.label">
+                Click to Copy
+              </label>
+            </div>
+
+            <ul class="mdc-list mdc-list--two-line" data-controller="list" data-target="list.list">
+              <li class="mdc-list-item" tabindex="0" data-target="list.item">
+                <span class="mdc-list-item__text">
+                  <span class="mdc-list-item__primary-text">Two-line item</span>
+                  <span class="mdc-list-item__secondary-text">Secondary text</span>
+                </span>
+              </li>
+              <li class="mdc-list-item" data-target="list.item">
+                <span class="mdc-list-item__text">
+                  <span class="mdc-list-item__primary-text">Two-line item</span>
+                  <span class="mdc-list-item__secondary-text">Secondary text</span>
+                </span>
+              </li>
+              <li class="mdc-list-item" data-target="list.item">
+                <span class="mdc-list-item__text">
+                  <span class="mdc-list-item__primary-text">Two-line item</span>
+                  <span class="mdc-list-item__secondary-text">Secondary text</span>
+                </span>
+              </li>
+            </ul>
+
+            <%= yield %>
+          </div>
+        </div>
       </main>
-    </div>
+    </section>
     <%= javascript_pack_tag 'material', 'data-turbolinks-track': 'reload' %>
   </body>
 </html>

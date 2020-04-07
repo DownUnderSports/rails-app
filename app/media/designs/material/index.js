@@ -2,11 +2,9 @@ import {
   MDCCheckbox,
   MDCChipSet,
   MDCDialog,
-  MDCDrawer,
   MDCFormField,
   MDCIconButtonToggle,
   MDCLinearProgress,
-  MDCList,
   MDCMenu,
   MDCRadio,
   MDCRipple,
@@ -15,9 +13,7 @@ import {
   MDCSnackbar,
   MDCSwitch,
   MDCTabBar,
-  MDCTextField,
   MDCTextFieldHelperText,
-  MDCTopAppBar,
   MDCDataTable
 } from 'designs/material/components';
 
@@ -48,13 +44,7 @@ const chipSetEls = Array.from(document.querySelectorAll('.mdc-chip-set'));
 chipSetEls.forEach((el) => new MDCChipSet(el));
 
 // Text field
-const textFieldEls = Array.from(document.querySelectorAll('.mdc-text-field'));
-textFieldEls.forEach((el) => {
-  let textField = new MDCTextField(el);
-  if (el.classList.contains('text-field-with-input')) {
-    textField.value = 'Input text';
-  }
-});
+
 const helperTextEls = Array.from(document.querySelectorAll('.mdc-text-field-helper-text'));
 helperTextEls.forEach((el) => new MDCTextFieldHelperText(el));
 
@@ -85,26 +75,6 @@ radioEls.forEach((el) => new MDCRadio(el));
 // Switch
 const switchEls = Array.from(document.querySelectorAll('.mdc-switch'));
 switchEls.forEach((el) => new MDCSwitch(el));
-
-// Top app bar
-let topAppBar = document.querySelector('.mdc-top-app-bar');
-if(topAppBar) topAppBar = new MDCTopAppBar(topAppBar);
-
-const drawerEl = document.querySelector('.mdc-drawer')
-if(topAppBar && drawerEl) {
-  const drawer = new MDCDrawer(drawerEl)
-  topAppBar.listen('MDCTopAppBar:nav', () => {
-    drawer.open = !drawer.open;
-  });
-}
-
-// List
-const listEls = Array.from(document.querySelectorAll('.mdc-list'));
-listEls.forEach((el) => {
-  let list = new MDCList(el);
-  list.listElements.map((listItemEl) => new MDCRipple(listItemEl));
-  list.singleSelection = true;
-});
 
 // Select
 const selectEls = Array.from(document.querySelectorAll('.mdc-select'));
