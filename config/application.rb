@@ -2,6 +2,9 @@ Dir.glob("#{File.expand_path(__dir__)}/core_ext/*.rb").each do |d|
   require d
 end
 
+Warning[:deprecated] = !!Boolean.parse(ENV['ENABLE_RUBY_DEPRECATED'])
+Warning[:experimental] = !!Boolean.parse(ENV['ENABLE_RUBY_EXPERIMENTAL'])
+
 require_relative 'boot'
 require_relative 'version'
 

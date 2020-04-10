@@ -60,7 +60,7 @@ module Libraries
         err = assert_raises(ArgumentError) do
           S3AssetManager::FolderUpload.new
         end
-        assert_equal 'missing keywords: folder_path, bucket', err.message
+        assert_equal 'missing keywords: :folder_path, :bucket', err.message
       end
 
       test '#folder_path is an attr_reader' do

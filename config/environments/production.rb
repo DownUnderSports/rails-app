@@ -14,6 +14,9 @@ Rails.application.configure do
   config.consider_all_requests_local       = false
   config.action_controller.perform_caching = true
 
+  # allow only downundersports hosts
+  config.hosts << /([^.]+\.)?downundersports\.com/
+
   # Ensures that a master key has been made available in either ENV["RAILS_MASTER_KEY"]
   # or in config/master.key. This key is used to decrypt credentials (and other encrypted files).
   # config.require_master_key = true
@@ -36,7 +39,7 @@ Rails.application.configure do
   # config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect' # for NGINX
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
-  config.active_storage.service = :local
+  config.active_storage.service = :amazon_prefixed
 
   # Mount Action Cable outside main process or domain.
   # config.action_cable.mount_path = nil
@@ -46,9 +49,22 @@ Rails.application.configure do
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   # config.force_ssl = true
 
+  # `config.log_level` defines the verbosity of the Rails logger. This option
+  # defaults to `:debug` for all environments. The available log levels in
+  # decreasing order of verbosity are: :debug, :info, :warn, :error, :fatal, and :unknown
+
   # Use the lowest log level to ensure availability of diagnostic information
   # when problems arise.
-  config.log_level = :debug
+  # config.log_level = :debug
+
+  # Use the :info log level to remove SQL queries from logging
+  # config.log_level = :info
+
+  # Only log important information for increased security
+  config.log_level = :warn
+
+  # only log breaking events for maximum security
+  # config.log_level = :fatal
 
   # Prepend all log lines with the following tags.
   config.log_tags = [ :request_id ]

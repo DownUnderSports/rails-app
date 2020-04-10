@@ -7,8 +7,12 @@ export class TopBarController extends Controller {
     this.topBar = this.element
   }
 
+  disconnect() {
+    this.topBar.destroy()
+  }
+
   get topBar() {
-    return this._topBar || (this.topBar = this.element)
+    return this._topBar
   }
 
   set topBar(element) {

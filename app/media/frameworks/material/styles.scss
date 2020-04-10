@@ -1,5 +1,5 @@
 // Material Theming
-@use "stylesheets/material/theme" as dus-theme;
+@use "frameworks/material/styles/theme" as dus-theme;
 
 // @use "@material/theme/variables" as theme-variables with (
 @use "@material/theme" with (
@@ -19,5 +19,5 @@
 @use "material-components-web/material-components-web";
 
 // Import site-specific CSS files
-@use "stylesheets/material/components";
-@use "stylesheets/material/layout";
+@use "frameworks/material/styles/components";
+@use "frameworks/material/styles/layout";

@@ -38,9 +38,9 @@ class BasicObject
     class_eval do
       alias_method new_name, name if owns_method
 
-      define_method(name) do |*args|
+      define_method(name) do |*args, **opts|
         if val_or_callable.respond_to? :call then
-          val_or_callable.call(*args)
+          val_or_callable.call(*args, **opts)
         else
           val_or_callable
         end

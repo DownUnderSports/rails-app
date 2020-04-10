@@ -44,7 +44,7 @@ class JsonWebToken
       options ||= encrypt_options
       encoded = ::JWT.encode(payload, sig_key, 'HS512')
 
-      ::JWE.encrypt(encoded, enc_key, options)
+      ::JWE.encrypt(encoded, enc_key, **options)
     end
     alias_method :create, :encode
     alias_method :encrypt, :encode
