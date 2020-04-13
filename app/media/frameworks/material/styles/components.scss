@@ -49,12 +49,12 @@
   &--fixed {
     // border-bottom: 0px solid var(--mdc-theme-primary, #153e7c);
     // transition: border-width 200ms linear;
-    &:not(&-scrolled) {
+    // &:not(&-scrolled) {
       .mdc-top-app-bar__navigation-icon::before {
         opacity: 0.04;
       }
       // border-bottom: 1px solid var(--mdc-theme-primary, #153e7c);
-    }
+    // }
   }
   & &__title {
     padding-right: 20px;
@@ -63,7 +63,7 @@
 
 .mdc-text-field {
   width: 100%;
-  width: fill-available;
+  width: stretch;
 }
 
 .mdc-fab {
