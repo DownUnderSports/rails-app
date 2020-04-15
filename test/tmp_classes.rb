@@ -31,16 +31,34 @@ class TypesInDB < ApplicationRecord
 end
 
 class BasicObject
-  def self.stub_instances(name, val_or_callable = nil, &block)
-    new_name = "__minitest_any_instance_stub__#{name}"
+  def self.stub_instances(
+                          name,
+                          val_or_callable = nil,
+                          keep_self: false,
+                          stub_name: nil,
+                          pass_sub_block: false,
+                          &block
+                        )
+
+    new_name = stub_name.presence || "__minitest_any_instance_stub__#{name}"
 
     owns_method = instance_method(name).owner == self
     class_eval do
       alias_method new_name, name if owns_method
 
-      define_method(name) do |*args, **opts|
+      define_method(name) do |*args, **opts, &sub_block|
         if val_or_callable.respond_to? :call then
-          val_or_callable.call(*args, **opts)
+          if keep_self
+            if pass_sub_block && sub_block.present?
+              instance_exec do
+                val_or_callable.bind(self).call *args, **opts, &sub_block
+              end
+            else
+              instance_exec(*args, **opts,  &val_or_callable)
+            end
+          else
+            val_or_callable.call(*args, **opts)
+          end
         else
           val_or_callable
         end
@@ -56,5 +74,18 @@ class BasicObject
         remove_method new_name
       end
     end
+  end
+end
+
+class Proc #:nodoc:
+  def bind(object)
+    block, time = self, Time.now
+    object.class_eval do
+      method_name = "__bind_#{time.to_i}_#{time.usec}"
+      define_method(method_name, &block)
+      method = instance_method(method_name)
+      remove_method(method_name)
+      method
+    end.bind(object)
   end
 end

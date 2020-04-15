@@ -5,7 +5,7 @@ module Kernel
     end
 
     def local_domain
-      Rails.env.development? ? "localhost:#{local_port}" : "downundersports.com"
+      Rails.env.development? ? "lvh.me:#{local_port}" : "downundersports.com"
     end
 
     def local_protocol

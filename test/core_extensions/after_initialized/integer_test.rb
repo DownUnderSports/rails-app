@@ -12,6 +12,16 @@ module CoreExtensions
         assert_instance_of StoreAsInt::ExchangeRate, 1.percent
         assert_equal (1/(1_0000000000.to_d)).to_i, 1.percent.to_d.to_i
       end
+
+      test '#min_max returns a number between two inclusive numbers' do
+        assert_equal 0, -1.min_max(0, 10)
+        assert_equal 0, 0.min_max(0, 10)
+        assert_equal 5, 5.min_max(0, 10)
+        assert_equal 10, 100.min_max(0, 10)
+        assert_equal -1, -1.min_max(-10, 10)
+        assert_equal 10, 100.min_max(-10, 10)
+        assert_equal 10, 10.min_max(-10, 10)
+      end
     end
   end
 end

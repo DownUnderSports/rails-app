@@ -41,9 +41,9 @@ yarn-debug.log*
 .gnupg*/
 !.gnupg.tar.b64.aes*
 
-server-certificate*.pem
-server-certificate*.pem*
-!server-certificate.pem.tar.b64.aes*
+/**/*.pem
+/**/*.pem*
+!/**/*.pem.tar.b64.aes*
 
 !/**/.keep
 !/**/pids/.keep
