@@ -2,6 +2,21 @@
 # frozen_string_literal: true
 module Libraries
   class CertifiedRequestTest < ActiveSupport::TestCase
+    CLIENT_CERT_REG = %r{
+      .*O\s*=\s*\"International\sSports\sSpecialists,\sInc\.\"
+      .*
+      emailAddress\s*=\s*.+@downundersports\.com
+      .*
+      -+BEGIN\s+CERTIFICATE-+
+      .*
+      -+END\s+CERTIFICATE-+
+      .*
+      -+BEGIN\s+PRIVATE\s+KEY-+
+      .*
+      -+END\s+PRIVATE\s+KEY-+
+      \n+
+    }mx
+
     test '.get_certificate_path returns the absolute path to "/config/certificates/client-certificate.pem" at Rails.root' do
       assert_instance_of Pathname, CertifiedRequest.get_certificate_path
       assert_equal __dir__.sub(/\/test\/lib/, '/config/certificates/') + 'client-certificate.pem', CertifiedRequest.get_certificate_path.to_s
@@ -16,19 +31,38 @@ module Libraries
       assert_equal 1, CertifiedRequest.delete_existing(tmp_file)
     end
 
-    test '.decrypt_file calls AesEncryptDir.decrypt with :client_certificate credentials' do
+    test '.decrypt_file calls TarEncryptGun.decrypt with the given path and :client_certificate credentials by default' do
       given_opts = nil
       expected_opts = {
         key: Rails.application.credentials.dig(:client_certificate, :key),
         iv: Rails.application.credentials.dig(:client_certificate, :iv),
         tag: Rails.application.credentials.dig(:client_certificate, :tag),
         auth_data: Rails.application.credentials.dig(:client_certificate, :auth_data),
-        input_path: 'test-path.tar.b64.aes.gz.b64',
-        output_path: 'test-path',
+        input: 'test-path.tar.b64.aes.gz.b64',
+        output: 'test-path',
       }
 
-      AesEncryptDir.stub(:decrypt, ->(**opts) { given_opts = opts }) do
+      TarEncryptGun.stub(:decrypt, ->(**opts) { given_opts = opts }) do
         CertifiedRequest.decrypt_file('test-path')
+      end
+
+      assert_equal expected_opts, given_opts
+    end
+
+    test '.decrypt_file calls TarEncryptGun.decrypt with overriden opts if given' do
+      given_opts = nil
+      expected_opts = {
+        key: "a",
+        iv: "b",
+        tag: "c",
+        auth_data: "d",
+        input: "e",
+        output: "f",
+        extra_key: "g",
+      }
+
+      TarEncryptGun.stub(:decrypt, ->(**opts) { given_opts = opts }) do
+        CertifiedRequest.decrypt_file('test-path', **expected_opts)
       end
 
       assert_equal expected_opts, given_opts
@@ -44,24 +78,75 @@ module Libraries
       CertifiedRequest.delete_existing(tmp_file)
     end
 
-    test '.get_client_certificate returns the decrypted text content of client-certificate.pem.tar.b64.aes.gz.b64' do
-      is_match_regex = %r{
-        .*O\s*=\s*\"International\sSports\sSpecialists,\sInc\.\"
-        .*
-        emailAddress\s*=\s*.+@downundersports\.com
-        .*
-        -+BEGIN\s+CERTIFICATE-+
-        .*
-        -+END\s+CERTIFICATE-+
-        .*
-        -+BEGIN\s+PRIVATE\s+KEY-+
-        .*
-        -+END\s+PRIVATE\s+KEY-+
-        \n+
-      }mx
-      CertifiedRequest.decrypt_file(CertifiedRequest.get_certificate_path)
-      assert_equal CertifiedRequest.read_existing(CertifiedRequest.get_certificate_path), CertifiedRequest.get_client_certificate
-      assert_match is_match_regex, CertifiedRequest.get_client_certificate
+    test '.decrypt_and_read_file returns the decrypted text content of $GIVEN_PATH.pem.tar.b64.aes.gz.b64' do
+      delete_existing CertifiedRequest.get_certificate_path
+
+      refute File.exist?(CertifiedRequest.get_certificate_path)
+
+      result =
+        CertifiedRequest.decrypt_and_read_file \
+          CertifiedRequest.get_certificate_path
+
+      assert_match CLIENT_CERT_REG, result
+
+      assert File.exist?(CertifiedRequest.get_certificate_path)
+
+      read_file =
+        CertifiedRequest.read_existing CertifiedRequest.get_certificate_path
+
+      assert_equal read_file, result
+    end
+
+    test '.get_client_certificate calls decrypt_and_read_file with .get_certificate_path and reload: (false)' do
+      given_args = given_opts = nil
+      stubbed = ->(*args, **opts) do
+        given_args = args
+        given_opts = opts
+      end
+      CertifiedRequest.stub(:decrypt_and_read_file, stubbed) do
+        CertifiedRequest.get_client_certificate
+
+        assert_equal [ CertifiedRequest.get_certificate_path ], given_args
+        assert_equal { reload: false }, given_opts
+
+        given_args = given_opts = nil
+
+        CertifiedRequest.get_client_certificate reload: true
+
+        assert_equal [ CertifiedRequest.get_certificate_path ], given_args
+        assert_equal { reload: true }, given_opts
+      end
+
+      assert_match CLIENT_CERT_REG, CertifiedRequest.get_client_certificate
+    end
+
+    test '.get_cert_store creates a new OpenSSL::X509::Store with default certificates' do
+      expected_call_given = false
+      stubbed = ->() { expected_call_given = true }
+
+      OpenSSL::X509::Store.stub(:set_default_paths, stubbed) do
+        store = CertifiedRequest.get_cert_store
+
+        assert_instance_of OpenSSL::X509::Store, store
+        assert expected_call_given
+      end
+    end
+
+    test '.get_cert_store([]) creates a new OpenSSL::X509::Store with added certificates' do
+      given_arg = false
+      stubbed = ->(arg) { given_arg = arg }
+      bad_deconstruct_value = [ test_value_without_path: :bad ]
+
+      OpenSSL::X509::Certificate.stub(:new, stubbed) do
+        store = CertifiedRequest.get_cert_store [
+          [ "test-decrypted-path", decrypt: true, test_key: :test_value ],
+          [ "test-undecrypted-path" ],
+
+        ]
+
+        assert_instance_of OpenSSL::X509::Store, store
+        assert expected_call_given
+      end
     end
 
     test '.fetch authenticates with the given domain and makes an HTTP request to the given path' do

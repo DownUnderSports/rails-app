@@ -50,8 +50,8 @@ class GpgWrapper
           puts 'NEEDS DIR'
           should_reload_agent = true
 
-          AesEncryptDir.decrypt(
-            input_path: Rails.root.join('.gnupg.tar.b64.aes.gz.b64'),
+          TarEncryptGun.decrypt(
+            input: Rails.root.join('.gnupg.tar.b64.aes.gz'),
             **Rails.application.credentials.dig(:gpg, :directory)
           )
 
