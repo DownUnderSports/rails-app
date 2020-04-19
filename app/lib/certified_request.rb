@@ -51,7 +51,7 @@ module CertifiedRequest
                 decrypt_and_read_file file_path, **opts
               in [ file_path ]
                 Rails.logger.debug "Reading Certificate Store: #{file_path}"
-                read_existing path
+                read_existing file_path
               else
                 raise OpenSSL::X509::CertificateError.new("No certificate given")
               end

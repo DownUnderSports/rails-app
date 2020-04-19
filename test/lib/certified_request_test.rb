@@ -38,7 +38,7 @@ module Libraries
         iv: Rails.application.credentials.dig(:client_certificate, :iv),
         tag: Rails.application.credentials.dig(:client_certificate, :tag),
         auth_data: Rails.application.credentials.dig(:client_certificate, :auth_data),
-        input: 'test-path.tar.b64.aes.gz.b64',
+        input: 'test-path.tar.b64.aes.gz',
         output: 'test-path',
       }
 
@@ -78,8 +78,8 @@ module Libraries
       CertifiedRequest.delete_existing(tmp_file)
     end
 
-    test '.decrypt_and_read_file returns the decrypted text content of $GIVEN_PATH.pem.tar.b64.aes.gz.b64' do
-      delete_existing CertifiedRequest.get_certificate_path
+    test '.decrypt_and_read_file returns the decrypted text content of $GIVEN_PATH.pem.tar.b64.aes.gz' do
+      CertifiedRequest.delete_existing CertifiedRequest.get_certificate_path
 
       refute File.exist?(CertifiedRequest.get_certificate_path)
 
@@ -107,14 +107,14 @@ module Libraries
         CertifiedRequest.get_client_certificate
 
         assert_equal [ CertifiedRequest.get_certificate_path ], given_args
-        assert_equal { reload: false }, given_opts
+        assert_equal ({ reload: false }), given_opts
 
         given_args = given_opts = nil
 
         CertifiedRequest.get_client_certificate reload: true
 
         assert_equal [ CertifiedRequest.get_certificate_path ], given_args
-        assert_equal { reload: true }, given_opts
+        assert_equal ({ reload: true }), given_opts
       end
 
       assert_match CLIENT_CERT_REG, CertifiedRequest.get_client_certificate
@@ -124,7 +124,7 @@ module Libraries
       expected_call_given = false
       stubbed = ->() { expected_call_given = true }
 
-      OpenSSL::X509::Store.stub(:set_default_paths, stubbed) do
+      OpenSSL::X509::Store.stub_instances(:set_default_paths, stubbed) do
         store = CertifiedRequest.get_cert_store
 
         assert_instance_of OpenSSL::X509::Store, store
@@ -134,18 +134,38 @@ module Libraries
 
     test '.get_cert_store([]) creates a new OpenSSL::X509::Store with added certificates' do
       given_arg = false
+      add_cert_args = []
+      decrypt_args = {}
       stubbed = ->(arg) { given_arg = arg }
+      stubbed_add_cert = ->(arg) { add_cert_args << arg }
+      stubbed_decrypt_and_read = ->(arg, **opts) do
+        decrypt_args[:file_path] = arg
+        decrypt_args[:opts] = opts
+        [ :was_decrypted, arg ]
+      end
+      stubbed_read_existing = ->(arg) do
+        [ :was_read, arg ]
+      end
       bad_deconstruct_value = [ test_value_without_path: :bad ]
 
       OpenSSL::X509::Certificate.stub(:new, stubbed) do
-        store = CertifiedRequest.get_cert_store [
-          [ "test-decrypted-path", decrypt: true, test_key: :test_value ],
-          [ "test-undecrypted-path" ],
+        OpenSSL::X509::Store.stub_instances(:add_cert, stubbed_add_cert) do
+          CertifiedRequest.stub(:decrypt_and_read_file, stubbed_decrypt_and_read) do
+            CertifiedRequest.stub(:read_existing, stubbed_read_existing) do
+              store = CertifiedRequest.get_cert_store [
+                [ "test-decrypted-path", decrypt: true, test_key: :test_value ],
+                [ "test-undecrypted-path" ],
+              ]
 
-        ]
-
-        assert_instance_of OpenSSL::X509::Store, store
-        assert expected_call_given
+              assert_instance_of OpenSSL::X509::Store, store
+              assert given_arg
+              assert_equal 'test-decrypted-path', decrypt_args[:file_path]
+              assert_equal ({ test_key: :test_value }), decrypt_args[:opts]
+              assert_equal [ :was_decrypted, "test-decrypted-path" ], add_cert_args.first
+              assert_equal [ :was_read, "test-undecrypted-path" ], add_cert_args.last
+            end
+          end
+        end
       end
     end
 

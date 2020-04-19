@@ -1,10 +1,24 @@
 # frozen_string_literal: true
 
-require 'active_record'
-
 class Boolean
+  FALSE_VALUES = [
+    false, 0,
+    "0", :"0",
+    "f", :f,
+    "F", :F,
+    "false", :false,
+    "FALSE", :FALSE,
+    "off", :off,
+    "OFF", :OFF,
+  ].to_set.freeze
+
   def self.parse(value)
-    ActiveRecord::Type::Boolean.new.cast(value)
+    case value
+    in nil | ""
+      nil
+    else
+      !FALSE_VALUES.include?(value)
+    end
   end
 
   def self.strict_parse(value)

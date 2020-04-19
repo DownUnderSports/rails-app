@@ -2,6 +2,8 @@ require 'openssl'
 # require 'tempfile'
 
 module TarEncryptGun
+  WORKING_ROOT = Rails.root.join('tmp', 'encryption')
+
   class << self
     def encrypt(input, auth_data, output = nil)
       case get_file_path input
@@ -49,7 +51,7 @@ module TarEncryptGun
         Rails.logger.debug "extracted path: #{output_path}"
       end
 
-      tmp_loc = Rails.root.join('tmp', 'decrypting', output_name)
+      tmp_loc = WORKING_ROOT.join('decrypting', uniq_str, output_name)
 
       case get_file_path tmp_loc, allow_empty: true
       in { dir: tmp_dir, name: tmp_name, path: tmp_path, sub_dir: _ }
@@ -70,10 +72,11 @@ module TarEncryptGun
 
         tarfile.rewind
 
-        FileUtils.rm_rf [ tmp_path ], secure: true
+        FileUtils.mkdir_p tmp_dir
         %x{ bash -c "tar -xf \\"#{tarfile.path}\\" -C \\"#{tmp_dir}\\"" }
         FileUtils.mv tmp_path, output_path
-        FileUtils.rm_rf [ tmp_path ], secure: true
+      ensure
+        FileUtils.rm_rf [ tmp_dir ], secure: true
       end
 
       output_path
@@ -83,8 +86,8 @@ module TarEncryptGun
       def open_tempfile(ext = rand.to_s)
         file =
           Tempfile.open \
-            [ rand.to_s.sub(/^0\./, ''), ext ],
-            Rails.root.join('tmp', 'encrypting'),
+            [ uniq_str.gsub(/\./, ''), ext ],
+            WORKING_ROOT,
             encoding: 'ASCII-8BIT'
 
         begin
@@ -136,6 +139,10 @@ module TarEncryptGun
 
           file.write(decoded.from_b64)
         end
+      end
+
+      def uniq_str
+        "#{rand}.#{Time.zone.now.to_i}"
       end
 
       def get_file_path(path, allow_empty: false)
