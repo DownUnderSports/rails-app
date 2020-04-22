@@ -13,8 +13,11 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link href="https://fonts.googleapis.com/css?family=Roboto+Mono|Roboto:900i" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
-   <%= stylesheet_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-   <%= javascript_packs_with_chunks_tag 'application', 'data-turbolinks-track': 'reload', defer: true %>
+    <% js_packs = [ 'application' ] | ((yield :js_packs).presence || []).map(&:to_s) %>
+    <% js_packs.each do |js_pack| %>
+      <%= stylesheet_pack_tag js_pack, media: 'all', 'data-turbolinks-track': 'reload' %>
+    <% end %>
+    <%= javascript_packs_with_chunks_tag *js_packs, 'data-turbolinks-track': 'reload', defer: true %>
   </head>
   <body class="mdc-typography" data-controller="app-drawer">
     <%= render partial: 'layouts/app_drawer' %>
