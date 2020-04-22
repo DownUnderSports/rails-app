@@ -84,6 +84,8 @@ module TarEncryptGun
 
     private
       def open_tempfile(ext = rand.to_s)
+        FileUtils.mkdir_p WORKING_ROOT
+
         file =
           Tempfile.open \
             [ uniq_str.gsub(/\./, ''), ext ],

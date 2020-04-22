@@ -18,18 +18,19 @@ module CoreExtensions
       assert_equal [generated].pack_hex, generated.pack_hex
     end
 
-    test "#unpack_binary calls unpack with 'H*'" do
+    test "#unpack_binary calls unpack with 'H*' and returns the unpacked string" do
       ensure_args = ->(*args) do
         assert_equal 1, args.length
         assert_equal 'H*', args.first
+        ["stubbed_string"]
       end
       String.stub_instances(:unpack, ensure_args) do
-        "".unpack_binary
+        assert_equal "stubbed_string", "".unpack_binary
       end
 
       generated_hex = JsonWebToken.gen_encryption_key.pack_hex
 
-      assert_equal generated_hex.unpack('H*'), generated_hex.unpack_binary
+      assert_equal generated_hex.unpack('H*').first, generated_hex.unpack_binary
     end
   end
 end
