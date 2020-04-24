@@ -1,12 +1,3 @@
-require 'coerce_boolean'
-
-Dir.glob("#{File.expand_path(__dir__)}/core_ext/*.rb").each do |d|
-  require d
-end
-
-Warning[:deprecated] = CoerceBoolean.from(ENV['ENABLE_RUBY_DEPRECATED'], strict: true)
-Warning[:experimental] = CoerceBoolean.from(ENV['ENABLE_RUBY_EXPERIMENTAL'], strict: true)
-
 require_relative 'boot'
 require_relative 'version'
 
