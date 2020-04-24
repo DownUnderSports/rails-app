@@ -36,9 +36,9 @@ module Libraries
       expected_opts = {
         key: Rails.application.credentials.dig(:client_certificate, :key),
         iv: Rails.application.credentials.dig(:client_certificate, :iv),
-        tag: Rails.application.credentials.dig(:client_certificate, :tag),
         auth_data: Rails.application.credentials.dig(:client_certificate, :auth_data),
-        input: 'test-path.tar.b64.aes.gz',
+        chmod: 0400,
+        input: 'test-path.tar.nacl.gz',
         output: 'test-path',
       }
 
@@ -54,7 +54,7 @@ module Libraries
       expected_opts = {
         key: "a",
         iv: "b",
-        tag: "c",
+        chmod: "c",
         auth_data: "d",
         input: "e",
         output: "f",
@@ -78,7 +78,7 @@ module Libraries
       CertifiedRequest.delete_existing(tmp_file)
     end
 
-    test '.decrypt_and_read_file returns the decrypted text content of $GIVEN_PATH.pem.tar.b64.aes.gz' do
+    test '.decrypt_and_read_file returns the decrypted text content of $GIVEN_PATH.pem.tar.nacl.gz' do
       CertifiedRequest.delete_existing CertifiedRequest.get_certificate_path
 
       refute File.exist?(CertifiedRequest.get_certificate_path)

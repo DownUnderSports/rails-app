@@ -11,6 +11,7 @@ gem 'webpacker', '~> 4.0'
 gem 'turbolinks', '~> 5'
 gem 'jbuilder', '~> 2.7'
 gem 'redis', '~> 4.0'
+gem 'coerce_boolean', '~> 0.1'
 
 # extension gems
 gem 'aasm', '~> 5.0', '>= 5.0.1'
@@ -22,8 +23,8 @@ gem "aws-sdk-s3", '>= 1.30.1', require: false
 
 
 # security handling gems
-gem "jwt", "~> 2.2"
-gem "jwe", "~> 0.4.0"
+gem "rbnacl", "~> 7.1"
+gem 'secure_web_token', '~> 0.1'
 gem "openssl", "~> 2.1"
 gem "pundit", "~> 2.1"
 

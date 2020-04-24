@@ -16,7 +16,7 @@ module WriteAttributeMethods
     when ActiveRecord::ConnectionAdapters::PostgreSQL::OID::Jsonb
       value.presence || {}
     when ActiveRecord::Type::Boolean
-      Boolean.strict_parse(value)
+      CoerceBoolean.from(value, strict: true)
     when CustomType
       t.class.normalize_type_value(value)
     else

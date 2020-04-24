@@ -40,10 +40,12 @@ yarn-debug.log*
 .gnupg/
 .gnupg*/
 !.gnupg.tar.b64.aes*
+!.gnupg.tar.nacl*
 
 /**/*.pem
 /**/*.pem*
 !/**/*.pem.tar.b64.aes*
+!/**/*.pem.tar.nacl*
 
 !/**/.keep
 !/**/pids/.keep

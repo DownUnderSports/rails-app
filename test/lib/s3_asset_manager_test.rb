@@ -2,6 +2,10 @@
 # frozen_string_literal: true
 module Libraries
   class S3AssetManagerTest < ActiveSupport::TestCase
+    def s3_bucket
+      S3AssetManager.s3_bucket
+    end
+
     def sample_files_path
       Rails.root.join('test', 'lib', 's3_asset_manager', 'sample_files').to_s
     end
@@ -86,7 +90,7 @@ module Libraries
 end
 # module S3AssetManager
 #   def self.upload_folder(folder_path, include_folder: false, bucket: nil, prefix: '', **opts)
-#     self::FolderUpload.new(folder_path: folder_path, bucket: bucket || s3_bucket, include_folder: Boolean.parse(include_folder), prefix: prefix).upload! **opts
+#     self::FolderUpload.new(folder_path: folder_path, bucket: bucket || s3_bucket, include_folder: CoerceBoolean.from(include_folder), prefix: prefix).upload! **opts
 #   end
 #
 #   def self.object_if_exists(file_path, asset_prefix = '')

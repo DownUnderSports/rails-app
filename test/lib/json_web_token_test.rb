@@ -10,7 +10,7 @@ module Libraries
       TJsonWebToken.signing_key = nil
       TJsonWebToken.encryption_key = nil
       TJsonWebToken.encrypt_options = nil
-      @unique_tries = Boolean.parse(ENV['FULL']) ? 100000 : 100
+      @unique_tries = CoerceBoolean.from(ENV['FULL']) ? 100000 : 100
     end
 
     def assert_is_getter(mthd, inst_v = nil)

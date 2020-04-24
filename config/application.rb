@@ -1,9 +1,11 @@
+require 'coerce_boolean'
+
 Dir.glob("#{File.expand_path(__dir__)}/core_ext/*.rb").each do |d|
   require d
 end
 
-Warning[:deprecated] = !!Boolean.parse(ENV['ENABLE_RUBY_DEPRECATED'])
-Warning[:experimental] = !!Boolean.parse(ENV['ENABLE_RUBY_EXPERIMENTAL'])
+Warning[:deprecated] = CoerceBoolean.from(ENV['ENABLE_RUBY_DEPRECATED'], strict: true)
+Warning[:experimental] = CoerceBoolean.from(ENV['ENABLE_RUBY_EXPERIMENTAL'], strict: true)
 
 require_relative 'boot'
 require_relative 'version'
@@ -74,8 +76,6 @@ module DownUnderSports
 
     config.action_mailer.asset_host = "https://www.downundersports.com"
 
-    Dir["#{config.root}/config/middlewares/*"].map {|f| require_dependency f }
-
     # Raven.configure do |config|
     #   config.dsn = 'https://f67cbaba7f024d64baff2f19d0251068:6c1f90ca440c4d9bb9ce4b7902f2372f@sentry.io/1774865'
     #   config.async = lambda { |event|
@@ -84,7 +84,5 @@ module DownUnderSports
     #   config.environments = %w[ production development ]
     #   config.release = DownUnderSports::VERSION
     # end
-
-    config.middleware.use QueueTimeLogger
   end
 end

@@ -14,8 +14,9 @@ module CertifiedRequest
 
     def decrypt_file(file_path, **options)
       TarEncryptGun.decrypt(
-        input: file_path.to_s + '.tar.b64.aes.gz',
+        input: file_path.to_s + '.tar.nacl.gz',
         output: file_path,
+        chmod: 0400,
         **Rails.application.credentials.dig(:client_certificate),
         **options
       )

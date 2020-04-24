@@ -1,6 +1,10 @@
 module Libraries
   module S3AssetManagerTests
     class FolderUploadTest < ActiveSupport::TestCase
+      def s3_bucket
+        S3AssetManager.s3_bucket
+      end
+
       def sample_files_path
         Rails.root.join('test', 'lib', 's3_asset_manager', 'sample_files').to_s
       end

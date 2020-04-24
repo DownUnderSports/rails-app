@@ -5,7 +5,7 @@ require_relative './tmp_classes'
 
 class ActiveSupport::TestCase
   # Run tests in parallel with specified workers
-  unless Boolean.parse(ENV['SYNC_TEST'])
+  unless CoerceBoolean.from(ENV['SYNC_TEST'])
     parallelize(workers: :number_of_processors)
   end
 

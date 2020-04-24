@@ -152,7 +152,7 @@ module BaseExtensions
 
     def set_booleans
       self.class.boolean_columns.each do |nm|
-        __send__("#{nm}=", !!Boolean.parse(__send__ nm))
+        __send__("#{nm}=", CoerceBoolean.from(__send__ nm, strict: true))
       end
       true
     end

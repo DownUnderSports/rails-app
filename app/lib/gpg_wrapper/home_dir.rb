@@ -51,7 +51,8 @@ class GpgWrapper
           should_reload_agent = true
 
           TarEncryptGun.decrypt(
-            input: Rails.root.join('.gnupg.tar.b64.aes.gz'),
+            input: Rails.root.join('.gnupg.tar.nacl.gz'),
+            chmod: 0700,
             **Rails.application.credentials.dig(:gpg, :directory)
           )
 
