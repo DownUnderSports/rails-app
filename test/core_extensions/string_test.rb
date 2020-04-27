@@ -14,7 +14,7 @@ module CoreExtensions
       val = "random value #{rand}"
       assert_equal [val].pack_hex, val.pack_hex
 
-      generated = JsonWebToken.gen_encryption_key
+      generated = SecureWebToken.gen_encryption_key
       assert_equal [generated].pack_hex, generated.pack_hex
     end
 
@@ -28,7 +28,7 @@ module CoreExtensions
         assert_equal "stubbed_string", "".unpack_binary
       end
 
-      generated_hex = JsonWebToken.gen_encryption_key.pack_hex
+      generated_hex = SecureWebToken.gen_encryption_key.pack_hex
 
       assert_equal generated_hex.unpack('H*').first, generated_hex.unpack_binary
     end
