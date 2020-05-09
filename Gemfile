@@ -1,63 +1,64 @@
-source 'https://rubygems.org'
+source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.7.1'
+ruby "2.7.1"
 
-# core gems
-gem 'rails', '~> 6.0.2', '>= 6.0.2.1'
-gem "pg", "~> 1.1", '>= 1.1.2'
-gem 'puma', '~> 4.3', '>= 4.3.3'
-gem 'webpacker', '~> 4.0'
-gem 'turbolinks', '~> 5'
-gem 'jbuilder', '~> 2.7'
-gem 'redis', '~> 4.0'
-gem 'coerce_boolean', '~> 0.1'
+gem "active_type", ">= 0.3.2"
+gem "autoprefixer-rails", ">= 5.0.0.1"
+gem "bcrypt", "~> 3.1.7"
+gem "bootsnap", ">= 1.4.2", require: false
+gem "coffee-rails"
+gem "dotenv-rails", ">= 2.0.0"
+gem "pg", ">= 0.18"
+gem "pgcli-rails"
+gem "puma", "~> 4.1"
+gem "rack-canonical-host", github: "SampsonCrowley/rack-canonical-host"
+gem "rails", "~> 6.0.2.2"
+gem "redis", "~> 4.0"
+gem "sass-rails", "~> 6.0"
+gem "sidekiq", ">= 4.2.0"
+gem "turbolinks", "~> 5"
+gem "webpacker", "~> 4.0"
 
-# extension gems
-gem 'aasm', '~> 5.0', '>= 5.0.1'
-gem 'store_as_int', '~> 0.0', '>= 0.0.19'
-gem 'csv_rb', '~> 6.0.2', '>= 6.0.2.3'
-
-# file storage gems
-gem "aws-sdk-s3", '>= 1.30.1', require: false
-
-
-# security handling gems
-gem "rbnacl", "~> 7.1"
-gem 'secure_web_token', '~> 0.1'
-gem "openssl", "~> 2.1"
-gem "pundit", "~> 2.1"
-
-# Use Active Storage variant
-# gem 'image_processing', '~> 1.2'
-
-# Reduces boot times through caching; required in config/boot.rb
-gem 'bootsnap', '>= 1.4.2', require: false
-
-gem 'braintree', '~> 2.90', '>= 2.90.0'
-gem 'browser', '~> 2.5', '>= 2.5.3'
+group :production do
+  gem "postmark-rails"
+end
 
 group :development, :test do
-  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  gem "byebug"
 end
 
 group :development do
-  # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
-  gem 'web-console', '>= 3.3.0'
-  gem 'listen', '>= 3.0.5', '< 3.2'
-  # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-  gem 'spring'
-  gem 'spring-watcher-listen', '~> 2.0.0'
+  gem "amazing_print"
+  gem "annotate", ">= 2.5.0"
+  gem "better_errors"
+  gem "binding_of_caller"
+  gem "brakeman", require: false
+  gem "bundler-audit", ">= 0.5.0", require: false
+  gem "guard", ">= 2.2.2", require: false
+  gem "guard-livereload", require: false
+  gem "guard-minitest", require: false
+  gem "letter_opener"
+  gem "listen", ">= 3.0.5"
+  gem "overcommit", ">= 0.37.0", require: false
+  gem "rack-livereload"
+  gem "rubocop", ">= 0.80.0", require: false
+  gem "rubocop-minitest", require: false
+  gem "rubocop-performance", require: false
+  gem "rubocop-rails", require: false
+  gem "spring"
+  gem "spring-watcher-listen", "~> 2.0.0"
+  gem "terminal-notifier", require: false
+  gem "terminal-notifier-guard", require: false
 end
 
 group :test do
-  # Adds support for Capybara system testing and selenium driver
-  gem 'capybara', '>= 2.15'
-  gem 'selenium-webdriver'
-  # Easy installation and use of web drivers to run system tests with browsers
-  gem 'webdrivers'
+  gem "capybara", ">= 2.15"
+  gem "launchy"
+  gem "minitest-ci", ">= 3.3.0", require: false
+  gem "mock_redis"
+  gem "selenium-webdriver"
+  gem "shoulda-context"
+  gem "shoulda-matchers", ">= 3.0.1"
+  gem "webdrivers"
 end
-
-# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-# gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]

@@ -1,14 +1,15 @@
-# encoding: utf-8
 # frozen_string_literal: true
 
 module MailMessageCallBacks
+  # rubocop:disable Naming/MemoizedInstanceVariableName
   def deliver
-    run_after_send(super)
+    @email_was_delivered ||= run_after_send(super)
   end
 
   def deliver!
     @email_was_delivered ||= run_after_send(super)
   end
+  # rubocop:enable Naming/MemoizedInstanceVariableName
 
   def after_send(&block)
     @after_send_actions ||= []
@@ -18,12 +19,10 @@ module MailMessageCallBacks
   def run_after_send(result)
     unless called
       (@after_send_actions || []).each do |block|
-        begin
-          block.call(result)
-        rescue
-          p $!.message
-          p $!.backtrace
-        end
+        block.call(result)
+      rescue
+        logger.error $!.message
+        logger.error $!.backtrace
       end
     end
     result

@@ -1,5 +1,5 @@
 module DateHelper
-  def monday(date = Date.today)
+  def monday(date = Time.zone.today)
     Date.commercial date.end_of_week.year, date.cweek
   end
 

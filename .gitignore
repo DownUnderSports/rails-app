@@ -7,11 +7,6 @@
 # Ignore bundler config.
 /.bundle
 
-# Ignore the default SQLite database.
-/db/*.sqlite3
-/db/*.sqlite3-journal
-/db/*.sqlite3-*
-
 # Ignore all logfiles and tempfiles.
 /log/*
 /tmp/*
@@ -25,34 +20,46 @@
 /public/assets
 .byebug_history
 
-# Ignore master key for decrypting credentials and more.
-/config/master.key
-
 /public/packs
 /public/packs-test
 /node_modules
 /yarn-error.log
 yarn-debug.log*
 .yarn-integrity
+.byebug_history
 
+# Ignore test reports.
+/brakeman-output.*
+/test/reports/
+/capybara-*.html
+
+# Never check passwords into source control!
+/config/database.yml
+/config/master.key
+/.env
+
+
+# ignore decrypted files
 .gnupg
 .gnupg*
 .gnupg/
 .gnupg*/
 !.gnupg.tar.b64.aes*
 !.gnupg.tar.nacl*
-
 /**/*.pem
 /**/*.pem*
 !/**/*.pem.tar.b64.aes*
 !/**/*.pem.tar.nacl*
 
+# don't ignore keep files
 !/**/.keep
 !/**/pids/.keep
 /pids/*
 !/pids/.keep
 /**/node_modules/**/.keep
 /node_modules/**/.keep
+
+# ignore extraneous dev files
 *.dump
 *.lock
 *.DS_Store
