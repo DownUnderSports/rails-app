@@ -1,0 +1,17 @@
+<aside class="mdc-drawer mdc-drawer--modal" data-target="app-drawer.drawer">
+  <div class="mdc-drawer__header">
+    <%= image_pack_tag 'logo.png', alt: 'Down Under Sports', class: 'img', data: { target: 'app-drawer.logo' } %>
+  </div>
+  <hr class="mdc-list-divider">
+  <div class="mdc-drawer__content">
+    <nav class="mdc-list pb-offset" tabindex="0">
+      <a class="mdc-list-item" href="/" data-target="app-drawer.link" data-action="app-drawer#close">
+        <i class="material-icons mdc-list-item__graphic" aria-hidden="true">home</i>
+        <span class="mdc-list-item__text">Home</span>
+      </a>
+      <hr class="mdc-list-divider">
+      <%= render partial: "layouts/app_drawer/navigation" %>
+    </nav>
+  </div>
+</aside>
+<div class="mdc-drawer-scrim" data-action="click->app-drawer#close"></div>

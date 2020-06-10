@@ -1,0 +1,50 @@
+// Material Theming
+@use "material/styles/variables" as dus-theme;
+
+// @use "@material/theme/variables" as theme-variables with (
+@use "@material/theme" with (
+  $primary: dus-theme.$primary,
+  // $on-primary: dus-theme.$on-primary,
+  $secondary: dus-theme.$secondary,
+  // $on-secondary: dus-theme.$on-secondary,
+  $error: dus-theme.$error,
+  $on-error: dus-theme.$on-error
+);
+
+// @use "@material/typography/variables" as typography-variables with (
+@use "@material/typography" with (
+  $styles-headline1: (
+    font-family: dus-theme.$header-font-family
+  ),
+  $styles-headline2: (
+    font-family: dus-theme.$header-font-family
+  ),
+  $styles-headline3: (
+    font-family: dus-theme.$header-font-family
+  ),
+  $styles-headline4: (
+    font-family: dus-theme.$header-font-family
+  ),
+  $styles-headline5: (
+    font-family: dus-theme.$header-font-family
+  ),
+  $styles-headline6: (
+    font-family: dus-theme.$header-font-family
+  ),
+  $font-family: dus-theme.$font-family
+);
+
+@use "@material/layout-grid" with (
+  $breakpoints: dus-theme.$breakpoints,
+  $columns: dus-theme.$columns,
+  $default-margin: dus-theme.$default-margin,
+  $default-gutter: dus-theme.$default-gutter,
+  $column-width: dus-theme.$column-width
+);
+
+// Import framework components
+@use "material/styles/framework";
+
+// Import site-specific CSS files
+@use "material/styles/components";
+@use "material/styles/layout";

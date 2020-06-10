@@ -1,0 +1,11 @@
+<% if defined?(@errors) && @errors.present? %>
+  <div id="main_errors" class="mdc-banner mdc-banner__error">
+    <div class="mdc-banner__content">
+      <% @errors.each do |error| %>
+        <p class="error-message">
+          <%= error %>
+        </p>
+      <% end %>
+    </div>
+  </div>
+<% end %>

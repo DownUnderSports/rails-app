@@ -1,0 +1,17 @@
+<header class="mdc-top-app-bar mdc-top-app-bar--fixed" data-controller="top-bar">
+  <div class="mdc-top-app-bar__row">
+    <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+      <%= link_to "/", class: "h-100" do %>
+        <%= image_pack_tag "logo.png", alt: "Down Under Sports", class: "img" %>
+      <% end %>
+    </section>
+    <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end">
+      <span class="mdc-top-app-bar__title" data-target="top-bar.title">
+        <%= @title || "Down Under Sports" %>
+      </span>
+      <button class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button" data-target="top-bar.nav-button" data-action="app-drawer#toggle">
+        menu
+      </button>
+    </section>
+  </div>
+</header>

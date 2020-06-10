@@ -1,0 +1,85 @@
+<% if Current.session %>
+<a class="mdc-list-item" href="/organizations" data-target="app-drawer.link" data-action="app-drawer#close">
+  <i class="material-icons mdc-list-item__graphic" aria-hidden="true">assessment</i>
+  <span class="mdc-list-item__text">Organizations</span>
+</a>
+<a class="mdc-list-item" href="/items" data-target="app-drawer.link" data-action="app-drawer#close">
+  <i class="material-icons mdc-list-item__graphic" aria-hidden="true">assessment</i>
+  <span class="mdc-list-item__text">Items</span>
+</a>
+<a class="mdc-list-item" href="/data" data-target="app-drawer.link" data-action="app-drawer#close">
+  <i class="material-icons mdc-list-item__graphic" aria-hidden="true">assessment</i>
+  <span class="mdc-list-item__text">Data</span>
+</a>
+<% else %>
+<a class="mdc-list-item" href="<%= new_session_path %>" data-controller="navigation" data-target="navigation.link" data-action="navigation#login">
+  <i class="material-icons mdc-list-item__graphic" aria-hidden="true">login</i>
+  <span class="mdc-list-item__text">Log In</span>
+</a>
+<a class="mdc-list-item" href="/payment" data-target="app-drawer.link" data-action="app-drawer#close">
+  <i class="material-icons mdc-list-item__graphic" aria-hidden="true">card_giftcard</i>
+  <span class="mdc-list-item__text">Donate</span>
+</a>
+<a class="mdc-list-item" href="/deposit" data-target="app-drawer.link" data-action="app-drawer#close">
+  <i class="material-icons mdc-list-item__graphic" aria-hidden="true">card_travel</i>
+  <span class="mdc-list-item__text">Sign Up</span>
+</a>
+<hr class="mdc-list-divider">
+<h6 class="mdc-list-group__subheader">Our Company</h6>
+<a class="mdc-list-item" href="/about" data-target="app-drawer.link" data-action="app-drawer#close">
+  <i class="material-icons mdc-list-item__graphic" aria-hidden="true">group</i>
+  <span class="mdc-list-item__text">About Us</span>
+</a>
+<a class="mdc-list-item" href="/story" data-target="app-drawer.link" data-action="app-drawer#close">
+  <i class="material-icons mdc-list-item__graphic" aria-hidden="true">book</i>
+  <span class="mdc-list-item__text">Our Story</span>
+</a>
+<a class="mdc-list-item" href="/story" data-target="app-drawer.link" data-action="app-drawer#close">
+  <i class="material-icons mdc-list-item__graphic" aria-hidden="true">ballot</i>
+  <span class="mdc-list-item__text">F.A.Q.</span>
+</a>
+<hr class="mdc-list-divider">
+<h6 class="mdc-list-group__subheader">Sports</h6>
+<a class="mdc-list-item" href="/basketball" data-target="app-drawer.link" data-action="app-drawer#close">
+  <i class="material-icons mdc-list-item__graphic" aria-hidden="true">sports_basketball</i>
+  <span class="mdc-list-item__text">Basketball</span>
+</a>
+<a class="mdc-list-item" href="/cheer" data-target="app-drawer.link" data-action="app-drawer#close">
+  <i class="material-icons mdc-list-item__graphic" aria-hidden="true">emoji_people</i>
+  <span class="mdc-list-item__text">Cheer</span>
+</a>
+<a class="mdc-list-item" href="/cross-country" data-target="app-drawer.link" data-action="app-drawer#close">
+  <i class="material-icons mdc-list-item__graphic" aria-hidden="true">landscape</i>
+  <span class="mdc-list-item__text">Cross Country</span>
+</a>
+<a class="mdc-list-item" href="/football" data-target="app-drawer.link" data-action="app-drawer#close">
+  <i class="material-icons mdc-list-item__graphic" aria-hidden="true">sports_football</i>
+  <span class="mdc-list-item__text">Football</span>
+</a>
+<a class="mdc-list-item" href="/golf" data-target="app-drawer.link" data-action="app-drawer#close">
+  <i class="material-icons mdc-list-item__graphic" aria-hidden="true">sports_golf</i>
+  <span class="mdc-list-item__text">Golf</span>
+</a>
+<a class="mdc-list-item" href="/track-and-field" data-target="app-drawer.link" data-action="app-drawer#close">
+  <i class="material-icons mdc-list-item__graphic" aria-hidden="true">directions_run</i>
+  <span class="mdc-list-item__text">Track and Field</span>
+</a>
+<a class="mdc-list-item" href="/volleyball" data-target="app-drawer.link" data-action="app-drawer#close">
+  <i class="material-icons mdc-list-item__graphic" aria-hidden="true">sports_volleyball</i>
+  <span class="mdc-list-item__text">Volleyball</span>
+</a>
+<hr class="mdc-list-divider">
+<h6 class="mdc-list-group__subheader">More</h6>
+<a class="mdc-list-item" href="/infokit" data-target="app-drawer.link" data-action="app-drawer#close">
+  <i class="material-icons mdc-list-item__graphic" aria-hidden="true">assessment</i>
+  <span class="mdc-list-item__text">Request Info</span>
+</a>
+<a class="mdc-list-item" href="/open-tryouts" data-target="app-drawer.link" data-action="app-drawer#close">
+  <i class="material-icons mdc-list-item__graphic" aria-hidden="true">assignment</i>
+  <span class="mdc-list-item__text">Open Tryout</span>
+</a>
+<a class="mdc-list-item" href="/past-participants" data-target="app-drawer.link" data-action="app-drawer#close">
+  <i class="material-icons mdc-list-item__graphic" aria-hidden="true">history</i>
+  <span class="mdc-list-item__text">Past Participants</span>
+</a>
+<% end %>

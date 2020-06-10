@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  abbr: AB
+  full: SportOne
+  abbr_gendered: GAB
+  full_gendered: Girls Basketball
+  is_numbered: false
+  data: {}
+
+two:
+  abbr: MyText
+  full: MyText
+  abbr_gendered: MyText
+  full_gendered: MyText
+  is_numbered: false
+  data: {}

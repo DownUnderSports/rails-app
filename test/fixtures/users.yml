@@ -1,0 +1,49 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+athlete:
+  category: athlete
+  first_names: Athlete
+  last_names: User
+  email: athlete@email.com
+  password_digest: <%= NaClPassword.generate("password") %>
+
+coach:
+  category: coach
+  first_names: Coach
+  last_names: User
+  email: coach@email.com
+  password_digest: <%= NaClPassword.generate("password") %>
+
+guide:
+  category: guide
+  first_names: Guide
+  last_names: User
+  email: guide@email.com
+  password_digest: <%= NaClPassword.generate("password") %>
+
+official:
+  category: official
+  first_names: Official
+  last_names: User
+  email: official@email.com
+  password_digest: <%= NaClPassword.generate("password") %>
+
+staff:
+  category: staff
+  first_names: Staff
+  last_names: User
+  email: staff@email.com
+  password_digest: <%= NaClPassword.generate("password") %>
+
+supporter:
+  category: supporter
+  first_names: Supporter
+  last_names: User
+  email: supporter@email.com
+  password_digest: <%= NaClPassword.generate("password") %>
+
+session:
+  category: athlete
+  first_names: Session
+  last_names: Tester
+  email: session@email.com
+  password_digest: <%= NaClPassword.generate("session.test") %>

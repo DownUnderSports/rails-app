@@ -1,0 +1,9 @@
+<% if defined?(@errors) && @errors.present? %>
+<div class="mdc-layout-grid__inner">
+  <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-18 mb-offset">
+    <%= render partial: "shared/errors" %>
+  </div>
+</div>
+<% end %>
+<%= render partial: "shared/chat_button" %>
+<%= render partial: "shared/our_story" %>

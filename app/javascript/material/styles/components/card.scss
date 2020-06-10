@@ -1,0 +1,63 @@
+@use "./card/mixins" as card-mixins;
+$primary: null !default;
+$prefix: mdc-card;
+
+.#{$prefix} {
+  &--text {
+    padding: 16px;
+    h1 {
+      text-align: center;
+    }
+  }
+  &--filled {
+    @include card-mixins.filled-accessible($primary);
+  }
+
+  &__body,
+  &__header {
+    padding: 16px;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    &--bordered {
+      border-bottom: 1px solid 222;
+    }
+
+    h2,
+    h3 {
+      margin: 0;
+    }
+  }
+
+  .framed {
+    background-color: #fff;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    color: $primary;
+    > div {
+      padding: 1rem 2rem;
+      &.no-top-padding {
+        padding-top: 0px;
+      }
+    }
+  }
+
+  .grid-media-wrapper {
+    display: flex;
+    flex-flow: column;
+  }
+
+  $media-class: #{$prefix}__media;
+
+  &__media {
+    &-content {
+      width: 100%;
+    }
+    &.#{$media-class}--16-9 {
+      .#{$media-class}-content {
+        height: 100%;
+      }
+    }
+  }
+}

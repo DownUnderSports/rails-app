@@ -1,0 +1,38 @@
+<div class="mdc-layout-grid__inner">
+  <div class="mdc-layout-grid__cell">
+    <!-- Render textfield component -->
+    <div class="mdc-text-field mdc-text-field--with-trailing-icon" data-controller="clipboard text-field" data-action="click->clipboard#copy">
+      <i class="material-icons mdc-text-field__icon mdc-text-field__icon--trailing clickable" data-target="text-field.icon">
+        file_copy
+      </i>
+      <input value="test" id="demo-mdc-text-field" type="text" class="mdc-text-field__input" data-target="text-field.input clipboard.source">
+      <div class="mdc-line-ripple"></div>
+      <label for="demo-mdc-text-field" class="mdc-floating-label mdc-floating-label--float-above" data-target="text-field.label">
+        Click to Copy
+      </label>
+    </div>
+  </div>
+  <div class="mdc-layout-grid__cell">
+    <!-- Render list component -->
+    <ul class="mdc-list mdc-list--two-line" data-controller="list" data-target="list.list">
+      <li class="mdc-list-item" tabindex="0" data-target="list.item">
+        <span class="mdc-list-item__text">
+          <span class="mdc-list-item__primary-text">Two-line item</span>
+          <span class="mdc-list-item__secondary-text">Secondary text</span>
+        </span>
+      </li>
+      <li class="mdc-list-item" data-target="list.item">
+        <span class="mdc-list-item__text">
+          <span class="mdc-list-item__primary-text">Two-line item</span>
+          <span class="mdc-list-item__secondary-text">Secondary text</span>
+        </span>
+      </li>
+      <li class="mdc-list-item" data-target="list.item">
+        <span class="mdc-list-item__text">
+          <span class="mdc-list-item__primary-text">Two-line item</span>
+          <span class="mdc-list-item__secondary-text">Secondary text</span>
+        </span>
+      </li>
+    </ul>
+  </div>
+</div>

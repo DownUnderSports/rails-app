@@ -1,0 +1,6 @@
+@use "material/styles/variables" as dus-theme;
+@use "@material/button" as material-button;
+
+.mdc-button--secondary {
+  @include material-button.filled-accessible(dus-theme.$secondary);
+}
