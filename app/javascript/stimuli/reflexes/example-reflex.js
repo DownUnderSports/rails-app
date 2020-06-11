@@ -1,4 +1,4 @@
-import { ApplicationReflex } from "reflexes/application_reflex"
+import { ApplicationReflex } from "stimuli/reflexes/application-reflex"
 
 /* This is the custom Stimulus Reflex controller for ExampleReflex.
  * Learn more at: https://docs.stimulusreflex.com

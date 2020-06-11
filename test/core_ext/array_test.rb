@@ -16,8 +16,15 @@ module CoreExtensions
 
     test "#to_db_enum returns a hash with each value as a key and value pair" do
       arr = %w[ one two three four ]
-      hash = { "one" => "one", "two" => "two", "three" => "three", "four" => "four"}
+      hash = {
+        "one" => "one",
+        "two" => "two",
+        "three" => "three",
+        "four" => "four"
+      }
+
       assert_equal hash, arr.to_db_enum
+      arr.each {|v| assert_equal v, arr.to_db_enum[v] }
     end
   end
 end

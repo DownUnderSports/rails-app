@@ -1,1 +1,1 @@
-import "material/styles"
+import "material/styles/site"

@@ -25,24 +25,43 @@
               showcase their talents on the international stage. We have many great
               reviews from athletes and their parents who have traveled with us. You can
               check out our reviews on
-              <a target="_blank" rel="noopener noreferrer" href="https://www.facebook.com/DownUnderSports/reviews/">Facebook</a>,
-              <a target="_blank" rel="noopener noreferrer" href="https://g.co/kgs/wQQV9k#lkt=LocalPoiReviews&lrd=0x87547db85c286b91:0xbf6175aa5e7f710f,1,,">Google</a>,
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://www.facebook.com/DownUnderSports/reviews/"
+              >Facebook</a>,
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://g.co/kgs/wQQV9k#lkt=LocalPoiReviews&lrd=0x87547db85c286b91:0xbf6175aa5e7f710f,1,,"
+              >Google</a>,
               and the
-              <a target="_blank" rel="noopener noreferrer" href="https://www.bbb.org/us/ut/north-logan/profile/athletic-organizations/down-under-sports-1166-2001870/#sealclick">Better Business Bureau</a>,
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://www.bbb.org/us/ut/north-logan/profile/athletic-organizations/down-under-sports-1166-2001870/#sealclick"
+              >Better Business Bureau</a>,
               where we have an A+ rating!
             </p>
           </div>
         <% end %>
         <%= cell_tag largedesktop: 8 do %>
           <div class="grid-media-wrapper m-1 m-0-phone m-0-largephone">
-            <div class="mdc-card__media mdc-card__media--16-9">
+            <div
+              data-controller="youtube"
+              data-target="youtube.wrapper"
+              data-youtube-autoplay="true"
+              data-action="click->youtube#toggle"
+              data-youtube-ids="Yh5CjpY35BM,C-gkKvFNL88"
+              class="mdc-card__media mdc-card__media--16-9 youtube">
               <iframe
-              data-contoller="youtube"
-              class="mdc-card__media-content"
-              src="https://www.youtube-nocookie.com/embed/Yh5CjpY35BM?controls=0&autoplay=1"
-              frameborder="0"
-              allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen
+                data-action="click->youtube#toggle"
+                data-target="youtube.video"
+                class="mdc-card__media-content"
+                src="https://www.youtube-nocookie.com/embed/Yh5CjpY35BM?rel=0&mute=1&enablejsapi=1&modestbranding=1"
+                frameborder="0"
+                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
               ></iframe>
             </div>
           </div>

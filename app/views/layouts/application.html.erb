@@ -21,18 +21,18 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
-    <% js_packs = [ 'application' ] | ((yield :js_packs).presence || []).map(&:to_s) %>
+    <% js_packs = [ "application", "styles" ] | ((yield :js_packs).presence || []).map(&:to_s) %>
     <% js_packs.each do |js_pack| %>
       <%= stylesheet_pack_tag js_pack, media: 'all', 'data-turbolinks-track': 'reload' %>
     <% end %>
     <%= javascript_packs_with_chunks_tag *js_packs, 'data-turbolinks-track': 'reload', defer: true %>
   </head>
   <body class="mdc-typography" data-controller="app-drawer">
-    <%= render partial: 'layouts/app_drawer' %>
+    <%= render partial: "layouts/app_drawer" %>
     <section class="mdc-drawer-app-content">
-      <%= render partial: 'layouts/top_bar' %>
-      <div class="main-content mdc-top-app-bar--prominent-fixed-adjust mdc-layout-grid">
-        <div class="mdc-layout-grid__inner">
+      <%= render partial: "layouts/top_bar" %>
+      <div class="main-content mdc-top-app-bar--fixed-adjust mdc-layout-grid">
+        <div class="mdc-layout-grid__inner mt-1-largedesktop">
           <%= cell_tag(base: 0, largedesktop: 3) %>
           <%= cell_tag(:main, base: 18, largedesktop: 12) do %>
             <%= yield %>

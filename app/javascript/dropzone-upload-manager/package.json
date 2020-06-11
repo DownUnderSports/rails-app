@@ -1,0 +1,6 @@
+{
+  "name": "DropzoneUploadManager",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./dropzone-upload-manager.jsx"
+}
