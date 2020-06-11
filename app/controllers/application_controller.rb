@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
   # == Modules ============================================================
   include Authenticated
   helper GridHelper
+  helper WebpackerOverrides
 
   # == Class Methods ======================================================
 
