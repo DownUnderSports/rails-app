@@ -2,7 +2,7 @@ require "application_system_test_case"
 
 class SessionsTest < ApplicationSystemTestCase
   setup do
-    @session = sessions(:one)
+    @session = user_sessions(:one)
   end
 
   test "visiting the index" do

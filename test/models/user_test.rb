@@ -10,42 +10,6 @@ class UserTest < ActiveSupport::TestCase
     }
   end
 
-  def attributes_without(*keys)
-    valid_attributes.except(*keys)
-  end
-
-  def assert_database_constraint(user, attribute, klass)
-    err = assert_raises(klass) do
-      user.save(validate: false)
-    end
-
-    err
-  end
-
-  def assert_database_not_null_constraint(attribute)
-    user = User.new(attributes_without attribute)
-
-    err = assert_database_constraint user, attribute, ActiveRecord::NotNullViolation
-
-    assert_match \
-      "null value in column \"#{attribute}\" violates not-null constraint",
-      err.message
-  end
-
-  def assert_database_unique_constraint(attribute)
-    duplicate = users(:athlete).__send__(attribute)
-    user      = User.new(valid_attributes.merge(attribute => duplicate))
-    err       = assert_database_constraint user, attribute, ActiveRecord::RecordNotUnique
-
-    assert_match \
-      "duplicate key value violates unique constraint",
-      err.message
-
-    assert_match \
-      "DETAIL:  Key (#{attribute})=(#{duplicate}) already exists.",
-      err.message
-  end
-
   def assert_single_use_digest(user, mthd = :password_reset)
     key_was = key = ""
     digest_was = nil
@@ -67,7 +31,7 @@ class UserTest < ActiveSupport::TestCase
     [ key, user.single_use_digest ]
   end
 
-  test 'valid user' do
+  test 'valid person' do
     user = User.new(valid_attributes)
     assert user.valid?
 
@@ -78,7 +42,7 @@ class UserTest < ActiveSupport::TestCase
       :suffix,
       :email,
       :password,
-      :single_use_digest,
+      :single_use,
       :single_use_expires_at,
     ].each do |attr|
       assert user.respond_to?(attr)
@@ -92,49 +56,6 @@ class UserTest < ActiveSupport::TestCase
 
       assert user.valid?
     end
-  end
-
-  test 'invalid user without category' do
-    user = User.new(attributes_without :category)
-    refute user.valid?, 'user is valid without category'
-    assert_not_nil user.errors[:category]
-    assert_equal [ "can't be blank" ], user.errors[:category]
-
-    assert_database_not_null_constraint :category
-  end
-
-  test 'invalid user with invalid category' do
-    user = User.new(valid_attributes.merge(category: "asdf"))
-    refute user.valid?, 'user is valid with invalid category'
-    assert_not_nil user.errors[:category]
-    assert_equal [ "is not recognized" ], user.errors[:category]
-  end
-
-  test 'invalid user without first name(s)' do
-    user = User.new(attributes_without :first_names)
-    refute user.valid?, 'user is valid without first name(s)'
-    assert_not_nil user.errors[:first_names]
-    assert_equal [ "can't be blank" ], user.errors[:first_names]
-
-    assert_database_not_null_constraint :first_names
-  end
-
-  test 'invalid user without last name(s)' do
-    user = User.new(attributes_without :last_names)
-    refute user.valid?, 'user is valid without last name(s)'
-    assert_not_nil user.errors[:last_names]
-    assert_equal [ "can't be blank" ], user.errors[:last_names]
-
-    assert_database_not_null_constraint :last_names
-  end
-
-  test 'invalid user with reused email' do
-    user = User.new(valid_attributes.merge(email: users(:athlete).email))
-    refute user.valid?, 'user is invalid with an email already in use'
-    assert_not_nil user.errors[:email]
-    assert_equal [ "has already been taken" ], user.errors[:email]
-
-    assert_database_unique_constraint :email
   end
 
   test 'invalid user with invalid password_confirmation' do

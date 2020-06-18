@@ -10,6 +10,7 @@
 @use "material/styles/components/card" with (
   $primary: dus-theme.$primary
 );
+@use "material/styles/components/drawer";
 @use "material/styles/components/grid";
 
 

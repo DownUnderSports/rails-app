@@ -397,6 +397,47 @@ CREATE TABLE public.ar_internal_metadata (
 
 
 --
+-- Name: backgrounds; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.backgrounds (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    person_id uuid NOT NULL,
+    sport_id uuid,
+    category public.user_category,
+    year integer,
+    "primary" boolean DEFAULT false NOT NULL,
+    data jsonb DEFAULT '{}'::jsonb NOT NULL,
+    created_at timestamp(6) without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp(6) without time zone DEFAULT now() NOT NULL,
+    log_data jsonb
+);
+
+
+--
+-- Name: people; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.people (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    category public.user_category NOT NULL,
+    title text,
+    first_names text NOT NULL,
+    middle_names text,
+    last_names text NOT NULL,
+    suffix text,
+    email text,
+    password_digest text,
+    single_use_digest text,
+    single_use_expires_at timestamp without time zone,
+    data jsonb DEFAULT '{}'::jsonb NOT NULL,
+    created_at timestamp(6) without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp(6) without time zone DEFAULT now() NOT NULL,
+    log_data jsonb
+);
+
+
+--
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -440,44 +481,6 @@ CREATE TABLE public.user_sessions (
 
 
 --
--- Name: user_sport_backgrounds; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.user_sport_backgrounds (
-    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    user_id uuid NOT NULL,
-    sport_id uuid NOT NULL,
-    data jsonb DEFAULT '{}'::jsonb NOT NULL,
-    created_at timestamp(6) without time zone DEFAULT now() NOT NULL,
-    updated_at timestamp(6) without time zone DEFAULT now() NOT NULL,
-    log_data jsonb
-);
-
-
---
--- Name: users; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.users (
-    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    category public.user_category NOT NULL,
-    title text,
-    first_names text NOT NULL,
-    middle_names text,
-    last_names text NOT NULL,
-    suffix text,
-    email text,
-    password_digest text,
-    single_use_digest text,
-    single_use_expires_at timestamp without time zone,
-    data jsonb DEFAULT '{}'::jsonb NOT NULL,
-    created_at timestamp(6) without time zone DEFAULT now() NOT NULL,
-    updated_at timestamp(6) without time zone DEFAULT now() NOT NULL,
-    log_data jsonb
-);
-
-
---
 -- Name: active_storage_attachments active_storage_attachments_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -499,6 +502,22 @@ ALTER TABLE ONLY public.active_storage_blobs
 
 ALTER TABLE ONLY public.ar_internal_metadata
     ADD CONSTRAINT ar_internal_metadata_pkey PRIMARY KEY (key);
+
+
+--
+-- Name: backgrounds backgrounds_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.backgrounds
+    ADD CONSTRAINT backgrounds_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: people people_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.people
+    ADD CONSTRAINT people_pkey PRIMARY KEY (id);
 
 
 --
@@ -526,22 +545,6 @@ ALTER TABLE ONLY public.user_sessions
 
 
 --
--- Name: user_sport_backgrounds user_sport_backgrounds_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_sport_backgrounds
-    ADD CONSTRAINT user_sport_backgrounds_pkey PRIMARY KEY (id);
-
-
---
--- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.users
-    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
-
-
---
 -- Name: index_active_storage_attachments_on_blob_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -563,6 +566,48 @@ CREATE UNIQUE INDEX index_active_storage_blobs_on_key ON public.active_storage_b
 
 
 --
+-- Name: index_backgrounds_on_data; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_backgrounds_on_data ON public.backgrounds USING gin (data);
+
+
+--
+-- Name: index_backgrounds_on_person_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_backgrounds_on_person_id ON public.backgrounds USING btree (person_id);
+
+
+--
+-- Name: index_backgrounds_on_sport_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_backgrounds_on_sport_id ON public.backgrounds USING btree (sport_id);
+
+
+--
+-- Name: index_people_on_category; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_people_on_category ON public.people USING btree (category);
+
+
+--
+-- Name: index_people_on_data; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_people_on_data ON public.people USING gin (data);
+
+
+--
+-- Name: index_people_on_email; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_people_on_email ON public.people USING btree (email);
+
+
+--
 -- Name: index_user_sessions_on_browser_id_and_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -577,24 +622,31 @@ CREATE INDEX index_user_sessions_on_user_id ON public.user_sessions USING btree 
 
 
 --
--- Name: index_user_sport_backgrounds_on_sport_id; Type: INDEX; Schema: public; Owner: -
+-- Name: unique_background_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_user_sport_backgrounds_on_sport_id ON public.user_sport_backgrounds USING btree (sport_id);
-
-
---
--- Name: index_user_sport_backgrounds_on_user_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_user_sport_backgrounds_on_user_id ON public.user_sport_backgrounds USING btree (user_id);
+CREATE UNIQUE INDEX unique_background_index ON public.backgrounds USING btree (person_id, sport_id, category, year);
 
 
 --
--- Name: index_users_on_email; Type: INDEX; Schema: public; Owner: -
+-- Name: unique_primary_background_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_users_on_email ON public.users USING btree (email);
+CREATE UNIQUE INDEX unique_primary_background_index ON public.backgrounds USING btree (person_id, "primary");
+
+
+--
+-- Name: backgrounds logidze_on_backgrounds; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER logidze_on_backgrounds BEFORE INSERT OR UPDATE ON public.backgrounds FOR EACH ROW WHEN ((COALESCE(current_setting('logidze.disabled'::text, true), ''::text) <> 'on'::text)) EXECUTE FUNCTION public.logidze_logger('null', 'updated_at');
+
+
+--
+-- Name: people logidze_on_people; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER logidze_on_people BEFORE INSERT OR UPDATE ON public.people FOR EACH ROW WHEN ((COALESCE(current_setting('logidze.disabled'::text, true), ''::text) <> 'on'::text)) EXECUTE FUNCTION public.logidze_logger('20', 'updated_at');
 
 
 --
@@ -605,33 +657,11 @@ CREATE TRIGGER logidze_on_sports BEFORE INSERT OR UPDATE ON public.sports FOR EA
 
 
 --
--- Name: user_sport_backgrounds logidze_on_user_sport_backgrounds; Type: TRIGGER; Schema: public; Owner: -
+-- Name: backgrounds fk_rails_65ef82599b; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-CREATE TRIGGER logidze_on_user_sport_backgrounds BEFORE INSERT OR UPDATE ON public.user_sport_backgrounds FOR EACH ROW WHEN ((COALESCE(current_setting('logidze.disabled'::text, true), ''::text) <> 'on'::text)) EXECUTE FUNCTION public.logidze_logger('null', 'updated_at');
-
-
---
--- Name: users logidze_on_users; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER logidze_on_users BEFORE INSERT OR UPDATE ON public.users FOR EACH ROW WHEN ((COALESCE(current_setting('logidze.disabled'::text, true), ''::text) <> 'on'::text)) EXECUTE FUNCTION public.logidze_logger('20', 'updated_at');
-
-
---
--- Name: user_sport_backgrounds fk_rails_31f2e35e30; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_sport_backgrounds
-    ADD CONSTRAINT fk_rails_31f2e35e30 FOREIGN KEY (user_id) REFERENCES public.users(id);
-
-
---
--- Name: user_sport_backgrounds fk_rails_6184ed7753; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_sport_backgrounds
-    ADD CONSTRAINT fk_rails_6184ed7753 FOREIGN KEY (sport_id) REFERENCES public.sports(id);
+ALTER TABLE ONLY public.backgrounds
+    ADD CONSTRAINT fk_rails_65ef82599b FOREIGN KEY (person_id) REFERENCES public.people(id);
 
 
 --
@@ -639,7 +669,7 @@ ALTER TABLE ONLY public.user_sport_backgrounds
 --
 
 ALTER TABLE ONLY public.user_sessions
-    ADD CONSTRAINT fk_rails_9fa262d742 FOREIGN KEY (user_id) REFERENCES public.users(id);
+    ADD CONSTRAINT fk_rails_9fa262d742 FOREIGN KEY (user_id) REFERENCES public.people(id);
 
 
 --
@@ -648,6 +678,14 @@ ALTER TABLE ONLY public.user_sessions
 
 ALTER TABLE ONLY public.active_storage_attachments
     ADD CONSTRAINT fk_rails_c3b3935057 FOREIGN KEY (blob_id) REFERENCES public.active_storage_blobs(id);
+
+
+--
+-- Name: backgrounds fk_rails_cae042a20f; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.backgrounds
+    ADD CONSTRAINT fk_rails_cae042a20f FOREIGN KEY (sport_id) REFERENCES public.sports(id);
 
 
 --
@@ -663,6 +701,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200528171519'),
 ('20200528172401'),
 ('20200528172402'),
+('20200528174008'),
 ('20200528174009'),
 ('20200528174010'),
 ('20200528201725'),

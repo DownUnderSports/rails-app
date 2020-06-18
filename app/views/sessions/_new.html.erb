@@ -2,31 +2,31 @@
 <%= form_with url: session_path, id: "new_session_form" do |form| %>
   <div class="mdc-layout-grid__inner">
     <% if defined?(@errors) && @errors.present? %>
-      <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-18 mb-offset">
+      <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-18 mb-4">
         <%= render partial: "shared/errors" %>
       </div>
     <% end %>
     <%= hidden_field_tag :after_login, @redirect_value if defined? @redirect_value %>
     <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-18">
       <!-- Render textfield component -->
-      <div class="mdc-text-field mdc-text-field--with-trailing-icon">
+      <div class="mdc-text-field mdc-text-field--filled mdc-text-field--with-trailing-icon">
+        <%= form.text_field :email, type: "email", class: "mdc-text-field__input", data: { target: "text-field.input" } %>
         <i class="material-icons mdc-text-field__icon mdc-text-field__icon--trailing clickable" data-target="text-field.icon">
           email
         </i>
-        <%= form.text_field :email, type: "email", class: "mdc-text-field__input", data: { target: "text-field.input" } %>
-        <div class="mdc-line-ripple"></div>
         <%= form.label :email, class: "mdc-floating-label mdc-floating-label--float-above", required: true, data: { target: "text-field.label" } %>
+        <div class="mdc-line-ripple"></div>
       </div>
     </div>
     <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-18">
       <!-- Render textfield component -->
-      <div class="mdc-text-field mdc-text-field--with-trailing-icon">
-        <i class="material-icons mdc-text-field__icon mdc-text-field__icon--trailing clickable" data-target="text-field.icon">
-          password
-        </i>
+      <div class="mdc-text-field mdc-text-field--filled mdc-text-field--with-trailing-icon">
         <%= form.text_field :password, type: "password", class: "mdc-text-field__input", data: { target: "text-field.input" } %>
+        <i class="material-icons material-icons-outlined mdc-text-field__icon mdc-text-field__icon--trailing clickable" data-target="text-field.icon">
+          visibility
+        </i>
+        <%= form.label :password, class: "mdc-floating-label mdc-floating-label", required: true, data: { target: "text-field.label" } %>
         <div class="mdc-line-ripple"></div>
-        <%= form.label :password, class: "mdc-floating-label mdc-floating-label--float-above", required: true, data: { target: "text-field.label" } %>
       </div>
     </div>
     <div class="mdc-layout-grid__cell">

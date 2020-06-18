@@ -102,4 +102,43 @@ class ActiveSupport::TestCase
       assert_equal expected[k], given[k]
     end
   end
+
+  def valid_attributes
+    raise "not implemented"
+  end
+
+  def attributes_without(*keys)
+    valid_attributes.except(*keys)
+  end
+
+  def assert_database_constraint(record, attribute, klass)
+    err = assert_raises(klass) do
+      record.save(validate: false)
+    end
+
+    err
+  end
+
+  def assert_database_not_null_constraint(klass, attribute)
+    record = klass.new(attributes_without attribute)
+
+    err = assert_database_constraint record, attribute, ActiveRecord::NotNullViolation
+
+    assert_match \
+      "null value in column \"#{attribute}\" violates not-null constraint",
+      err.message
+  end
+
+  def assert_database_unique_constraint(klass, attribute, duplicate)
+    record    = klass.new(valid_attributes.merge(attribute => duplicate))
+    err       = assert_database_constraint record, attribute, ActiveRecord::RecordNotUnique
+
+    assert_match \
+      "duplicate key value violates unique constraint",
+      err.message
+
+    assert_match \
+      "DETAIL:  Key (#{attribute})=(#{duplicate}) already exists.",
+      err.message
+  end
 end

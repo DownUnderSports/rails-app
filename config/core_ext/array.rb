@@ -10,4 +10,10 @@ class Array
     each {|v| hashed[v] = v.to_s}
     hashed
   end
+
+  def to_model_enum
+    hashed = {}
+    each {|v| hashed[v.classify] = v.to_s}
+    hashed
+  end
 end

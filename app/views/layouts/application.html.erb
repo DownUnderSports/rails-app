@@ -3,7 +3,7 @@
   <head>
     <title>
       <% @title = (yield :title).presence || @title.presence %>
-      <%= (@title ? "#{@title} - Down Under Sports" : "Down Under Sports") %>
+      <%= (@title ? "#{@title} | Down Under Sports" : "Down Under Sports") %>
     </title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -19,6 +19,10 @@
     <%= csp_meta_tag %>
     <!-- import Material Icons from Google Fonts -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <!--
+      Or with "Outlined" Icon Options:
+      <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined">
+    -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
     <% js_packs = [ "application", "styles" ] | ((yield :js_packs).presence || []).map(&:to_s) %>
@@ -32,7 +36,7 @@
     <section class="mdc-drawer-app-content">
       <%= render partial: "layouts/top_bar" %>
       <div class="main-content mdc-top-app-bar--fixed-adjust mdc-layout-grid">
-        <div class="mdc-layout-grid__inner mt-1-largedesktop">
+        <div class="mdc-layout-grid__inner mt-1">
           <%= cell_tag(base: 0, largedesktop: 3) %>
           <%= cell_tag(:main, base: 18, largedesktop: 12) do %>
             <%= yield %>

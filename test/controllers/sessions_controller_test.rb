@@ -2,7 +2,7 @@ require 'test_helper'
 
 class SessionsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @user = users(:session)
+    @user = people(:session).user
   end
 
   teardown do

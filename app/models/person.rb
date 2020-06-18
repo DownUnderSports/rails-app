@@ -2,24 +2,35 @@
 # frozen_string_literal: true
 
 # User description
-class User < Person
+class Person < ApplicationRecord
   # == Constants ============================================================
-  WRITABLE_COLUMNS =
-    (Person::PASSWORD_COLUMNS + %w[ created_at updated_at ]).freeze
+  CATEGORIES = %w[ athlete coach guide official staff supporter ].freeze
+
+  PASSWORD_COLUMNS =
+    %w[ password_digest single_use_digest single_use_expires_at ].freeze
 
   # == Extensions ===========================================================
-  include ClearableReadonlyAttributes
+  include LiberalEnum
 
   # == Attributes ===========================================================
-  attr_readonly *(column_names.reject {|col| WRITABLE_COLUMNS.include? col })
-  attr_not_readonly *WRITABLE_COLUMNS
-  nacl_password skip_validations: :blank
-  nacl_password :single_use, skip_validations: true
+  has_logidze
+  enum category: self::CATEGORIES.to_db_enum, _suffix: true
+  liberal_enum :category
+
+  attr_readonly *PASSWORD_COLUMNS
+
 
   # == Relationships ========================================================
-  has_many :sessions, inverse_of: :user
+  has_many :backgrounds, inverse_of: :person
 
   # == Validations ==========================================================
+  validates_presence_of :first_names, :last_names
+  validates_uniqueness_of :email
+  validates :category, presence: true, inclusion: {
+                                                    in: self::CATEGORIES,
+                                                    allow_blank: true,
+                                                    message: "is not recognized"
+                                                  }
 
   # == Scopes ===============================================================
 
@@ -31,26 +42,27 @@ class User < Person
 
   # == Boolean Methods ======================================================
   def readonly?
-    false
+    self.class != real_class
   end
 
   # == Instance Methods =====================================================
-  def password_reset
-    key = self.single_use = generate_password_reset_token
-    self.single_use_expires_at = 1.hour.from_now
-    key
+  def user
+    self.becomes(User)
   end
 
-  def password_reset!
-    key = password_reset
-    save!
-    key
+  def real_class
+    self.category.classify.constantize
+  rescue
+    Person
   end
+
+  def real_instance
+    self.becomes(real_class)
+  rescue
+    self
+  end
+
 
   # == Private Methods ======================================================
-  private
-    def generate_password_reset_token
-      RbNaCl::Random.random_bytes(64).unpack_binary
-    end
 
 end

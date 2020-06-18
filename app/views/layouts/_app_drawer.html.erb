@@ -1,17 +1,43 @@
-<aside class="mdc-drawer mdc-drawer--modal" data-target="app-drawer.drawer">
+<aside
+  id="app-drawer"
+  class="mdc-drawer mdc-drawer--modal"
+  data-target="app-drawer.drawer"
+>
   <div class="mdc-drawer__header">
-    <%= image_pack_tag 'logo.png', alt: 'Down Under Sports', class: 'img', data: { target: 'app-drawer.logo' } %>
+    <%=
+      image_pack_tag 'logo.png',
+                      alt: 'Down Under Sports',
+                      class: 'mdc-drawer__header--graphic',
+                      data: { target: 'app-drawer.logo' }
+    %>
   </div>
   <hr class="mdc-list-divider">
   <div class="mdc-drawer__content">
-    <nav class="mdc-list pb-offset" tabindex="0">
-      <a class="mdc-list-item" href="/" data-target="app-drawer.link" data-action="app-drawer#close">
-        <i class="material-icons mdc-list-item__graphic" aria-hidden="true">home</i>
-        <span class="mdc-list-item__text">Home</span>
-      </a>
+    <nav class="mdc-list-group pb-1">
+      <div class="mdc-list">
+        <a
+          class="mdc-list-item"
+          href="/"
+          data-target="app-drawer.link"
+          data-action="app-drawer#close"
+        >
+          <i class="material-icons mdc-list-item__graphic" aria-hidden="true">home</i>
+          <span class="mdc-list-item__text">Home</span>
+        </a>
+      </div>
       <hr class="mdc-list-divider">
       <%= render partial: "layouts/app_drawer/navigation" %>
+      <hr class="mdc-list-divider">
+      <h6 class="mdc-list-group__subheader">Contact</h6>
+      <%= render partial: "layouts/app_drawer/contact" %>
+      <hr class="mdc-list-divider">
+      <h6 class="mdc-list-group__subheader">Hours</h6>
+      <%= render partial: "layouts/app_drawer/hours" %>
     </nav>
   </div>
 </aside>
-<div class="mdc-drawer-scrim" data-action="click->app-drawer#close"></div>
+<div
+  id="drawer-scrim"
+  class="mdc-drawer-scrim"
+  data-action="click->app-drawer#close"
+></div>

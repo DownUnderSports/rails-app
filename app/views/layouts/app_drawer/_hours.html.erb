@@ -1,0 +1,38 @@
+<ul class="mdc-list mdc-list--two-line" data-controller="time-sync">
+  <%- zone =  Time.zone.now.strftime("%Z") -%>
+  <li class="mdc-list-item">
+    <span class="mdc-list-item__text">
+      <span class="mdc-list-item__primary-text">Tuesday - Thursday</span>
+      <span class="mdc-list-item__secondary-text">
+        <span
+          data-target="date"
+          data-utc="<%= Time.zone.parse("14:00:00").utc.strftime("%Q") %>"
+          data-unicode-format="h aaa"
+        >
+          2 PM
+        </span>
+        -
+        <span
+          data-target="date"
+          data-utc="<%= Time.zone.parse("16:00:00").utc.strftime("%Q") %>"
+          data-unicode-format="h aaa"
+        >
+          4 PM
+        </span>
+        <span
+          data-target="date"
+          data-utc="<%= Time.zone.now.utc.strftime("%Q") %>"
+          data-unicode-format="(zzz)"
+        >(<%= zone %>)</span>
+      </span>
+    </span>
+  </li>
+  <li class="mdc-list-item">
+    <span class="mdc-list-item__text">
+      <span class="mdc-list-item__primary-text">Friday - Monday</span>
+      <span class="mdc-list-item__secondary-text">
+        Closed
+      </span>
+    </span>
+  </li>
+</ul>

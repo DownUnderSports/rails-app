@@ -2,11 +2,12 @@
 # frozen_string_literal: true
 
 # User::Session description
-class User < ApplicationRecord
+class User < Person
   class Session < ApplicationRecord
     # == Constants ============================================================
 
     # == Attributes ===========================================================
+    self.table_name = "user_sessions"
     nacl_password :token, skip_validations: true
 
     # == Extensions ===========================================================

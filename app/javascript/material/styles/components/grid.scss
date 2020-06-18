@@ -22,7 +22,7 @@
 @use "sass:map";
 @use "sass:string";
 @use "material/styles/variables";
-@use "@material/layout-grid/mixins";
+@use "./grid/mixins";
 
 :root {
   @each $size in map.keys(variables.$columns) {
@@ -67,45 +67,11 @@
     }
   }
 
-  @for $rem from 0 through 5 {
-    @at-root .m-#{$rem} {
-      margin: #{$rem}rem;
-    }
-    @each $type in $margin-types {
-      @at-root .m#{string.slice($type, 1, 1)}-#{$rem} {
-        margin-#{$type}: #{$rem}rem;
-      }
-    }
-  }
-
-  @each $type in $display-types {
-    @at-root .d-#{$type} {
-      display: $type !important;
-    }
-  }
-
   @each $size in map.keys(variables.$columns) {
     @include mixins.media-query_($size) {
       $gutter: map.get(variables.$default-gutter, $size);
 
       @include mixins.cell($size, variables.$default-column-span, $gutter);
-
-      @for $rem from 0 through 5 {
-        @at-root .m-#{$rem}-#{$size} {
-          margin: #{$rem}rem;
-        }
-        @each $type in $margin-types {
-          @at-root .m#{string.slice($type, 1, 1)}-#{$rem}-#{$size} {
-            margin-#{$type}: #{$rem}rem;
-          }
-        }
-      }
-
-      @each $type in $display-types {
-        @at-root .d-#{$type}-#{$size} {
-          display: $type !important;
-        }
-      }
 
       // Base span classes.
       // Base spans should have less specificity than size-specific spans

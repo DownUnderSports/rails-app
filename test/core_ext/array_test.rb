@@ -26,5 +26,18 @@ module CoreExtensions
       assert_equal hash, arr.to_db_enum
       arr.each {|v| assert_equal v, arr.to_db_enum[v] }
     end
+
+    test "#to_model_enum returns a hash with each key classified" do
+      arr = %w[ one two three four ]
+      hash = {
+        "One" => "one",
+        "Two" => "two",
+        "Three" => "three",
+        "Four" => "four"
+      }
+
+      assert_equal hash, arr.to_model_enum
+      arr.each {|v| assert_equal v, arr.to_model_enum[v.classify] }
+    end
   end
 end

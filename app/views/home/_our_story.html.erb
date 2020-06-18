@@ -1,202 +1,194 @@
-<div class="mdc-layout-grid__inner">
-  <%= cell_tag(base: 18) do %>
-    <div class="mdc-card">
-      <div class="mdc-card__header mdc-card--filled">
-        <h2 class="mdc-typography--headline6">Who Are We?</h2>
-      </div>
-      <div class="mdc-layout-grid__inner">
-        <%= cell_tag(phone: { order: 2 }, largephone: { order: 2 }, desktop: 12, largedesktop: 10) do %>
-          <div class="mdc-card__body mdc-typography--body1">
-            <p class="mt-0">
-              Since 1989, Down Under Sports has been hosting sports tournaments in
-              Australia. We personally invite high school athletes to compete in the
-              annual Down Under Sports Tournaments in Queensland, Australia each summer.
-              We seek athletes who we believe will benefit the most from our program.
-              Our goal is to see our participants grow through this life changing
-              experience, both in their sport and as people. These renowned tournaments
-              are an opportunity for athletes from different countries to compete on an
-              international level. We pride ourselves on providing these opportunities
-              to compete and experience the culture, beauty, and grandeur of Australia.
-              We dedicate ourselves to ensuring that our athletes and their families are
-              prepared for the experience of a lifetime.
-            </p>
-            <p class="mb-0">
-              Over the years we have helped tens of thousands of high school athletes
-              showcase their talents on the international stage. We have many great
-              reviews from athletes and their parents who have traveled with us. You can
-              check out our reviews on
-              <a
-                target="_blank"
-                rel="noopener noreferrer"
-                href="https://www.facebook.com/DownUnderSports/reviews/"
-              >Facebook</a>,
-              <a
-                target="_blank"
-                rel="noopener noreferrer"
-                href="https://g.co/kgs/wQQV9k#lkt=LocalPoiReviews&lrd=0x87547db85c286b91:0xbf6175aa5e7f710f,1,,"
-              >Google</a>,
-              and the
-              <a
-                target="_blank"
-                rel="noopener noreferrer"
-                href="https://www.bbb.org/us/ut/north-logan/profile/athletic-organizations/down-under-sports-1166-2001870/#sealclick"
-              >Better Business Bureau</a>,
-              where we have an A+ rating!
-            </p>
-          </div>
-        <% end %>
-        <%= cell_tag largedesktop: 8 do %>
-          <div class="grid-media-wrapper m-1 m-0-phone m-0-largephone">
-            <div
-              data-controller="youtube"
-              data-target="youtube.wrapper"
-              data-youtube-autoplay="true"
+<div class="our-story">
+  <div class="mdc-card mb-1">
+    <div class="mdc-card__header mdc-card--filled">
+      <h2 class="mdc-typography--headline6">Who Are We?</h2>
+    </div>
+    <div class="mdc-layout-grid__inner">
+      <%= cell_tag(phone: { order: 2 }, largephone: { order: 2 }, desktop: 12, largedesktop: 10) do %>
+        <div class="mdc-card__body mdc-typography--body1">
+          <p class="mt-0">
+            Since 1989, Down Under Sports has been hosting sports tournaments in
+            Australia. We personally invite high school athletes to compete in the
+            annual Down Under Sports Tournaments in Queensland, Australia each summer.
+            We seek athletes who we believe will benefit the most from our program.
+            Our goal is to see our participants grow through this life changing
+            experience, both in their sport and as people. These renowned tournaments
+            are an opportunity for athletes from different countries to compete on an
+            international level. We pride ourselves on providing these opportunities
+            to compete and experience the culture, beauty, and grandeur of Australia.
+            We dedicate ourselves to ensuring that our athletes and their families are
+            prepared for the experience of a lifetime.
+          </p>
+          <p class="mb-0">
+            Over the years we have helped tens of thousands of high school athletes
+            showcase their talents on the international stage. We have many great
+            reviews from athletes and their parents who have traveled with us. You can
+            check out our reviews on
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://www.facebook.com/DownUnderSports/reviews/"
+            >Facebook</a>,
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://g.co/kgs/wQQV9k#lkt=LocalPoiReviews&lrd=0x87547db85c286b91:0xbf6175aa5e7f710f,1,,"
+            >Google</a>,
+            and the
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://www.bbb.org/us/ut/north-logan/profile/athletic-organizations/down-under-sports-1166-2001870/#sealclick"
+            >Better Business Bureau</a>,
+            where we have an A+ rating!
+          </p>
+        </div>
+      <% end %>
+      <%= cell_tag largedesktop: 8 do %>
+        <div class="grid-media-wrapper m-1 m-0-phone m-0-largephone">
+          <div
+            data-controller="youtube"
+            data-target="youtube.wrapper"
+            data-youtube-autoplay="true"
+            data-action="click->youtube#toggle"
+            data-youtube-ids="Yh5CjpY35BM,C-gkKvFNL88"
+            class="mdc-card__media mdc-card__media--16-9 youtube">
+            <iframe
               data-action="click->youtube#toggle"
-              data-youtube-ids="Yh5CjpY35BM,C-gkKvFNL88"
-              class="mdc-card__media mdc-card__media--16-9 youtube">
-              <iframe
-                data-action="click->youtube#toggle"
-                data-target="youtube.video"
-                class="mdc-card__media-content"
-                src="https://www.youtube-nocookie.com/embed/Yh5CjpY35BM?rel=0&mute=1&enablejsapi=1&modestbranding=1"
-                frameborder="0"
-                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen
-              ></iframe>
+              data-target="youtube.video"
+              class="mdc-card__media-content"
+              src="https://www.youtube-nocookie.com/embed/Yh5CjpY35BM?rel=0&mute=1&enablejsapi=1&modestbranding=1"
+              frameborder="0"
+              allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+            ></iframe>
+          </div>
+        </div>
+        <div class="grid-media-wrapper m-1 d-none-phone d-none-largephone">
+          <%= image_pack_tag "ten-and-seven.svg", alt: "Founders George and Shelley O'Scanlon" %>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- <div class="mdc-card__actions">
+      <div class="mdc-card__action-buttons">
+        <button class="mdc-button mdc-card__action mdc-card__action--button">
+          <span class="mdc-button__label">Action 1</span>
+        </button>
+        <button class="mdc-button mdc-card__action mdc-card__action--button">
+          <span class="mdc-button__label">Action 2</span>
+        </button>
+      </div>
+      <div class="mdc-card__action-icons">
+        <button class="material-icons mdc-icon-button mdc-card__action mdc-card__action--icon" title="Share">share</button>
+        <button class="material-icons mdc-icon-button mdc-card__action mdc-card__action--icon" title="More options">more_vert</button>
+      </div>
+    </div> -->
+  </div>
+  <div class="mdc-card mb-1">
+    <div class="mdc-card__header mdc-card--filled">
+      <h2 class="mdc-typography--headline6">Our Story</h2>
+    </div>
+    <div class="mdc-card__body mdc-typography--body1">
+      <div class="mdc-layout-grid__inner">
+        <%= cell_tag largephone: 2, tablet: 4 do %>
+          <div class="framed text-center">
+            <%= image_pack_tag "george-and-shelley.jpg", alt: "Founders George and Shelley O'Scanlon" %>
+            <div class="no-top-padding">
+              <i>Founders George and Shelley</i>
             </div>
           </div>
-          <div class="grid-media-wrapper m-1 d-none-phone d-none-largephone">
-            <%= image_pack_tag "ten-and-seven.svg", alt: "Founders George and Shelley O'Scanlon" %>
+        <% end %>
+        <%= cell_tag(largephone: 4, tablet: 8, desktop: 12, largedesktop: 12) do %>
+          <p>
+            Down Under Sports was founded in 1989, based on the dream of two New
+            Zealanders named George and Shelley O’Scanlon. They fell in love with
+            athletics, especially American football (gridiron). Their dream was to
+            promote football in Australia and New Zealand. In 1979, George founded
+            the New Zealand American Football Association (NZAFA). This was the
+            first time that American Football was played down under! In 1989, they
+            began inviting American high school football players to compete in New
+            Zealand and Australia. Over the years, this tournament, which is known
+            as the &ldquo;Down Under Bowl&rdquo;, started to see overwhelming
+            success.
+          </p>
+          <p>
+            We saw this as an exciting opportunity to include other young athletes
+            in this fun and rewarding experience. Over the last three decades,
+            Down Under Sports has shared the land down under with thousands of
+            athletes from all across the United States! No matter the sport, the
+            goal has been the same: to use the common language of sports to bridge
+            the continents. Through Down Under Sports, countless friendships and
+            memories have been made.
+          </p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <div class="mdc-card mb-1">
+    <div class="mdc-card__header mdc-card--filled">
+      <h2 class="mdc-typography--headline6">Our Mission Statement</h2>
+    </div>
+    <div class="mdc-card__body mdc-typography--body1">
+      <div class="mdc-layout-grid__inner">
+        <%= cell_tag(desktop: 9, largedesktop: 12) do %>
+          <p>
+            Down Under Sports believes that sport is the international
+            language common to all the countries and people around the world
+            and that it can help remove cultural and international barriers.
+            Therefore, the mission of Down Under Sports is to promote the
+            growth, development, and self-esteem of the individual athlete
+            through sport; to raise the level and awareness and competition to
+            the benefit of both the host country and the participating
+            athlete; to forge friendships that bridge the gap of both distance
+            and time, through mutual competition that promotes health and
+            sportsmanship.
+          </p>
+        <% end %>
+        <%= cell_tag(desktop: 9) do %>
+          <div class="framed text-blue">
+            <%= image_pack_tag "bridge-the-continents.jpg", alt: "Bridge the Continents" %>
+            <div>
+              <q>
+                <i>...to use the common language of sports to bridge the continents.</i>
+              </q>
+              <div class="text-right">-- George O’Scanlon, Founder</div>
+            </div>
           </div>
         <% end %>
       </div>
-
-      <!-- <div class="mdc-card__actions">
-        <div class="mdc-card__action-buttons">
-          <button class="mdc-button mdc-card__action mdc-card__action--button">
-            <span class="mdc-button__label">Action 1</span>
-          </button>
-          <button class="mdc-button mdc-card__action mdc-card__action--button">
-            <span class="mdc-button__label">Action 2</span>
-          </button>
-        </div>
-        <div class="mdc-card__action-icons">
-          <button class="material-icons mdc-icon-button mdc-card__action mdc-card__action--icon" title="Share">share</button>
-          <button class="material-icons mdc-icon-button mdc-card__action mdc-card__action--icon" title="More options">more_vert</button>
-        </div>
-      </div> -->
     </div>
-  <% end %>
-  <%= cell_tag(base: 18) do %>
-    <div class="mdc-card">
-      <div class="mdc-card__header mdc-card--filled">
-        <h2 class="mdc-typography--headline6">Our Story</h2>
-      </div>
-      <div class="mdc-card__body mdc-typography--body1">
-        <div class="mdc-layout-grid__inner">
-          <%= cell_tag largephone: 2, tablet: 4 do %>
-            <div class="framed text-center">
-              <%= image_pack_tag "george-and-shelley.jpg", alt: "Founders George and Shelley O'Scanlon" %>
-              <div class="no-top-padding">
-                <i>Founders George and Shelley</i>
-              </div>
+  </div>
+  <div class="mdc-card mb-1">
+    <div class="mdc-card__header mdc-card--filled">
+      <h2 class="mdc-typography--headline6">Our Vision</h2>
+    </div>
+    <div class="mdc-card__body mdc-typography--body1">
+      <div class="mdc-layout-grid__inner">
+        <%= cell_tag(
+                  incremental: :tablet,
+                  base: 6,
+                  tablet: { span: 9, order: 2 },
+                  desktop: 12
+                ) do %>
+          <p>
+            Our vision is to continue to carry out the dream of our founders: to unite continents through sports. We will continue to provide athletes the opportunity to experience the culture, beauty, and grandeur of the land down under, all within the framework of spirited and intense competition. We will continue to give athletes and their families, an experience that they will cherish forever.
+          </p>
+          <p>
+            We are committed to providing all of our participants and their supporters the experience of a lifetime. We work year-round to provide a safe, culturally rich, and competitive sports tournament to all those who participate in our program.
+          </p>
+        <% end %>
+        <%= cell_tag(tablet: 3) do %>
+          <div class="framed text-blue text-center">
+            <%= image_pack_tag "haka.jpg", alt: "New Zealand football players perform The Haka" %>
+            <div>
+              <i>
+                New Zealanders perform <span style="white-space: nowrap;">&ldquo;The Haka&rdquo;</span>
+              </i>
             </div>
-          <% end %>
-          <%= cell_tag(largephone: 4, tablet: 8, desktop: 12, largedesktop: 12) do %>
-            <p>
-              Down Under Sports was founded in 1989, based on the dream of two New
-              Zealanders named George and Shelley O’Scanlon. They fell in love with
-              athletics, especially American football (gridiron). Their dream was to
-              promote football in Australia and New Zealand. In 1979, George founded
-              the New Zealand American Football Association (NZAFA). This was the
-              first time that American Football was played down under! In 1989, they
-              began inviting American high school football players to compete in New
-              Zealand and Australia. Over the years, this tournament, which is known
-              as the &ldquo;Down Under Bowl&rdquo;, started to see overwhelming
-              success.
-            </p>
-            <p>
-              We saw this as an exciting opportunity to include other young athletes
-              in this fun and rewarding experience. Over the last three decades,
-              Down Under Sports has shared the land down under with thousands of
-              athletes from all across the United States! No matter the sport, the
-              goal has been the same: to use the common language of sports to bridge
-              the continents. Through Down Under Sports, countless friendships and
-              memories have been made.
-            </p>
-          <% end %>
-        </div>
+          </div>
+        <% end %>
       </div>
     </div>
-  <% end %>
-  <%= cell_tag(base: 18) do %>
-    <div class="mdc-card">
-      <div class="mdc-card__header mdc-card--filled">
-        <h2 class="mdc-typography--headline6">Our Mission Statement</h2>
-      </div>
-      <div class="mdc-card__body mdc-typography--body1">
-        <div class="mdc-layout-grid__inner">
-          <%= cell_tag(desktop: 9, largedesktop: 12) do %>
-            <p>
-              Down Under Sports believes that sport is the international
-              language common to all the countries and people around the world
-              and that it can help remove cultural and international barriers.
-              Therefore, the mission of Down Under Sports is to promote the
-              growth, development, and self-esteem of the individual athlete
-              through sport; to raise the level and awareness and competition to
-              the benefit of both the host country and the participating
-              athlete; to forge friendships that bridge the gap of both distance
-              and time, through mutual competition that promotes health and
-              sportsmanship.
-            </p>
-          <% end %>
-          <%= cell_tag(desktop: 9) do %>
-            <div class="framed text-blue">
-              <%= image_pack_tag "bridge-the-continents.jpg", alt: "Bridge the Continents" %>
-              <div>
-                <q>
-                  <i>...to use the common language of sports to bridge the continents.</i>
-                </q>
-                <div class="text-right">-- George O’Scanlon, Founder</div>
-              </div>
-            </div>
-          <% end %>
-        </div>
-      </div>
-    </div>
-  <% end %>
-  <%= cell_tag(base: 18) do %>
-    <div class="mdc-card">
-      <div class="mdc-card__header mdc-card--filled">
-        <h2 class="mdc-typography--headline6">Our Vision</h2>
-      </div>
-      <div class="mdc-card__body mdc-typography--body1">
-        <div class="mdc-layout-grid__inner">
-          <%= cell_tag(
-                    incremental: :tablet,
-                    base: 6,
-                    tablet: { span: 9, order: 2 },
-                    desktop: 12
-                  ) do %>
-            <p>
-              Our vision is to continue to carry out the dream of our founders: to unite continents through sports. We will continue to provide athletes the opportunity to experience the culture, beauty, and grandeur of the land down under, all within the framework of spirited and intense competition. We will continue to give athletes and their families, an experience that they will cherish forever.
-            </p>
-            <p>
-              We are committed to providing all of our participants and their supporters the experience of a lifetime. We work year-round to provide a safe, culturally rich, and competitive sports tournament to all those who participate in our program.
-            </p>
-          <% end %>
-          <%= cell_tag(tablet: 3) do %>
-            <div class="framed text-blue text-center">
-              <%= image_pack_tag "haka.jpg", alt: "New Zealand football players perform The Haka" %>
-              <div>
-                <i>
-                  New Zealanders perform <span style="white-space: nowrap;">&ldquo;The Haka&rdquo;</span>
-                </i>
-              </div>
-            </div>
-          <% end %>
-        </div>
-      </div>
-    </div>
-  <% end %>
+  </div>
 </div>
