@@ -79,13 +79,23 @@ end
 
 class Proc #:nodoc:
   def bind(object)
-    block, time = self, Time.now
+    block = self
     object.class_eval do
-      method_name = "__bind_#{time.to_i}_#{time.usec}"
-      define_method(method_name, &block)
-      method = instance_method(method_name)
-      remove_method(method_name)
-      method
+      method_name = :__bind_proc__
+      method = nil
+      Thread.exclusive do
+        method_already_exists =
+          object.respond_to?(method_name) &&
+          instance_method(method_name).owner == self
+
+        old_method = instance_method(method_name) if method_already_exists
+
+        define_method(method_name, &block)
+        method = instance_method(method_name)
+        remove_method(method_name)
+
+        define_method(method_name, old_method) if method_already_exists
+      end
     end.bind(object)
   end
 end
