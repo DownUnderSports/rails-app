@@ -397,10 +397,10 @@ CREATE TABLE public.ar_internal_metadata (
 
 
 --
--- Name: backgrounds; Type: TABLE; Schema: public; Owner: -
+-- Name: background; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.backgrounds (
+CREATE TABLE public.background (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     person_id uuid NOT NULL,
     sport_id uuid,
@@ -415,10 +415,10 @@ CREATE TABLE public.backgrounds (
 
 
 --
--- Name: people; Type: TABLE; Schema: public; Owner: -
+-- Name: person; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.people (
+CREATE TABLE public.person (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     category public.user_category NOT NULL,
     title text,
@@ -447,10 +447,10 @@ CREATE TABLE public.schema_migrations (
 
 
 --
--- Name: sports; Type: TABLE; Schema: public; Owner: -
+-- Name: sport; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.sports (
+CREATE TABLE public.sport (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     abbr text,
     "full" text,
@@ -465,10 +465,10 @@ CREATE TABLE public.sports (
 
 
 --
--- Name: user_sessions; Type: TABLE; Schema: public; Owner: -
+-- Name: user_session; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.user_sessions (
+CREATE TABLE public.user_session (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     user_id uuid NOT NULL,
     browser_id text NOT NULL,
@@ -505,19 +505,19 @@ ALTER TABLE ONLY public.ar_internal_metadata
 
 
 --
--- Name: backgrounds backgrounds_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: background background_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.backgrounds
-    ADD CONSTRAINT backgrounds_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.background
+    ADD CONSTRAINT background_pkey PRIMARY KEY (id);
 
 
 --
--- Name: people people_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: person person_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.people
-    ADD CONSTRAINT people_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.person
+    ADD CONSTRAINT person_pkey PRIMARY KEY (id);
 
 
 --
@@ -529,19 +529,19 @@ ALTER TABLE ONLY public.schema_migrations
 
 
 --
--- Name: sports sports_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: sport sport_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.sports
-    ADD CONSTRAINT sports_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.sport
+    ADD CONSTRAINT sport_pkey PRIMARY KEY (id);
 
 
 --
--- Name: user_sessions user_sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: user_session user_session_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.user_sessions
-    ADD CONSTRAINT user_sessions_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.user_session
+    ADD CONSTRAINT user_session_pkey PRIMARY KEY (id);
 
 
 --
@@ -566,110 +566,110 @@ CREATE UNIQUE INDEX index_active_storage_blobs_on_key ON public.active_storage_b
 
 
 --
--- Name: index_backgrounds_on_data; Type: INDEX; Schema: public; Owner: -
+-- Name: index_background_on_data; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_backgrounds_on_data ON public.backgrounds USING gin (data);
-
-
---
--- Name: index_backgrounds_on_person_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_backgrounds_on_person_id ON public.backgrounds USING btree (person_id);
+CREATE INDEX index_background_on_data ON public.background USING gin (data);
 
 
 --
--- Name: index_backgrounds_on_sport_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_background_on_person_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_backgrounds_on_sport_id ON public.backgrounds USING btree (sport_id);
-
-
---
--- Name: index_people_on_category; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_people_on_category ON public.people USING btree (category);
+CREATE INDEX index_background_on_person_id ON public.background USING btree (person_id);
 
 
 --
--- Name: index_people_on_data; Type: INDEX; Schema: public; Owner: -
+-- Name: index_background_on_sport_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_people_on_data ON public.people USING gin (data);
-
-
---
--- Name: index_people_on_email; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_people_on_email ON public.people USING btree (email);
+CREATE INDEX index_background_on_sport_id ON public.background USING btree (sport_id);
 
 
 --
--- Name: index_user_sessions_on_browser_id_and_user_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_person_on_category; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_user_sessions_on_browser_id_and_user_id ON public.user_sessions USING btree (browser_id, user_id);
+CREATE INDEX index_person_on_category ON public.person USING btree (category);
 
 
 --
--- Name: index_user_sessions_on_user_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_person_on_data; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_user_sessions_on_user_id ON public.user_sessions USING btree (user_id);
+CREATE INDEX index_person_on_data ON public.person USING gin (data);
+
+
+--
+-- Name: index_person_on_email; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_person_on_email ON public.person USING btree (email);
+
+
+--
+-- Name: index_user_session_on_browser_id_and_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_user_session_on_browser_id_and_user_id ON public.user_session USING btree (browser_id, user_id);
+
+
+--
+-- Name: index_user_session_on_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_user_session_on_user_id ON public.user_session USING btree (user_id);
 
 
 --
 -- Name: unique_background_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX unique_background_index ON public.backgrounds USING btree (person_id, sport_id, category, year);
+CREATE UNIQUE INDEX unique_background_index ON public.background USING btree (person_id, sport_id, category, year);
 
 
 --
 -- Name: unique_primary_background_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX unique_primary_background_index ON public.backgrounds USING btree (person_id, "primary");
+CREATE UNIQUE INDEX unique_primary_background_index ON public.background USING btree (person_id, "primary");
 
 
 --
--- Name: backgrounds logidze_on_backgrounds; Type: TRIGGER; Schema: public; Owner: -
+-- Name: background logidze_on_background; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER logidze_on_backgrounds BEFORE INSERT OR UPDATE ON public.backgrounds FOR EACH ROW WHEN ((COALESCE(current_setting('logidze.disabled'::text, true), ''::text) <> 'on'::text)) EXECUTE FUNCTION public.logidze_logger('null', 'updated_at');
-
-
---
--- Name: people logidze_on_people; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER logidze_on_people BEFORE INSERT OR UPDATE ON public.people FOR EACH ROW WHEN ((COALESCE(current_setting('logidze.disabled'::text, true), ''::text) <> 'on'::text)) EXECUTE FUNCTION public.logidze_logger('20', 'updated_at');
+CREATE TRIGGER logidze_on_background BEFORE INSERT OR UPDATE ON public.background FOR EACH ROW WHEN ((COALESCE(current_setting('logidze.disabled'::text, true), ''::text) <> 'on'::text)) EXECUTE FUNCTION public.logidze_logger('null', 'updated_at');
 
 
 --
--- Name: sports logidze_on_sports; Type: TRIGGER; Schema: public; Owner: -
+-- Name: person logidze_on_person; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER logidze_on_sports BEFORE INSERT OR UPDATE ON public.sports FOR EACH ROW WHEN ((COALESCE(current_setting('logidze.disabled'::text, true), ''::text) <> 'on'::text)) EXECUTE FUNCTION public.logidze_logger('null', 'updated_at');
-
-
---
--- Name: backgrounds fk_rails_65ef82599b; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.backgrounds
-    ADD CONSTRAINT fk_rails_65ef82599b FOREIGN KEY (person_id) REFERENCES public.people(id);
+CREATE TRIGGER logidze_on_person BEFORE INSERT OR UPDATE ON public.person FOR EACH ROW WHEN ((COALESCE(current_setting('logidze.disabled'::text, true), ''::text) <> 'on'::text)) EXECUTE FUNCTION public.logidze_logger('20', 'updated_at');
 
 
 --
--- Name: user_sessions fk_rails_9fa262d742; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: sport logidze_on_sport; Type: TRIGGER; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.user_sessions
-    ADD CONSTRAINT fk_rails_9fa262d742 FOREIGN KEY (user_id) REFERENCES public.people(id);
+CREATE TRIGGER logidze_on_sport BEFORE INSERT OR UPDATE ON public.sport FOR EACH ROW WHEN ((COALESCE(current_setting('logidze.disabled'::text, true), ''::text) <> 'on'::text)) EXECUTE FUNCTION public.logidze_logger('null', 'updated_at');
+
+
+--
+-- Name: background fk_rails_4fc29f5cb4; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.background
+    ADD CONSTRAINT fk_rails_4fc29f5cb4 FOREIGN KEY (sport_id) REFERENCES public.sport(id);
+
+
+--
+-- Name: user_session fk_rails_b7dc8aa429; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_session
+    ADD CONSTRAINT fk_rails_b7dc8aa429 FOREIGN KEY (user_id) REFERENCES public.person(id);
 
 
 --
@@ -681,11 +681,11 @@ ALTER TABLE ONLY public.active_storage_attachments
 
 
 --
--- Name: backgrounds fk_rails_cae042a20f; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: background fk_rails_c8a2a53b50; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.backgrounds
-    ADD CONSTRAINT fk_rails_cae042a20f FOREIGN KEY (sport_id) REFERENCES public.sports(id);
+ALTER TABLE ONLY public.background
+    ADD CONSTRAINT fk_rails_c8a2a53b50 FOREIGN KEY (person_id) REFERENCES public.person(id);
 
 
 --

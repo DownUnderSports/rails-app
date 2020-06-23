@@ -7,7 +7,7 @@ class User < Person
     # == Constants ============================================================
 
     # == Attributes ===========================================================
-    self.table_name = "user_sessions"
+    self.table_name = "user_session"
     nacl_password :token, skip_validations: true
 
     # == Extensions ===========================================================

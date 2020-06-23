@@ -50,11 +50,21 @@ class UserTest < ActiveSupport::TestCase
 
       user.__send__ :"#{attr}=", "#{rand}.#{Time.zone.now}"
 
+      if attr == :password
+        refute user.valid?
+        user.email = "#{rand}@email.com"
+      end
+
       assert user.valid?
 
       user.__send__ :"#{attr}=", nil
 
       assert user.valid?
+
+      if attr == :password
+        user.email = nil
+        assert user.valid?
+      end
     end
   end
 

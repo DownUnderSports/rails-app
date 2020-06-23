@@ -15,7 +15,7 @@ class PersonTest < ActiveSupport::TestCase
   end
 
   def assert_database_unique_constraint(attribute)
-    duplicate = people(:athlete).__send__(attribute)
+    duplicate = person_fixtures(:athlete).__send__(attribute)
     super Person, attribute, duplicate
   end
 
@@ -58,12 +58,21 @@ class PersonTest < ActiveSupport::TestCase
       assert person.respond_to?(:"#{attr}=")
 
       person.__send__ :"#{attr}=", "#{rand}.#{Time.zone.now}"
+      if attr == :password_digest
+        refute person.valid?
+        person.email = "#{rand}@email.com"
+      end
 
       assert person.valid?
 
       person.__send__ :"#{attr}=", nil
 
       assert person.valid?
+
+      if attr == :password_digest
+        person.email = nil
+        assert person.valid?
+      end
     end
   end
 
@@ -102,11 +111,23 @@ class PersonTest < ActiveSupport::TestCase
   end
 
   test 'invalid person with reused email' do
-    person = Person.new(valid_attributes.merge(email: people(:athlete).email))
-    refute person.valid?, 'person is invalid with an email already in use'
+    person = Person.new(valid_attributes.merge(email: person_fixtures(:athlete).email))
+    refute person.valid?, 'person is valid with an email already in use'
     assert_not_nil person.errors[:email]
     assert_equal [ "has already been taken" ], person.errors[:email]
 
     assert_database_unique_constraint :email
+  end
+
+  test 'valid person with blank email and blank password_digest' do
+    person = Person.new(valid_attributes.merge(email: nil))
+    assert person.valid?, 'person with blank password is invalid with a blank email'
+  end
+
+  test 'invalid person with blank email and existing password_digest' do
+    person = Person.new(valid_attributes.merge(password_digest: RbNaCl::Random.random_bytes(64).unpack_binary))
+    refute person.valid?, 'person with password is valid with a blank email'
+    assert_not_nil person.errors[:email]
+    assert_equal [ "required for login" ], person.errors[:email]
   end
 end

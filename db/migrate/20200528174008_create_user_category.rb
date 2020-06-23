@@ -1,4 +1,4 @@
-class CreateUserCategories < ActiveRecord::Migration[6.0]
+class CreateUserCategory < ActiveRecord::Migration[6.0]
   def change
     reversible do |d|
       d.up do

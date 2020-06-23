@@ -1,7 +1,7 @@
-class CreateUserSessions < ActiveRecord::Migration[6.0]
+class CreateUserSession < ActiveRecord::Migration[6.0]
   def change
-    create_table :user_sessions, id: :uuid do |t|
-      t.references :user, null: false, type: :uuid, foreign_key: { to_table: :people }
+    create_table :user_session, id: :uuid do |t|
+      t.references :user, null: false, type: :uuid, foreign_key: { to_table: :person }
       t.text :browser_id, null: false
       t.text :token_digest, null: false
       t.text :user_agent

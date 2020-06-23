@@ -1,6 +1,6 @@
-class CreatePeople < ActiveRecord::Migration[6.0]
+class CreatePerson < ActiveRecord::Migration[6.0]
   def change
-    create_table :people, id: :uuid do |t|
+    create_table :person, id: :uuid do |t|
       t.column :category, :user_category, null: false
       t.text :title
       t.text :first_names, null: false

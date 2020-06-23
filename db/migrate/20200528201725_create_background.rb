@@ -1,6 +1,6 @@
-class CreateBackgrounds < ActiveRecord::Migration[6.0]
+class CreateBackground < ActiveRecord::Migration[6.0]
   def change
-    create_table :backgrounds, id: :uuid do |t|
+    create_table :background, id: :uuid do |t|
       t.references :person, null: false, foreign_key: true, type: :uuid
       t.references :sport, foreign_key: true, type: :uuid
       t.column :category, :user_category

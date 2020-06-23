@@ -31,6 +31,7 @@ module DownUnderSports
     # the framework and any gems in your application.
 
     # db settings
+    config.active_record.pluralize_table_names = false
     config.active_record.schema_format = :sql
     config.active_record.dump_schemas = :all
     config.active_record.cache_timestamp_format = :nsec

@@ -5,6 +5,7 @@ require_relative "./database_assertions"
 require_relative "./method_assertions"
 require_relative "./template_assertions"
 require_relative "./tmp_classes"
+require_relative "./top_bar_assertions"
 require_relative "./webpacker_stubs"
 
 module TestHelper
@@ -26,6 +27,7 @@ module TestHelper
 
       AppDrawerAssertions.install
       TemplateAssertions.install
+      TopBarAssertions.install
       WebpackerStubs.install
 
       include DatabaseAssertions
