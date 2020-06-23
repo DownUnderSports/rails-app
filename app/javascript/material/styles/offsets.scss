@@ -32,38 +32,61 @@ $properties: margin, padding;
   $append: if($size, -#{$size}, null);
   @each $property in $properties {
     $class: #{string.slice($property, 1, 1)};
-    @for $rem from 0 through 5 {
-      .#{$class}-#{$rem} {
-        @at-root &#{$append} {
-          #{$property}: #{$rem}rem;
-        }
-        @at-root &-force#{$append} {
-          #{$property}: #{$rem}rem !important;
-        }
-        @at-root &-em {
+    @for $rem from 0 through 4 {
+      .#{$class} {
+        &-#{$rem} {
           @at-root &#{$append} {
-            #{$property}: #{$rem}em;
+            #{$property}: #{$rem}rem;
           }
           @at-root &-force#{$append} {
-            #{$property}: #{$rem}em !important;
-          }
-        }
-      }
-      @each $type in $direction-types {
-        $d: string.slice($type, 1, 1);
-        @at-root .#{$class}#{$d}-#{$rem} {
-          @at-root &#{$append} {
-            #{$property}-#{$type}: #{$rem}rem;
-          }
-          @at-root &-force#{$append} {
-            #{$property}-#{$type}: #{$rem}rem !important;
+            #{$property}: #{$rem}rem !important;
           }
           @at-root &-em {
             @at-root &#{$append} {
-              #{$property}-#{$type}: #{$rem}em;
+              #{$property}: #{$rem}em;
             }
             @at-root &-force#{$append} {
-              #{$property}-#{$type}: #{$rem}em !important;
+              #{$property}: #{$rem}em !important;
+            }
+          }
+        }
+
+        @at-root &-#{$rem * 25}-vh {
+          @at-root &#{$append} {
+            #{$property}: #{$rem * 25}vh;
+          }
+          @at-root &-force#{$append} {
+            #{$property}: #{$rem * 25}vh !important;
+          }
+        }
+      }
+
+      @each $type in $direction-types {
+        $d: string.slice($type, 1, 1);
+        @at-root .#{$class}#{$d} {
+          &-#{$rem} {
+            @at-root &#{$append} {
+              #{$property}-#{$type}: #{$rem}rem;
+            }
+            @at-root &-force#{$append} {
+              #{$property}-#{$type}: #{$rem}rem !important;
+            }
+            @at-root &-em {
+              @at-root &#{$append} {
+                #{$property}-#{$type}: #{$rem}em;
+              }
+              @at-root &-force#{$append} {
+                #{$property}-#{$type}: #{$rem}em !important;
+              }
+            }
+          }
+
+          @at-root &-#{$rem * 25}-vh {
+            @at-root &#{$append} {
+              #{$property}-#{$type}: #{$rem * 25}vh;
+            }
+            @at-root &-force#{$append} {
+              #{$property}-#{$type}: #{$rem * 25}vh !important;
             }
           }
         }

@@ -33,15 +33,22 @@
   </head>
   <body class="mdc-typography" data-controller="app-drawer">
     <%= render partial: "layouts/app_drawer" %>
-    <section class="mdc-drawer-app-content">
+    <section class="mdc-drawer-app-content ocean-background">
+      <!-- Top-Fixed Navigation -->
       <%= render partial: "layouts/top_bar" %>
-      <div class="main-content mdc-top-app-bar--fixed-adjust mdc-layout-grid">
-        <div class="mdc-layout-grid__inner mt-1">
-          <%= cell_tag(base: 0, largedesktop: 3) %>
-          <%= cell_tag(:main, base: 18, largedesktop: 12) do %>
-            <%= yield %>
-          <% end %>
-        </div>
+      <div class="main-content mt-75-vh">
+        <!-- Allow Full-Page-Width or Custom-Grid Layouts -->
+        <%= yield(:outside_grid) %>
+        <!-- Full-Screen-Height Scrollable Default Grid -->
+        <% unless CoerceBoolean.from(yield(:no_main_grid).presence) %>
+          <div class="main-grid mdc-layout-grid">
+            <div class="mdc-layout-grid__inner" style="overflow: auto">
+              <%= cell_tag(:main, base: 18) do %>
+                <%= yield %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
       </div>
     </section>
   </body>

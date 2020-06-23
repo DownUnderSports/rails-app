@@ -11,6 +11,8 @@ $prefix: mdc-card;
   }
   &--filled {
     @include card-mixins.filled-accessible($primary);
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
   }
 
   &__body,
