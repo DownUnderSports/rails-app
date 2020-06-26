@@ -1,4 +1,5 @@
 import { Controller } from "stimuli"
+import { visibility } from "helpers"
 
 let youtubeReady  = null,
     youtubeFailed = null,
@@ -9,10 +10,7 @@ const youtubeLoaded = new Promise((resolve, reject) => {
   youtubeFailed = reject
 })
 
-window.onYouTubeIframeAPIReady = () => {
-  console.log(window.YT)
-  youtubeReady()
-}
+window.onYouTubeIframeAPIReady = () => youtubeReady()
 
 const playerStates = {
   unstarted: -1,
@@ -34,10 +32,16 @@ export class YoutubeController extends Controller {
   static targets = [ "wrapper", "video", "placeholder" ]
 
   async connect() {
+    this.disconnected = false
     this.pristine = true
     this.wrapperTarget.classList.toggle("youtube", true)
     this.onStateChange({ data: playerStates.unstarted })
     this.loadYoutubeAPI()
+  }
+
+  disconnect() {
+    this.disconnected = true
+    visibility.removeEventListener(this.onVisibilityChange)
   }
 
   // Private
@@ -51,7 +55,10 @@ export class YoutubeController extends Controller {
       document.body.appendChild(tag)
     }
     await youtubeLoaded
-    this.createPlayer()
+    if(!this.disconnected) {
+      this.createPlayer()
+      visibility.addEventListener(this.onVisibilityChange)
+    }
   }
 
   createPlayer = () => {
@@ -81,26 +88,27 @@ export class YoutubeController extends Controller {
   }
 
   onStateChange = () => {
-    console.log(this.playerStateName)
     const current = this.playerState
+
+    this.setWrapperClass(current)
+
     if(
       this.pristine
       && this.data.get("autoplay")
       && current === playerStates.paused
+      && this.isMuted()
+      && visibility.state === "visible"
     ) {
       this.pristine = false
       this.unMute()
-      this.play()
+      // this.play()
     } else if(current === playerStates.ended && this.videoIds.length) {
-      this.setWrapperClass(current)
       this.videoIds.shift()
       if(this.videoId) this.player.loadVideoById(this.videoId)
       else {
         this.resetVideoIds
         this.player.cueVideoById(this.videoId)
       }
-    } else {
-      this.setWrapperClass(current)
     }
   }
 
@@ -111,6 +119,8 @@ export class YoutubeController extends Controller {
   }
 
   toggle = () => this.playing ? this.pause() : this.play()
+
+  isMuted = () => this.player && this.player.isMuted()
 
   mute = () => this.player && this.player.mute()
 

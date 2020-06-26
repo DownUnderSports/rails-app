@@ -31,18 +31,22 @@
     <% end %>
     <%= javascript_packs_with_chunks_tag *js_packs, 'data-turbolinks-track': 'reload', defer: true %>
   </head>
-  <body class="mdc-typography" data-controller="app-drawer">
+  <body
+    class="mdc-typography with-background-image ocean-background"
+    data-controller="app-drawer"
+  >
+    <!-- Side-Panel Hideable Navigation -->
     <%= render partial: "layouts/app_drawer" %>
-    <section class="mdc-drawer-app-content ocean-background">
+    <section class="mdc-drawer-app-content">
       <!-- Top-Fixed Navigation -->
       <%= render partial: "layouts/top_bar" %>
-      <div class="main-content mt-75-vh">
+      <div class="main-content mdc-top-app-bar--prominent-fixed-adjust">
         <!-- Allow Full-Page-Width or Custom-Grid Layouts -->
         <%= yield(:outside_grid) %>
         <!-- Full-Screen-Height Scrollable Default Grid -->
         <% unless CoerceBoolean.from(yield(:no_main_grid).presence) %>
           <div class="main-grid mdc-layout-grid">
-            <div class="mdc-layout-grid__inner" style="overflow: auto">
+            <div class="mdc-layout-grid__inner">
               <%= cell_tag(:main, base: 18) do %>
                 <%= yield %>
               <% end %>

@@ -42,7 +42,7 @@ body {
 }
 
 .main-content {
-  // min-height: 200vh;
+  min-height: calc(100vh - 64px);
 }
 
 .clipboard-button {
