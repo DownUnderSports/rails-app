@@ -7,7 +7,7 @@ class CreatePerson < ActiveRecord::Migration[6.0]
       t.text :middle_names
       t.text :last_names, null: false
       t.text :suffix
-      t.text :email
+      t.column :email, :citext
       t.text :password_digest
       t.text :single_use_digest
       t.datetime :single_use_expires_at

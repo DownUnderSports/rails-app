@@ -10,13 +10,16 @@ class PersonTest < ActiveSupport::TestCase
     }
   end
 
-  def assert_database_not_null_constraint(attribute)
-    super Person, attribute
+  def assert_database_not_null_constraint(attribute, **opts)
+    super Person, attribute, **opts
   end
 
-  def assert_database_unique_constraint(attribute)
-    duplicate = person_fixtures(:athlete).__send__(attribute)
-    super Person, attribute, duplicate
+  def assert_database_unique_constraint(*attributes)
+    values = {}
+    Array(attributes).flatten.each do |attr|
+      values[attr.to_sym] = person_fixtures(:athlete).__send__(attr)
+    end
+    super Person, **values
   end
 
   def assert_single_use_digest(person, mthd = :password_reset)
@@ -129,5 +132,33 @@ class PersonTest < ActiveSupport::TestCase
     refute person.valid?, 'person with password is valid with a blank email'
     assert_not_nil person.errors[:email]
     assert_equal [ "required for login" ], person.errors[:email]
+  end
+
+  test 'data uses a hash with indifferent access' do
+    person = Person.new
+    assert_instance_of ActiveSupport::HashWithIndifferentAccess, person.data
+    [
+      nil,
+      "{}",
+      {},
+      {}.with_indifferent_access
+    ].each do |value|
+      person.data = value
+      assert_instance_of ActiveSupport::HashWithIndifferentAccess, person.data
+    end
+
+    mixed = { test: :symbol, "string" => "string", 1 => 1, 1.0 => 1.0, "d" => BigDecimal("0.1") / 1000000000 }
+
+    person.data = mixed
+    assert_equal IndifferentJsonb::Type.new.cast(mixed), person.data
+
+    mixed.each do |k, v|
+      if k.is_a?(Numeric)
+        assert_nil person.data[k]
+      else
+        assert_equal v.as_json, person.data[k.to_sym]
+      end
+      assert_equal v.as_json, person.data[k.to_s]
+    end
   end
 end

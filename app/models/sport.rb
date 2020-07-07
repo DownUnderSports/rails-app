@@ -6,14 +6,17 @@ class Sport < ApplicationRecord
   # == Constants ============================================================
 
   # == Extensions ===========================================================
+  include WithDataAttribute
 
   # == Attributes ===========================================================
-  has_logidze
 
   # == Relationships ========================================================
   has_many :backgrounds, inverse_of: :sport
 
   # == Validations ==========================================================
+  validates_presence_of :abbr, :full
+  validates :abbr_gendered,
+            :full_gendered, uniqueness: true, presence: true
 
   # == Scopes ===============================================================
 

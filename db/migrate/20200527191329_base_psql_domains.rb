@@ -18,6 +18,7 @@ class BasePsqlDomains < ActiveRecord::Migration[6.0]
         gender
         money_integer
         three_state
+        user_category
       ]
     end
 end

@@ -11,6 +11,7 @@ class Person < ApplicationRecord
 
   # == Extensions ===========================================================
   include LiberalEnum
+  include WithDataAttribute
 
   # == Attributes ===========================================================
   has_logidze
@@ -18,7 +19,6 @@ class Person < ApplicationRecord
   liberal_enum :category
 
   attr_readonly *PASSWORD_COLUMNS
-
 
   # == Relationships ========================================================
   has_many :backgrounds, inverse_of: :person
@@ -53,7 +53,7 @@ class Person < ApplicationRecord
 
   def real_class
     self.category.classify.constantize
-  rescue
+  rescue NameError
     Person
   end
 

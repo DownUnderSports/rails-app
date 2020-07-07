@@ -51,5 +51,11 @@ module DownUnderSports
     config.middleware.delete "ActionDispatch::Flash"
 
     config.logidze.ignore_log_data_by_default = true
+
+    config.to_prepare do
+      Dir.glob(Rails.root + "lib/overrides/**/*.rb").each do |file|
+        require_dependency(file)
+      end
+    end
   end
 end

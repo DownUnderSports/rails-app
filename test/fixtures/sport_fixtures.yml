@@ -1,18 +1,27 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 _fixture:
   model_class: Sport
-one:
-  abbr: AB
-  full: SportOne
-  abbr_gendered: GAB
-  full_gendered: Girls Basketball
+
+anything:
+  abbr: AN
+  full: Anything
+  abbr_gendered: ANY
+  full_gendered: Anything
   is_numbered: false
   data: {}
 
-two:
-  abbr: MyText
-  full: MyText
-  abbr_gendered: MyText
-  full_gendered: MyText
+gtl:
+  abbr: TL
+  full: Talking Loudly
+  abbr_gendered: GTL
+  full_gendered: Girls Talking Loudly
+  is_numbered: false
+  data: {}
+
+btl:
+  abbr: TL
+  full: Talking Loudly
+  abbr_gendered: BTL
+  full_gendered: Boys Talking Loudly
   is_numbered: false
   data: {}

@@ -33,6 +33,7 @@ module TestHelper
       include DatabaseAssertions
       include MethodAssertions
 
+      Rails.application.load_seed
     end
 
     # == Instance Methods =====================================================

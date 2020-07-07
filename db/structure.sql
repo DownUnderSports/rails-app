@@ -24,6 +24,20 @@ COMMENT ON EXTENSION btree_gin IS 'support for indexing common datatypes in GIN'
 
 
 --
+-- Name: citext; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS citext WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION citext; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION citext IS 'data type for case-insensitive character strings';
+
+
+--
 -- Name: hstore; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -403,14 +417,13 @@ CREATE TABLE public.ar_internal_metadata (
 CREATE TABLE public.background (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     person_id uuid NOT NULL,
+    category public.user_category NOT NULL,
     sport_id uuid,
-    category public.user_category,
     year integer,
-    "primary" boolean DEFAULT false NOT NULL,
+    main boolean DEFAULT false NOT NULL,
     data jsonb DEFAULT '{}'::jsonb NOT NULL,
     created_at timestamp(6) without time zone DEFAULT now() NOT NULL,
-    updated_at timestamp(6) without time zone DEFAULT now() NOT NULL,
-    log_data jsonb
+    updated_at timestamp(6) without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -426,7 +439,7 @@ CREATE TABLE public.person (
     middle_names text,
     last_names text NOT NULL,
     suffix text,
-    email text,
+    email public.citext,
     password_digest text,
     single_use_digest text,
     single_use_expires_at timestamp without time zone,
@@ -452,15 +465,14 @@ CREATE TABLE public.schema_migrations (
 
 CREATE TABLE public.sport (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    abbr text,
-    "full" text,
-    abbr_gendered text,
-    full_gendered text,
+    abbr text NOT NULL,
+    "full" text NOT NULL,
+    abbr_gendered text NOT NULL,
+    full_gendered text NOT NULL,
     is_numbered boolean DEFAULT false NOT NULL,
     data jsonb DEFAULT '{}'::jsonb NOT NULL,
     created_at timestamp(6) without time zone DEFAULT now() NOT NULL,
-    updated_at timestamp(6) without time zone DEFAULT now() NOT NULL,
-    log_data jsonb
+    updated_at timestamp(6) without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -545,6 +557,13 @@ ALTER TABLE ONLY public.user_session
 
 
 --
+-- Name: background_combo_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX background_combo_index ON public.background USING btree (person_id, sport_id, category, year);
+
+
+--
 -- Name: index_active_storage_attachments_on_blob_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -580,6 +599,13 @@ CREATE INDEX index_background_on_person_id ON public.background USING btree (per
 
 
 --
+-- Name: index_background_on_person_id_and_main; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_background_on_person_id_and_main ON public.background USING btree (person_id, main);
+
+
+--
 -- Name: index_background_on_sport_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -608,6 +634,20 @@ CREATE UNIQUE INDEX index_person_on_email ON public.person USING btree (email);
 
 
 --
+-- Name: index_sport_on_abbr_gendered; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_sport_on_abbr_gendered ON public.sport USING btree (abbr_gendered);
+
+
+--
+-- Name: index_sport_on_full_gendered; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_sport_on_full_gendered ON public.sport USING btree (full_gendered);
+
+
+--
 -- Name: index_user_session_on_browser_id_and_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -625,21 +665,14 @@ CREATE INDEX index_user_session_on_user_id ON public.user_session USING btree (u
 -- Name: unique_background_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX unique_background_index ON public.background USING btree (person_id, sport_id, category, year);
+CREATE UNIQUE INDEX unique_background_index ON public.background USING btree (person_id, category, COALESCE(sport_id, '00000000-0000-0000-0000-000000000000'::uuid), COALESCE(year, '-1'::integer));
 
 
 --
--- Name: unique_primary_background_index; Type: INDEX; Schema: public; Owner: -
+-- Name: unique_main_background_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX unique_primary_background_index ON public.background USING btree (person_id, "primary");
-
-
---
--- Name: background logidze_on_background; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER logidze_on_background BEFORE INSERT OR UPDATE ON public.background FOR EACH ROW WHEN ((COALESCE(current_setting('logidze.disabled'::text, true), ''::text) <> 'on'::text)) EXECUTE FUNCTION public.logidze_logger('null', 'updated_at');
+CREATE UNIQUE INDEX unique_main_background_index ON public.background USING btree (person_id) WHERE (main = true);
 
 
 --
@@ -647,13 +680,6 @@ CREATE TRIGGER logidze_on_background BEFORE INSERT OR UPDATE ON public.backgroun
 --
 
 CREATE TRIGGER logidze_on_person BEFORE INSERT OR UPDATE ON public.person FOR EACH ROW WHEN ((COALESCE(current_setting('logidze.disabled'::text, true), ''::text) <> 'on'::text)) EXECUTE FUNCTION public.logidze_logger('20', 'updated_at', '{password_digest,single_use_digest,single_use_expires_at}');
-
-
---
--- Name: sport logidze_on_sport; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER logidze_on_sport BEFORE INSERT OR UPDATE ON public.sport FOR EACH ROW WHEN ((COALESCE(current_setting('logidze.disabled'::text, true), ''::text) <> 'on'::text)) EXECUTE FUNCTION public.logidze_logger('null', 'updated_at');
 
 
 --
@@ -700,12 +726,9 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200527194003'),
 ('20200528171519'),
 ('20200528172401'),
-('20200528172402'),
-('20200528174008'),
 ('20200528174009'),
 ('20200528174010'),
 ('20200528201725'),
-('20200528201756'),
 ('20200528225314');
 
 

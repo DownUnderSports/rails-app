@@ -4,5 +4,6 @@ class BaseSqlExtensions < ActiveRecord::Migration[6.0]
     enable_extension :btree_gin
     enable_extension :pgcrypto
     enable_extension :hstore
+    enable_extension :citext
   end
 end

@@ -1,12 +1,24 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 _fixture:
   model_class: Background
-one:
-  person: one
-  sport: one
+athlete_gtl:
+  person: athlete
+  sport: gtl
+  category: athlete
+  year: 2020
+  main: true
   data: {}
 
-two:
-  person: two
-  sport: two
+athlete_btl:
+  person: athlete
+  sport: btl
+  category: athlete
+  year: 2020
+  main: false
+  data: {}
+
+staff:
+  person: staff
+  category: staff
+  main: true
   data: {}

@@ -1,0 +1,15 @@
+DO $$
+  BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'user_category') THEN
+      CREATE TYPE user_category
+        AS ENUM (
+          'athlete',
+          'coach',
+          'guide',
+          'official',
+          'staff',
+          'supporter'
+        );
+    END IF;
+  END
+$$;
