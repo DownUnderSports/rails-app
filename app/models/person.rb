@@ -11,7 +11,6 @@ class Person < ApplicationRecord
 
   # == Extensions ===========================================================
   include LiberalEnum
-  include WithDataAttribute
 
   # == Attributes ===========================================================
   has_logidze

@@ -19,7 +19,5 @@ class CreatePerson < ActiveRecord::Migration[6.0]
 
       t.timestamps default: -> { 'NOW()' }
     end
-
-
   end
 end

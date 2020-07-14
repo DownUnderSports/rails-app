@@ -109,6 +109,10 @@ class SportTest < ActiveSupport::TestCase
     ].each do |value|
       sport.data = value
       assert_instance_of ActiveSupport::HashWithIndifferentAccess, sport.data
+    rescue
+      puts $!.message
+      puts $!.backtrace
+      raise
     end
 
     mixed = { test: :symbol, "string" => "string", 1 => 1, 1.0 => 1.0, "d" => BigDecimal("0.1") / 1000000000 }
