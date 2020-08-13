@@ -16,6 +16,7 @@ class BasePsqlDomains < ActiveRecord::Migration[6.0]
       %w[
         exchange_rate_integer
         gender
+        institution_category
         money_integer
         three_state
         user_category

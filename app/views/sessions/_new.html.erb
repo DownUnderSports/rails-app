@@ -2,12 +2,12 @@
 <%= form_with url: session_path, id: "new_session_form" do |form| %>
   <div class="mdc-layout-grid__inner">
     <% if defined?(@errors) && @errors.present? %>
-      <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-18 mb-4">
+      <%= cell_tag base: 18, class: "mb-4" do %>
         <%= render partial: "shared/errors" %>
-      </div>
+      <% end %>
     <% end %>
     <%= hidden_field_tag :after_login, @redirect_value if defined? @redirect_value %>
-    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-18">
+    <%= cell_tag base: 18 do %>
       <!-- Render textfield component -->
       <div class="mdc-text-field mdc-text-field--filled mdc-text-field--with-trailing-icon">
         <%= form.text_field :email, type: "email", class: "mdc-text-field__input", data: { target: "text-field.input" } %>
@@ -17,8 +17,8 @@
         <%= form.label :email, class: "mdc-floating-label mdc-floating-label--float-above", required: true, data: { target: "text-field.label" } %>
         <div class="mdc-line-ripple"></div>
       </div>
-    </div>
-    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-18">
+    <% end %>
+    <%= cell_tag base: 18 do %>
       <!-- Render textfield component -->
       <div class="mdc-text-field mdc-text-field--filled mdc-text-field--with-trailing-icon">
         <%= form.text_field :password, type: "password", class: "mdc-text-field__input", data: { target: "text-field.input" } %>
@@ -28,12 +28,12 @@
         <%= form.label :password, class: "mdc-floating-label mdc-floating-label", required: true, data: { target: "text-field.label" } %>
         <div class="mdc-line-ripple"></div>
       </div>
-    </div>
-    <div class="mdc-layout-grid__cell">
+    <% end %>
+    <%= cell_tag do %>
       <button class="mdc-button mdc-button--unelevated" type="submit">
         <div class="mdc-button__ripple"></div>
         <span class="mdc-button__label">Submit</span>
       </button>
-    </div>
+    <% end %>
   </div>
 <% end %>

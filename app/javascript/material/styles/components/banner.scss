@@ -29,7 +29,8 @@ $on-error: null !default;
 }
 
 @mixin content-layout {
-  display: flex;
+  // display: flex;
+  flex: 1;
   padding-top: 16px;
   padding-right: 16px;
   padding-bottom: 16px;

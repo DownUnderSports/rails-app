@@ -98,6 +98,18 @@ CREATE TYPE public.gender AS ENUM (
 
 
 --
+-- Name: institution_category; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.institution_category AS ENUM (
+    'business',
+    'club',
+    'school',
+    'university'
+);
+
+
+--
 -- Name: money_integer; Type: DOMAIN; Schema: public; Owner: -
 --
 
@@ -428,6 +440,20 @@ CREATE TABLE public.background (
 
 
 --
+-- Name: country; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.country (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    alpha_2 public.citext NOT NULL,
+    alpha_3 public.citext NOT NULL,
+    "numeric" text NOT NULL,
+    short text NOT NULL,
+    "full" text NOT NULL
+);
+
+
+--
 -- Name: person; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -473,6 +499,20 @@ CREATE TABLE public.sport (
     data jsonb DEFAULT '{}'::jsonb NOT NULL,
     created_at timestamp(6) without time zone DEFAULT now() NOT NULL,
     updated_at timestamp(6) without time zone DEFAULT now() NOT NULL
+);
+
+
+--
+-- Name: state; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.state (
+    abbr public.citext NOT NULL,
+    "full" public.citext NOT NULL,
+    data jsonb DEFAULT '{}'::jsonb NOT NULL,
+    created_at timestamp(6) without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp(6) without time zone DEFAULT now() NOT NULL,
+    CONSTRAINT rails_constraint_259574478011839376_v_d CHECK ((char_length((abbr)::text) = 2))
 );
 
 
@@ -525,6 +565,14 @@ ALTER TABLE ONLY public.background
 
 
 --
+-- Name: country country_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.country
+    ADD CONSTRAINT country_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: person person_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -546,6 +594,14 @@ ALTER TABLE ONLY public.schema_migrations
 
 ALTER TABLE ONLY public.sport
     ADD CONSTRAINT sport_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: state state_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.state
+    ADD CONSTRAINT state_pkey PRIMARY KEY (abbr);
 
 
 --
@@ -613,6 +669,41 @@ CREATE INDEX index_background_on_sport_id ON public.background USING btree (spor
 
 
 --
+-- Name: index_country_on_alpha_2; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_country_on_alpha_2 ON public.country USING btree (alpha_2);
+
+
+--
+-- Name: index_country_on_alpha_3; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_country_on_alpha_3 ON public.country USING btree (alpha_3);
+
+
+--
+-- Name: index_country_on_full; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_country_on_full ON public.country USING btree ("full");
+
+
+--
+-- Name: index_country_on_numeric; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_country_on_numeric ON public.country USING btree ("numeric");
+
+
+--
+-- Name: index_country_on_short; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_country_on_short ON public.country USING btree (short);
+
+
+--
 -- Name: index_person_on_category; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -645,6 +736,13 @@ CREATE UNIQUE INDEX index_sport_on_abbr_gendered ON public.sport USING btree (ab
 --
 
 CREATE UNIQUE INDEX index_sport_on_full_gendered ON public.sport USING btree (full_gendered);
+
+
+--
+-- Name: index_state_on_full; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_state_on_full ON public.state USING btree ("full");
 
 
 --
@@ -729,6 +827,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200528174009'),
 ('20200528174010'),
 ('20200528201725'),
-('20200528225314');
+('20200528225314'),
+('20200715002511'),
+('20200716184312');
 
 

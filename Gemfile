@@ -15,7 +15,7 @@ gem "coerce_boolean", "~> 0.1"
 
 # extension gems
 # gem "aasm", "~> 5.0", ">= 5.0.1"
-gem "associate_jsonb", "~> 0.0.3"
+gem "associate_jsonb", "~> 0.0", ">= 0.0.9"
 gem "store_as_int", "~> 0.0", ">= 0.0.19"
 gem "csv_rb", "~> 6.0.3", ">= 6.0.3.1"
 gem "image_processing", "~> 1.2"

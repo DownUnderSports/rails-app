@@ -18,25 +18,24 @@ module GridHelper
     def cell_classes(**opts)
       classes = %w[ mdc-layout-grid__cell ]
       classes << opts[:class] if opts[:class].present?
-      prev_span = prev_order = prev_offset = nil
+      prev_span = prev_order = nil
       incremental = boolean_unless_symbol(opts[:incremental])
 
       SIZES.each do |size|
         value = opts[size]
         incremental = true if size == opts[:incremental]
 
-        span, order, offset = parse_cell_opt(value)
+        span, order = parse_cell_opt(value)
         if incremental
           span ||= prev_span
           order ||= prev_order
-          offset ||= prev_offset
         end
-        prev_span, prev_order, prev_offset = span, order, offset
+        prev_span, prev_order = span, order
 
         classes |= [ cell_span(span, size), cell_order(order, size) ]
       end
 
-      classes.join(" ")
+      classes.reject(&:nil?).join(" ")
     end
 
     def parse_cell_opt(value)
@@ -44,7 +43,7 @@ module GridHelper
       when Integer, String
         [ value.presence ]
       when Hash
-        [ value[:span].presence, value[:order].presence, value[:offset].presence ]
+        [ value[:span].presence, value[:order].presence ]
       else
         []
       end

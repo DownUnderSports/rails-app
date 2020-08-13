@@ -1,0 +1,13 @@
+DO $$
+  BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'institution_category') THEN
+      CREATE TYPE institution_category
+        AS ENUM (
+          'business',
+          'club',
+          'school',
+          'university'
+        );
+    END IF;
+  END
+$$;
