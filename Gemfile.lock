@@ -185,6 +185,8 @@ GEM
     rbnacl (7.1.1)
       ffi
     redis (4.2.1)
+    redis-namespace (1.8.0)
+      redis (>= 3.0.4)
     regexp_parser (1.7.1)
     ruby-vips (2.0.17)
       ffi (~> 1.9)
@@ -209,6 +211,8 @@ GEM
     store_as_int (0.0.19)
     thor (1.0.1)
     thread_safe (0.3.6)
+    tiny_fake_redis (0.1.0)
+      zeitwerk (~> 2, >= 2.2.2)
     turbolinks (5.2.1)
       turbolinks-source (~> 5.2)
     turbolinks-source (5.2.0)
@@ -256,12 +260,14 @@ DEPENDENCIES
   pundit (~> 2.1)
   rails (~> 6.0.3, >= 6.0.3.2)
   rbnacl (~> 7.1)
-  redis (~> 4.0)
+  redis (~> 4.2.1)
+  redis-namespace (~> 1.8.0)
   secure_web_token (~> 0.1)
   selenium-webdriver
   spring
   spring-watcher-listen (~> 2.0.0)
   store_as_int (~> 0.0, >= 0.0.19)
+  tiny_fake_redis (~> 0.1, >= 0.1.0)
   turbolinks (~> 5)
   web-console (>= 3.3.0)
   webdrivers

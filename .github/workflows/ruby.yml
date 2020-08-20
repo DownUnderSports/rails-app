@@ -20,9 +20,41 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    services:
+      redis:
+        image: redis
+        # Set health checks to wait until redis has started
+        ports:
+          - 6379/tcp
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: down_under_sports_test
+        # will assign a random free host port
+        ports:
+          - 5432/tcp
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Ruby
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
+    - name: Setup Ruby
     # To automatically get bug fixes and new Ruby versions for ruby/setup-ruby,
     # change this to (see https://github.com/ruby/setup-ruby#versioning):
       uses: ruby/setup-ruby@v1
@@ -30,7 +62,35 @@ jobs:
       with:
         bundler-cache: true
         ruby-version: .ruby-version
-    - name: Install dependencies
+
+    - name: Setup Node
+      uses: actions/setup-node@v2-beta
+      with:
+        node-version: 14.8.0
+
+    - name: Install Gems
       run: bundle install
+
+    - name: Install Packages
+      run: yarn install --pure-lockfile
+
+    - name: Migrate Database
+      env:
+        # use localhost for the host here because we are running the job on the VM.
+        # If we were running the job on in a container this would be postgres and redis
+        RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+        REDIS_URL: redis://localhost:${{ job.services.redis.ports[6379] }}/1
+        DATABASE_URL: postgresql://postgres:postgres@localhost:${{ job.services.postgres.ports[5432] }}/down_under_sports_test
+        RAILS_ENV: test
+      run: |
+        bundle exec rails db:drop db:create db:migrate db:seed
+        bundle exec rails db:environment:set RAILS_ENV=test
+
     - name: Run tests
-      run: bundle exec rails test
+      env:
+        RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+        REDIS_URL: redis://localhost:${{ job.services.redis.ports[6379] }}/1
+        DATABASE_URL: postgresql://postgres:postgres@localhost:${{ job.services.postgres.ports[5432] }}/down_under_sports_test
+        RAILS_ENV: test
+      run: |
+        bundle exec rails test

@@ -10,7 +10,8 @@ gem "puma", "~> 4.3", ">= 4.3.3"
 gem "webpacker", "~> 4.0"
 gem "turbolinks", "~> 5"
 gem "jbuilder", "~> 2.7"
-gem "redis", "~> 4.0"
+gem "redis", "~> 4.2.1"
+gem "redis-namespace", "~> 1.8.0"
 gem "coerce_boolean", "~> 0.1"
 
 # extension gems
@@ -37,6 +38,8 @@ gem "pundit", "~> 2.1"
 gem "bootsnap", ">= 1.4.2", require: false
 
 group :development, :test do
+  gem "tiny_fake_redis", "~> 0.1", ">= 0.1.0"
+
   # Call "byebug" anywhere in the code to stop execution and get a debugger console
   gem "byebug", platforms: [:mri, :mingw, :x64_mingw]
 end
