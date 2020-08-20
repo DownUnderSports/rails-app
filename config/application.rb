@@ -52,9 +52,11 @@ module DownUnderSports
 
     config.logidze.ignore_log_data_by_default = true
 
+    overrides = "#{Rails.root}/lib/overrides"
+    Rails.autoloaders.main.ignore(overrides)
     config.to_prepare do
-      Dir.glob(Rails.root + "lib/overrides/**/*.rb").each do |file|
-        require_dependency(file)
+      Dir.glob("#{overrides}/**/*.rb").each do |file|
+        load file
       end
     end
   end

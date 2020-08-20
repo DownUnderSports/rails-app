@@ -142,6 +142,72 @@ CREATE TYPE public.user_category AS ENUM (
 
 
 --
+-- Name: jsonb_foreign_key(text, text, jsonb, text, text, boolean); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.jsonb_foreign_key(table_name text, foreign_key text, store jsonb, key text, type text DEFAULT 'numeric'::text, nullable boolean DEFAULT true) RETURNS boolean
+    LANGUAGE plpgsql
+    AS $_$
+DECLARE
+  does_exist BOOLEAN;
+BEGIN
+  IF store->>key IS NULL
+  THEN
+    return nullable;
+  END IF;
+
+  IF store->>key = ''
+  THEN
+    return FALSE;
+  END IF;
+
+  EXECUTE FORMAT('SELECT EXISTS (SELECT 1 FROM %1$I WHERE %1$I.%2$I = CAST($1 AS ' || type || '))', table_name, foreign_key)
+  INTO does_exist
+  USING store->>key;
+
+  RETURN does_exist;
+END;
+$_$;
+
+
+--
+-- Name: jsonb_nested_set(jsonb, text[], jsonb); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.jsonb_nested_set(target jsonb, path text[], new_value jsonb) RETURNS jsonb
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+  new_json jsonb := '{}'::jsonb;
+  does_exist BOOLEAN;
+  current_path text[];
+  key text;
+BEGIN
+  IF target #> path IS NOT NULL
+  THEN
+    return jsonb_set(target, path, new_value);
+  ELSE
+    new_json := target;
+
+    IF array_length(path, 1) > 1
+    THEN
+      FOREACH key IN ARRAY path[:(array_length(path, 1) - 1)]
+      LOOP
+        current_path := array_append(current_path, key);
+        IF new_json #> current_path IS NULL
+        THEN
+          new_json := jsonb_set(new_json, current_path, '{}'::jsonb, TRUE);
+        END IF;
+      END LOOP;
+    END IF;
+
+    return jsonb_set(new_json, path, new_value, TRUE);
+  END IF;
+END;
+$$;
+
+
+--
 -- Name: logidze_compact_history(jsonb); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -411,6 +477,25 @@ CREATE TABLE public.active_storage_blobs (
 
 
 --
+-- Name: address; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.address (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    country_id uuid NOT NULL,
+    postal_code public.citext,
+    region public.citext,
+    city public.citext,
+    delivery public.citext,
+    backup public.citext,
+    verified boolean DEFAULT false NOT NULL,
+    rejected boolean DEFAULT false NOT NULL,
+    created_at timestamp(6) without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp(6) without time zone DEFAULT now() NOT NULL
+);
+
+
+--
 -- Name: ar_internal_metadata; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -449,7 +534,10 @@ CREATE TABLE public.country (
     alpha_3 public.citext NOT NULL,
     "numeric" text NOT NULL,
     short text NOT NULL,
-    "full" text NOT NULL
+    "full" text NOT NULL,
+    CONSTRAINT country_alpha_2_format CHECK ((alpha_2 OPERATOR(public.~*) '^[A-Z]{2}$'::public.citext)),
+    CONSTRAINT country_alpha_3_format CHECK ((alpha_3 OPERATOR(public.~*) '^[A-Z]{3}$'::public.citext)),
+    CONSTRAINT country_numeric_format CHECK (("numeric" ~* '^[0-9]{3}$'::text))
 );
 
 
@@ -512,7 +600,7 @@ CREATE TABLE public.state (
     data jsonb DEFAULT '{}'::jsonb NOT NULL,
     created_at timestamp(6) without time zone DEFAULT now() NOT NULL,
     updated_at timestamp(6) without time zone DEFAULT now() NOT NULL,
-    CONSTRAINT rails_constraint_259574478011839376_v_d CHECK ((char_length((abbr)::text) = 2))
+    CONSTRAINT state_abbr_format CHECK ((abbr OPERATOR(public.~*) '^[A-Z0-9]{2}$'::public.citext))
 );
 
 
@@ -546,6 +634,14 @@ ALTER TABLE ONLY public.active_storage_attachments
 
 ALTER TABLE ONLY public.active_storage_blobs
     ADD CONSTRAINT active_storage_blobs_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: address address_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.address
+    ADD CONSTRAINT address_pkey PRIMARY KEY (id);
 
 
 --
@@ -638,6 +734,27 @@ CREATE UNIQUE INDEX index_active_storage_attachments_uniqueness ON public.active
 --
 
 CREATE UNIQUE INDEX index_active_storage_blobs_on_key ON public.active_storage_blobs USING btree (key);
+
+
+--
+-- Name: index_address_on_country_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_address_on_country_id ON public.address USING btree (country_id);
+
+
+--
+-- Name: index_address_on_rejected; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_address_on_rejected ON public.address USING btree (rejected);
+
+
+--
+-- Name: index_address_on_verified; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_address_on_verified ON public.address USING btree (verified);
 
 
 --
@@ -821,6 +938,7 @@ SET search_path TO "$user", public;
 INSERT INTO "schema_migrations" (version) VALUES
 ('20200527191248'),
 ('20200527191329'),
+('20200527194002'),
 ('20200527194003'),
 ('20200528171519'),
 ('20200528172401'),
@@ -829,6 +947,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200528201725'),
 ('20200528225314'),
 ('20200715002511'),
-('20200716184312');
+('20200716184312'),
+('20200817174512');
 
 

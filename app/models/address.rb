@@ -10,7 +10,9 @@ class Address < ApplicationRecord
   # == Extensions ===========================================================
 
   # == Relationships ========================================================
-  belongs_to :country, required: true
+  belongs_to :country,
+    required:   true,
+    inverse_of: :addresses
 
   # == Validations ==========================================================
 

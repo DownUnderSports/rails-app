@@ -15,8 +15,10 @@ class Sport < ApplicationRecord
 
   # == Validations ==========================================================
   validates_presence_of :abbr, :full
-  validates :abbr_gendered,
-            :full_gendered, uniqueness: true, presence: true
+
+  validates :abbr_gendered, :full_gendered,
+    uniqueness: true,
+    presence:   true
 
   # == Scopes ===============================================================
 

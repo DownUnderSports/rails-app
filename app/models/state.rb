@@ -12,6 +12,21 @@ class State < ApplicationRecord
   # == Relationships ========================================================
 
   # == Validations ==========================================================
+  validates :abbr,
+    uniqueness: true,
+    presence:   true,
+    format:     {
+                  with: /\A[A-Z0-9]+\Z/,
+                  message: "must be only letters or numbers"
+                },
+    length:     {
+                  is: 2,
+                  message: "must be 2 characters"
+                }
+
+  validates :full,
+    uniqueness: true,
+    presence:   true
 
   # == Scopes ===============================================================
 
@@ -24,6 +39,9 @@ class State < ApplicationRecord
   # == Boolean Methods ======================================================
 
   # == Instance Methods =====================================================
+  def abbr=(value)
+    super(value.to_s.presence&.upcase)
+  end
 
   # == Private Methods ======================================================
 

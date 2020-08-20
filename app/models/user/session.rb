@@ -13,7 +13,9 @@ class User < Person
     # == Extensions ===========================================================
 
     # == Relationships ========================================================
-    belongs_to :user, required: true, inverse_of: :sessions
+    belongs_to :user,
+      required:   true,
+      inverse_of: :sessions
 
     # == Validations ==========================================================
 

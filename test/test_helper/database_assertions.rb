@@ -2,6 +2,20 @@ module TestHelper
   module DatabaseAssertions
     extend ActiveSupport::Concern
 
+    def assert_database_check_constraint(klass, attribute, value, force: false)
+      record = klass.new(attributes_without attribute)
+
+      if force
+        err = assert_attr_value_raises(record, attribute, value)
+      else
+        err = assert_save_raises ActiveRecord::NotNullViolation, record
+      end
+
+      assert_match \
+        "null value in column \"#{attribute}\" violates not-null constraint",
+        err.message
+    end
+
     def assert_database_not_null_constraint(klass, attribute, force: false)
       record = klass.new(attributes_without attribute)
 
@@ -45,7 +59,7 @@ module TestHelper
         end
       else
         assert_match \
-          "DETAIL:  Key (#{duplicates.keys.join(", ")})=(#{duplicates.values.join(", ")}) already exists.",
+          %r{DETAIL:\s+Key\s+\("?#{duplicates.keys.join('"?,\s+"?')}"?\)=\("?#{duplicates.values.join('"?,\s+"?')}"?\)\s+already\s+exists\.},
           err.message
       end
     end
@@ -56,23 +70,27 @@ module TestHelper
       end
     end
 
-    def assert_nil_attr_raises(record, attribute)
+    def assert_nil_attr_raises(r, a)
+      assert_attr_value_raises r, a, nil
+    end
+
+    def assert_attr_value_raises(record, attribute, value)
       assert_raises(ActiveRecord::NotNullViolation) do
         record.class.connection.transaction(requires_new: true) do
           if record.new_record?
-            _raw_nil_insert record, attribute
+            _raw_value_insert record, attribute, value
           else
-            _raw_nil_update record, attribute
+            _raw_value_update record, attribute, value
           end
         end
       end
     end
 
-    def _raw_nil_insert(row, attribute)
+    def _raw_value_insert(row, attribute, value)
       attribute_names  = row.__send__ :attributes_for_create, row.attribute_names
       attribute_values = _get_attribute_values(row, attribute_names)
 
-      attribute_values[attribute.to_s] = nil
+      attribute_values[attribute.to_s] = value
 
       subbed  = _override_values(row.class, attribute_values, attribute)
       im      = row.class.arel_table.compile_insert(subbed)
@@ -85,10 +103,10 @@ module TestHelper
       )
     end
 
-    def _raw_nil_update(row, attribute)
+    def _raw_value_update(row, attribute, value)
       attribute_names   = row.__send__ :attributes_for_update, row.attribute_names
       attribute_values  = _get_attribute_values(row, attribute_names)
-      attribute_values[attribute.to_s] = nil
+      attribute_values[attribute.to_s] = value
 
       pk          = row.instance_variable_get(:@primary_key)
       constraints = { pk => row.id_in_database }
@@ -113,7 +131,7 @@ module TestHelper
     def _override_values(klass, values, attribute)
       values.map do |name, value|
         attr = klass.arel_attribute(name)
-        if name == attribute.to_s
+        if value.nil? && name == attribute.to_s
           bind = Arel::Nodes::BindParam.new(NilQueryAttribute.new(name.to_s))
         else
           bind = klass.predicate_builder.build_bind_attribute(name, value)

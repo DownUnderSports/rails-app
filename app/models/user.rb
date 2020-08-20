@@ -12,8 +12,11 @@ class User < Person
 
   # == Attributes ===========================================================
   attr_readonly *(column_names.reject {|col| WRITABLE_COLUMNS.include? col })
+
   attr_not_readonly *WRITABLE_COLUMNS
+
   nacl_password skip_validations: :blank
+
   nacl_password :single_use, skip_validations: true
 
   # == Relationships ========================================================

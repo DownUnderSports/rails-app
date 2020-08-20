@@ -30,9 +30,9 @@ class Background < ApplicationRecord
                 }
 
   validates_uniqueness_of_scope :person_id, :main,
-    if:        :main?,
-    message:   "only allowed for one background",
-    attribute: :main
+    if:         :main?,
+    message:    "only allowed for one background",
+    attribute:  :main
 
   validates_uniqueness_of_scope :person_id, :sport_id, :category, :year
 

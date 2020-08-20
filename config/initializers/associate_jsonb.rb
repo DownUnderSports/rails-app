@@ -1,0 +1,1 @@
+AssociateJsonb.enable_jsonb_set

@@ -24,13 +24,22 @@ class Person < ApplicationRecord
 
   # == Validations ==========================================================
   validates_presence_of :first_names, :last_names
-  validates_uniqueness_of :email, allow_blank: true, if: :email_needs_validation?
-  validates_presence_of :email, message: "required for login", if: :email_required?
-  validates :category, presence: true, inclusion: {
-                                                    in: self::CATEGORIES,
-                                                    allow_blank: true,
-                                                    message: "is not recognized"
-                                                  }
+
+  validates_uniqueness_of :email,
+    allow_blank: true,
+    if:          :email_needs_validation?
+
+  validates_presence_of :email,
+    message:  "required for login",
+    if:       :email_required?
+
+  validates :category,
+    presence:   true,
+    inclusion:  {
+                  in: self::CATEGORIES,
+                  allow_blank: true,
+                  message: "is not recognized"
+                }
 
   # == Scopes ===============================================================
 

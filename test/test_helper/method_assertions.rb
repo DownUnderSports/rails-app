@@ -82,5 +82,36 @@ module TestHelper
         expected: expected,
         &block
     end
+
+    def assert_has_indifferent_hash(object, method)
+      assert_instance_of ActiveSupport::HashWithIndifferentAccess, object.__send__(method)
+      [
+        nil,
+        "{}",
+        {},
+        {}.with_indifferent_access
+      ].each do |value|
+        object.__send__(:"#{method}=", value)
+        assert_instance_of ActiveSupport::HashWithIndifferentAccess, object.__send__(method)
+      rescue
+        puts $!.message
+        puts $!.backtrace
+        raise
+      end
+
+      mixed = { test: :symbol, "string" => "string", 1 => 1, 1.0 => 1.0, "d" => BigDecimal("0.1") / 1000000000 }
+
+      object.__send__(:"#{method}=", mixed)
+      assert_equal IndifferentJsonb::Type.new.cast(mixed), object.__send__(method)
+
+      mixed.each do |k, v|
+        if k.is_a?(Numeric)
+          assert_nil object.__send__(method)[k]
+        else
+          assert_equal v.as_json, object.__send__(method)[k.to_sym]
+        end
+        assert_equal v.as_json, object.__send__(method)[k.to_s]
+      end
+    end
   end
 end

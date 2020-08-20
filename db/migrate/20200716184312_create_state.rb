@@ -4,8 +4,8 @@ class CreateState < ActiveRecord::Migration[6.0]
       t.citext :abbr, null: false,
                       primary_key: true,
                       constraint: {
-                                  value: "char_length(abbr) = 2",
-                                  name: "state_abbr_length"
+                                  value: "abbr ~* '^[A-Z0-9]{2}$'",
+                                  name: "state_abbr_format"
                                 }
 
       t.citext :full, null: false
