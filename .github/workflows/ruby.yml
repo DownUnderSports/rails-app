@@ -9,9 +9,9 @@ name: Ruby
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   test:
@@ -34,7 +34,8 @@ jobs:
 
       postgres:
         # Docker Hub image
-        image: postgres
+        image: postgres:12
+        # image: postgres
         # Provide the password for postgres
         env:
           POSTGRES_USER: postgres
@@ -55,8 +56,8 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Setup Ruby
-    # To automatically get bug fixes and new Ruby versions for ruby/setup-ruby,
-    # change this to (see https://github.com/ruby/setup-ruby#versioning):
+      # Automatically get bug fixes and new Ruby versions for ruby/setup-ruby
+      # (see https://github.com/ruby/setup-ruby#versioning):
       uses: ruby/setup-ruby@v1
       # uses: ruby/setup-ruby@ec106b438a1ff6ff109590de34ddc62c540232e0
       with:
@@ -66,7 +67,7 @@ jobs:
     - name: Setup Node
       uses: actions/setup-node@v2-beta
       with:
-        node-version: 14.8.0
+        node-version: 14.12.0
 
     - name: Install Gems
       run: bundle install
@@ -82,6 +83,7 @@ jobs:
         REDIS_URL: redis://localhost:${{ job.services.redis.ports[6379] }}/1
         DATABASE_URL: postgresql://postgres:postgres@localhost:${{ job.services.postgres.ports[5432] }}/down_under_sports_test
         RAILS_ENV: test
+        RAILS_SKIP_SCHEMA_DUMP: true
       run: |
         bundle exec rails db:drop db:create db:migrate db:seed
         bundle exec rails db:environment:set RAILS_ENV=test
