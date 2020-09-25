@@ -15,7 +15,6 @@
 
 # Ignore pidfiles, but keep the directory.
 /tmp/pids/*
-!/tmp/pids/
 !/tmp/pids/.keep
 
 # Ignore uploaded files in development.
@@ -34,7 +33,21 @@
 /yarn-error.log
 yarn-debug.log*
 .yarn-integrity
+.byebug_history
 
+# Ignore test reports.
+/brakeman-output.*
+/test/reports/
+/capybara-*.html
+
+
+# Never check passwords into source control!
+/config/database.yml
+/config/master.key
+/.env
+
+
+# ignore decrypted files
 .gnupg
 .gnupg*
 .gnupg/
@@ -47,12 +60,15 @@ yarn-debug.log*
 !/**/*.pem.tar.b64.aes*
 !/**/*.pem.tar.nacl*
 
+# don't ignore keep files
 !/**/.keep
 !/**/pids/.keep
 /pids/*
 !/pids/.keep
 /**/node_modules/**/.keep
 /node_modules/**/.keep
+
+# ignore extraneous dev files
 *.dump
 *.lock
 *.DS_Store
