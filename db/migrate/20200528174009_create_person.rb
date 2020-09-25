@@ -17,7 +17,7 @@ class CreatePerson < ActiveRecord::Migration[6.0]
       t.index [ :email ], unique: true
       t.index [ :data ], using: :gin
 
-      t.timestamps default: -> { 'NOW()' }
+      t.timestamps default: -> { "NOW()" }
     end
   end
 end

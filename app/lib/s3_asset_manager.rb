@@ -6,7 +6,7 @@ module S3AssetManager
     def s3_bucket
       return @s3_bucket if @s3_bucket
 
-      require 'aws-sdk-s3'
+      require "aws-sdk-s3"
 
       Aws.config.update({
         region: Rails.application.credentials.dig(:aws, :region),
@@ -17,15 +17,15 @@ module S3AssetManager
           ),
       })
 
-      @s3_bucket = Aws::S3::Resource.new.bucket("#{Rails.application.credentials.dig(:aws, :bucket_name)}-#{(Rails.env.to_s.presence || 'development').downcase}")
+      @s3_bucket = Aws::S3::Resource.new.bucket("#{Rails.application.credentials.dig(:aws, :bucket_name)}-#{(Rails.env.to_s.presence || "development").downcase}")
     end
   end
 
-  def self.upload_folder(folder_path, include_folder: false, bucket: nil, prefix: '', **opts)
+  def self.upload_folder(folder_path, include_folder: false, bucket: nil, prefix: "", **opts)
     self::FolderUpload.new(folder_path: folder_path, bucket: bucket || s3_bucket, include_folder: CoerceBoolean.from(include_folder), prefix: prefix).upload **opts
   end
 
-  def self.object_if_exists(file_path, asset_prefix = '')
+  def self.object_if_exists(file_path, asset_prefix = "")
     o =
       s3_bucket.
       object("#{asset_prefix.presence && "#{asset_prefix}/"}#{file_path}")
@@ -49,8 +49,8 @@ module S3AssetManager
   end
 
   def self.download_tmp_file(file_name = nil, **opts, &block)
-    file_name = 'temp-download.csv' unless file_name.present?
-    dir = Rails.root.join('tmp', 's3_downloads', "#{rand(100)}.#{Time.now.to_i}")
+    file_name = "temp-download.csv" unless file_name.present?
+    dir = Rails.root.join("tmp", "s3_downloads", "#{rand(100)}.#{Time.now.to_i}")
     path = dir.join(file_name)
 
     FileUtils.mkdir_p dir

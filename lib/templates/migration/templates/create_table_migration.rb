@@ -3,15 +3,15 @@ class <%= migration_class_name %> < ActiveRecord::Migration[<%= ActiveRecord::Mi
     create_table :<%= table_name %><%= primary_key_type %> do |t|
 <% attributes.each do |attribute| -%>
 <% if attribute.password_digest? -%>
-      t.string :password_digest<%= attribute.inject_options %>
+      t.text :password_digest<%= attribute.inject_options %>
 <% elsif attribute.token? -%>
-      t.string :<%= attribute.name %><%= attribute.inject_options %>
+      t.text :<%= attribute.name %><%= attribute.inject_options %>
 <% else -%>
-      t.<%= attribute.type %> :<%= attribute.name %><%= attribute.type.in?(%i[ references boolean ]) ? ', null: false' : '' %><%= attribute.type == :boolean ? ', default: false' : '' %><%= attribute.type == :references ? ', type: :uuid' : '' %><%= attribute.inject_options %>
+      t.<%= attribute.type %> :<%= attribute.name %><%= attribute.type.in?(%i[ references boolean ]) ? ", null: false" : "" %><%= attribute.type == :boolean ? ", default: false" : "" %><%= attribute.type == :references ? ", type: :uuid" : "" %><%= attribute.inject_options %>
 <% end -%>
 <% end -%>
 <% if options[:timestamps] %>
-      t.timestamps default: -> { 'NOW()' }
+      t.timestamps default: -> { "NOW()" }
 <% end -%>
     end
 <% attributes.select(&:token?).each do |attribute| -%>

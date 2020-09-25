@@ -6,6 +6,7 @@ class State < ApplicationRecord
   # == Constants ============================================================
 
   # == Attributes ===========================================================
+  data_column_attribute :military, :boolean
 
   # == Extensions ===========================================================
 
@@ -24,7 +25,7 @@ class State < ApplicationRecord
                   message: "must be 2 characters"
                 }
 
-  validates :full,
+  validates :name,
     uniqueness: true,
     presence:   true
 

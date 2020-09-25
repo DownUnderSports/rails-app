@@ -13,7 +13,7 @@ class Country < ApplicationRecord
   has_many :addresses, inverse_of: :country
 
   # == Validations ==========================================================
-  validates :short, :full,
+  validates :short, :name,
     uniqueness: true,
     presence:   true
 

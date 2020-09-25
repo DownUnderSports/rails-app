@@ -1,7 +1,7 @@
 module GridHelper
   SIZES = %i[ base phone largephone tablet desktop largedesktop ].freeze
   def cell_tag(tag_name = :div, **opts, &block)
-    content_tag tag_name, block_given? ? capture(&block) : '', class: cell_classes(**opts)
+    content_tag tag_name, block_given? ? capture(&block) : "", class: cell_classes(**opts)
   end
 
   def cell_span(value, size = nil)

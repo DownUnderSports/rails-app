@@ -16,14 +16,14 @@ class CreateCountry < ActiveRecord::Migration[6.0]
                          value: "numeric ~* '^[0-9]{3}$'",
                          name: "country_numeric_format"
                        }
-      t.text :short,   null: false
-      t.text :full,    null: false
+      t.text :short, null: false
+      t.text :name, null: false
 
       t.index [ :alpha_2 ], unique: true
       t.index [ :alpha_3 ], unique: true
       t.index [ :numeric ], unique: true
-      t.index [ :short ], unique: true
-      t.index [ :full ], unique: true
+      t.index [ :short ],   unique: true
+      t.index [ :name ],    unique: true
     end
   end
 end

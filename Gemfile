@@ -16,10 +16,10 @@ gem "coerce_boolean", "~> 0.1"
 
 # extension gems
 # gem "aasm", "~> 5.0", ">= 5.0.1"
-gem "associate_jsonb", "~> 0.0", ">= 0.0.9"
+gem "associate_jsonb", "~> 0.0", ">= 0.0.10"
 gem "store_as_int", "~> 0.0", ">= 0.0.19"
 gem "csv_rb", "~> 6.0.3", ">= 6.0.3.1"
-gem "image_processing", "~> 1.2"
+gem "image_processing", "~> 1.12"
 # gem "braintree", "~> 2.90", ">= 2.90.0"
 # gem "browser", "~> 2.5", ">= 2.5.3"
 gem "logidze", "~> 0.12.0"

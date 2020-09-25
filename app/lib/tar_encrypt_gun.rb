@@ -1,26 +1,26 @@
-# require 'tempfile'
+# require "tempfile"
 
 module TarEncryptGun
-  WORKING_ROOT = Rails.root.join('tmp', 'encryption')
+  WORKING_ROOT = Rails.root.join("tmp", "encryption")
 
   class << self
     def encrypt(input, auth_data, output = nil)
       case get_file_path input
       in { dir: input_dir, name: input_name, path: input_path, sub_dir: _ }
-        Rails.logger.debug "extracted path: #{input_path}, #{input_name}"
+        Rails.logger.debug { "extracted path: #{input_path}, #{input_name}" }
       end
 
       output ||= "#{input_path}.tar.nacl.gz"
 
       case get_file_path output, allow_empty: true
       in { dir: _, name: name, path: output_path, sub_dir: _ }
-        Rails.logger.debug "extracted path: #{output_path}, #{name}"
+        Rails.logger.debug { "extracted path: #{output_path}, #{name}" }
       end
 
       case create_cipher  direction: :encrypt,
                           auth_data: (auth_data || input_path)
       in { cipher:, key:, iv:, auth_data: }
-        Rails.logger.debug "cipher created"
+        Rails.logger.debug { "cipher created" }
       end
 
       open_tempfile(".tar") do |tarfile|
@@ -39,21 +39,21 @@ module TarEncryptGun
     def decrypt(input:, key:, iv:, auth_data:, output: nil, chmod: nil)
       case get_file_path input
       in { dir: _, name: _, path: input_path, sub_dir: _ }
-        Rails.logger.debug "extracted path: #{input_path}"
+        Rails.logger.debug { "extracted path: #{input_path}" }
       end
 
-      output ||= input_path.sub('.tar.nacl.gz', '')
+      output ||= input_path.sub(".tar.nacl.gz", "")
 
       case get_file_path output, allow_empty: true
       in { dir: _, name: output_name, path: output_path, sub_dir: _ }
-        Rails.logger.debug "extracted path: #{output_path}"
+        Rails.logger.debug { "extracted path: #{output_path}" }
       end
 
-      tmp_loc = WORKING_ROOT.join('decrypting', uniq_str, output_name)
+      tmp_loc = WORKING_ROOT.join("decrypting", uniq_str, output_name)
 
       case get_file_path tmp_loc, allow_empty: true
       in { dir: tmp_dir, name: tmp_name, path: tmp_path, sub_dir: _ }
-        Rails.logger.debug "extracted path: #{tmp_path}"
+        Rails.logger.debug { "extracted path: #{tmp_path}" }
       end
 
       case create_cipher  direction: :decrypt,
@@ -61,7 +61,7 @@ module TarEncryptGun
                           iv:        iv.pack_hex,
                           auth_data: auth_data
       in { cipher:, key: _, iv: _, auth_data: _ }
-        Rails.logger.debug "cipher created"
+        Rails.logger.debug { "cipher created" }
       end
 
       open_tempfile(".tar") do |tarfile|
@@ -87,9 +87,9 @@ module TarEncryptGun
 
         file =
           Tempfile.open \
-            [ uniq_str.gsub(/\./, ''), ext ],
+            [ uniq_str.gsub(/\./, ""), ext ],
             WORKING_ROOT,
-            encoding: 'ASCII-8BIT'
+            encoding: "ASCII-8BIT"
 
         begin
           yield file

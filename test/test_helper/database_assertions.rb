@@ -2,6 +2,26 @@ module TestHelper
   module DatabaseAssertions
     extend ActiveSupport::Concern
 
+    def assert_null_violation_error(klass, attribute, err)
+      *schema, table = klass.table_name.split(".")
+      schema =
+        schema.present? \
+          ? Regexp.new(
+              schema.map.with_index do |sect, i|
+                %r{"?#{Regexp.escape(sect)}"?\.}.source
+              end.join + /|/.source
+            ) \
+          : /s*/
+
+      assert_match \
+        Regexp.new(
+          "\\s+null value in column \"#{Regexp.escape(attribute)}\"" +
+          "(?: of relation (?:" + schema.source + "\"?public\"?\.)?\"#{Regexp.escape(table)}\")?" +
+          " violates not-null constraint"
+        ),
+        err.message
+    end
+
     def assert_database_check_constraint(klass, attribute, value, force: false)
       record = klass.new(attributes_without attribute)
 
@@ -11,9 +31,7 @@ module TestHelper
         err = assert_save_raises ActiveRecord::NotNullViolation, record
       end
 
-      assert_match \
-        "null value in column \"#{attribute}\" violates not-null constraint",
-        err.message
+      assert_null_violation_error klass, attribute, err
     end
 
     def assert_database_not_null_constraint(klass, attribute, force: false)
@@ -25,9 +43,7 @@ module TestHelper
         err = assert_save_raises ActiveRecord::NotNullViolation, record
       end
 
-      assert_match \
-        "null value in column \"#{attribute}\" violates not-null constraint",
-        err.message
+      assert_null_violation_error klass, attribute, err
     end
 
     def assert_database_unique_constraint(klass, index_name: nil, complex: nil, partial: nil, **duplicates)

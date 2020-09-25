@@ -4,6 +4,6 @@ class String
   end
 
   def unpack_binary
-    self.unpack('H*').first
+    self.unpack("H*").first
   end
 end

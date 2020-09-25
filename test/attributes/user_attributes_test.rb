@@ -1,4 +1,4 @@
-require 'test_helper'
+require "test_helper"
 
 class UserAttributesTest < ActiveSupport::TestCase
   def valid_attributes
@@ -31,7 +31,7 @@ class UserAttributesTest < ActiveSupport::TestCase
     [ key, user.single_use_digest ]
   end
 
-  test 'valid person' do
+  test "valid person" do
     user = User.new(valid_attributes)
     assert user.valid?
 
@@ -68,14 +68,14 @@ class UserAttributesTest < ActiveSupport::TestCase
     end
   end
 
-  test 'invalid user with invalid password_confirmation' do
+  test "invalid user with invalid password_confirmation" do
     user = User.new(valid_attributes.merge(password: rand.to_s, password_confirmation: rand.to_s))
-    refute user.valid?, 'user is invalid when password_confirmation does not match'
-    assert_not_nil user.errors[:password_confirmation]
+    refute user.valid?, "user is invalid when password_confirmation does not match"
+    refute_nil user.errors[:password_confirmation]
     assert_equal [ "doesn't match Password" ], user.errors[:password_confirmation]
   end
 
-  test '#password_reset generates a new single_use_digest and returns the associated key' do
+  test "#password_reset generates a new single_use_digest and returns the associated key" do
     user = User.new valid_attributes
 
     assert user.save
@@ -93,7 +93,7 @@ class UserAttributesTest < ActiveSupport::TestCase
     refute_equal digest, user.single_use_digest
   end
 
-  test '#password_reset! generates a new single_use_digest saves the record, and returns the associated key' do
+  test "#password_reset! generates a new single_use_digest saves the record, and returns the associated key" do
     user = User.new valid_attributes
 
     assert user.save

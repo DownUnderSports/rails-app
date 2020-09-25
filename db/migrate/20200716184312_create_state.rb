@@ -8,12 +8,12 @@ class CreateState < ActiveRecord::Migration[6.0]
                                   name: "state_abbr_format"
                                 }
 
-      t.citext :full, null: false
+      t.citext :name, null: false
       t.jsonb :data, null: false, default: {}
 
-      t.index [ :full ], unique: true
+      t.index [ :name ], unique: true
 
-      t.timestamps default: -> { 'NOW()' }
+      t.timestamps default: -> { "NOW()" }
     end
   end
 end

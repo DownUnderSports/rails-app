@@ -1,4 +1,4 @@
-require 'test_helper'
+require "test_helper"
 
 class BackgroundAttributesTest < ActiveSupport::TestCase
   def valid_attributes
@@ -23,14 +23,13 @@ class BackgroundAttributesTest < ActiveSupport::TestCase
     super Background, **opts
   end
 
-  test 'valid background' do
+  test "valid background" do
     background = Background.new(valid_attributes)
     assert background.valid?
 
     # optional columns
     [
       :sport_id,
-      :category,
       :year,
     ].each do |attr|
       assert background.respond_to?(attr)
@@ -43,16 +42,32 @@ class BackgroundAttributesTest < ActiveSupport::TestCase
     end
   end
 
-  test 'invalid background without person' do
+  test "invalid background without category" do
+    background = Background.new(attributes_without :category)
+    refute background.valid?, "background is valid without category"
+    refute_nil background.errors[:category]
+    assert_equal [ "can't be blank" ], background.errors[:category]
+
+    assert_database_not_null_constraint :category
+  end
+
+  test "invalid background with invalid category" do
+    background = Background.new(valid_attributes.merge(category: "asdf"))
+    refute background.valid?, "background is valid with invalid category"
+    refute_nil background.errors[:category]
+    assert_equal [ "is not recognized" ], background.errors[:category]
+  end
+
+  test "invalid background without person" do
     background = Background.new(attributes_without :person_id)
-    refute background.valid?, 'background is valid without person'
-    assert_not_nil background.errors[:person]
-    assert_equal [ "must exist" ], background.errors[:person]
+    refute background.valid?, "background is valid without person"
+    refute_nil background.errors[:person]
+    assert_includes background.errors[:person], "must exist"
 
     assert_database_not_null_constraint :person_id
   end
 
-  test 'invalid background with reused person|sport|category|year combo' do
+  test "invalid background with reused person|sport|category|year combo" do
     reused = background_fixtures(:athlete_gtl)
     attrs = valid_attributes.dup
     uniq = [
@@ -65,10 +80,10 @@ class BackgroundAttributesTest < ActiveSupport::TestCase
 
     background = Background.new(attrs)
 
-    refute background.valid?, 'background is valid with a person|sport|category|year combo already in use'
+    refute background.valid?, "background is valid with a person|sport|category|year combo already in use"
 
-    assert_not_nil background.errors[:base]
-    assert_equal [ "Background already exists" ], background.errors[:base]
+    refute_nil background.errors[:base]
+    assert_includes background.errors[:base], "Background already exists"
 
     uniq.each do |attr, v|
       background.__send__ "#{attr}=", v
@@ -79,7 +94,7 @@ class BackgroundAttributesTest < ActiveSupport::TestCase
     assert_database_unique_constraint uniq.map(&:first), index_name: "unique_background_index", complex: true
   end
 
-  test 'main is never null' do
+  test "main is never null" do
     background = Background.new(attributes_without :main)
 
     assert_equal false, background.main
@@ -92,22 +107,22 @@ class BackgroundAttributesTest < ActiveSupport::TestCase
     assert_nil_attr_raises Background.first, :main
   end
 
-  test 'invalid background if "main" already exists' do
+  test "invalid background if \"main\" already exists" do
     background = background_fixtures(:athlete_btl)
 
-    assert background.valid?, 'background is already invalid'
+    assert background.valid?, "background is already invalid"
 
     background.main = true
 
-    refute background.valid?, 'second "main" background valid'
+    refute background.valid?, "second \"main\" background valid"
 
-    assert_not_nil background.errors[:main]
-    assert_equal [ "only allowed for one background" ], background.errors[:main]
+    refute_nil background.errors[:main]
+    assert_includes background.errors[:main], "only allowed for one background"
 
     assert_database_unique_constraint :person_id, :main, partial: :person_id
   end
 
-  test 'data uses a hash with indifferent access' do
+  test "data uses a hash with indifferent access" do
     assert_has_indifferent_hash Background.new, :data
   end
 end

@@ -2,7 +2,7 @@
 
 class Array
   def pack_hex
-    pack('H*')
+    pack("H*")
   end
 
   def to_db_enum

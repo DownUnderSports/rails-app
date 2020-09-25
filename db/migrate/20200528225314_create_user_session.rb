@@ -9,7 +9,7 @@ class CreateUserSession < ActiveRecord::Migration[6.0]
 
       t.index [ :browser_id, :user_id ], unique: true
 
-      t.timestamps default: -> { 'NOW()' }
+      t.timestamps default: -> { "NOW()" }
     end
   end
 end

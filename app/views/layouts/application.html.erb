@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="turbolinks-cache-control" content="no-cache">
+    <!-- page title -->
     <title>
       <% @title = (yield :title).presence || @title.presence %>
       <%= (@title ? "#{@title} | Down Under Sports" : "Down Under Sports") %>
     </title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="turbolinks-cache-control" content="no-cache">
     <!-- favicons -->
     <% %w[ 16 32 96 128 196 ].each do |size| %>
     <% x_size = "#{size}x#{size}" %>
