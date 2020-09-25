@@ -3,5 +3,5 @@ _fixture:
   model_class: State
 one:
   abbr: ZZ
-  full: Zed Is Dead
+  name: Zed Is Dead
   data: {}

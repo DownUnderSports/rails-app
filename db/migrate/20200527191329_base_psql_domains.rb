@@ -1,7 +1,7 @@
 class BasePsqlDomains < ActiveRecord::Migration[6.0]
   def up
     type_names.each do |type|
-      execute File.read(Rails.root.join('db', 'sql', 'domains', "#{type}.psql"))
+      execute File.read(Rails.root.join("db", "sql", "domains", "#{type}.psql"))
     end
   end
 

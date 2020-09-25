@@ -7,4 +7,11 @@ one:
   alpha_3: "ONE"
   numeric: "000"
   short: "One Place"
-  full: "One Place Non-Existing"
+  name: "One Place Non-Existing"
+
+# structure_test:
+#   alpha_2: "ZZ"
+#   alpha_3: "ZZZ"
+#   numeric: "999"
+#   short: "Structure Test"
+#   name: "Address Structure Testing"

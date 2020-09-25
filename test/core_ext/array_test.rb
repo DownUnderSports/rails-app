@@ -5,13 +5,13 @@ module CoreExtensions
       was_called = false
       called_with_arg = ->(arg) do
         was_called = true
-        assert_equal arg, 'H*'
+        assert_equal "H*", arg
       end
       arr.stub(:pack, called_with_arg) do
         arr.pack_hex
       end
       assert was_called
-      assert_equal arr.pack('H*'), arr.pack_hex
+      assert_equal arr.pack("H*"), arr.pack_hex
     end
 
     test "#to_db_enum returns a hash with each value as a key and value pair" do

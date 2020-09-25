@@ -3,10 +3,12 @@
 #
 # Examples:
 #
-#   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
-#   Character.create(name: 'Luke', movie: movies.first)
+#   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
+#   Character.create(name: "Luke", movie: movies.first)
 
 seed_path = File.expand_path("seeds", __dir__)
 
-require File.join(seed_path, "countries")
-require File.join(seed_path, "sports")
+# Load model data
+load File.join(seed_path, "countries.rb")
+load File.join(seed_path, "sports.rb")
+load File.join(seed_path, "states.rb")

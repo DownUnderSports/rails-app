@@ -1,11 +1,11 @@
 module CertifiedRequest
   class << self
     def get_certificate_path
-      Rails.root.join('config', 'certificates', 'client-certificate.pem')
+      Rails.root.join("config", "certificates", "client-certificate.pem")
     end
 
     def get_ca_cert_store_path
-      Rails.root.join('config', 'certificates', 'dus-root-ca.pem')
+      Rails.root.join("config", "certificates", "dus-root-ca.pem")
     end
 
     def delete_existing(file_path)
@@ -14,7 +14,7 @@ module CertifiedRequest
 
     def decrypt_file(file_path, **options)
       TarEncryptGun.decrypt(
-        input: file_path.to_s + '.tar.nacl.gz',
+        input: file_path.to_s + ".tar.nacl.gz",
         output: file_path,
         chmod: 0400,
         **Rails.application.credentials.dig(:client_certificate),
@@ -23,7 +23,7 @@ module CertifiedRequest
     end
 
     def read_existing(file_path)
-      File.exist?(file_path) ? File.read(file_path) : ''
+      File.exist?(file_path) ? File.read(file_path) : ""
     end
 
     def get_client_certificate(reload: false)
@@ -39,7 +39,7 @@ module CertifiedRequest
     end
 
     def get_cert_store(paths = nil)
-      require 'net/https'
+      require "net/https"
       store = OpenSSL::X509::Store.new
       store.set_default_paths
       paths&.each do |path|
@@ -78,11 +78,11 @@ module CertifiedRequest
       ])
     end
 
-    def fetch(domain: 'staff.downundersports.com', path: nil, request: nil, cert_store: nil, timeout: 120)
+    def fetch(domain: "staff.downundersports.com", path: nil, request: nil, cert_store: nil, timeout: 120)
       result = {}
 
-      require 'net/https'
-      fetcher = Net::HTTP.new(domain, '443')
+      require "net/https"
+      fetcher = Net::HTTP.new(domain, "443")
       fetcher.use_ssl = true,
       fetcher.cert_store = cert_store || get_root_ca_cert_store
       fetcher.verify_mode = OpenSSL::SSL::VERIFY_PEER

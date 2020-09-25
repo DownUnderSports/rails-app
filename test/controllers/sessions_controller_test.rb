@@ -1,4 +1,4 @@
-require 'test_helper'
+require "test_helper"
 
 class SessionsControllerTest < ActionDispatch::IntegrationTest
   setup do
@@ -56,17 +56,17 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   def expected_session
-    @user.sessions.find_by(ip_address: '127.0.0.1', user_agent: @user_agent)
+    @user.sessions.find_by(ip_address: "127.0.0.1", user_agent: @user_agent)
   end
 
   def assert_session_exists
     assert expected_session.present?
-    assert cookies['session_id'].present?
+    assert cookies["session_id"].present?
   end
 
   def refute_session_exists
     refute expected_session
-    refute cookies['session_id'].present?
+    refute cookies["session_id"].present?
   end
 
   test "should get new" do
@@ -76,7 +76,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should create session if given correct credentials" do
-    assert_difference('User::Session.count', 1) do
+    assert_difference("User::Session.count", 1) do
       login password: "session.test"
     end
 
@@ -88,7 +88,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should render new if given incorrect credentials" do
-    assert_no_difference('User::Session.count') do
+    assert_no_difference("User::Session.count") do
       login password: "password"
     end
 
@@ -117,7 +117,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
     assert_session_exists
 
-    assert_difference('User::Session.count', -1) do
+    assert_difference("User::Session.count", -1) do
       delete session_url
     end
 
@@ -141,7 +141,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
     assert_session_exists
 
-    assert_difference('User::Session.count', -1) do
+    assert_difference("User::Session.count", -1) do
       login password: "password"
     end
 

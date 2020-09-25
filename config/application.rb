@@ -1,5 +1,5 @@
-require_relative 'boot'
-require_relative 'version'
+require_relative "boot"
+require_relative "version"
 
 require "rails"
 # Pick the frameworks you want:
@@ -37,7 +37,7 @@ module DownUnderSports
     config.active_record.cache_timestamp_format = :nsec
 
     # time settings
-    config.time_zone = 'Mountain Time (US & Canada)'
+    config.time_zone = "Mountain Time (US & Canada)"
     config.active_record.default_timezone = :utc
 
     # generator settings

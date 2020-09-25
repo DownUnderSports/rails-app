@@ -12,7 +12,6 @@ module Kernel
     end
 end
 
-
 class FunctionsInDB < ApplicationRecord
   self.table_name = "pg_catalog.pg_proc"
 end

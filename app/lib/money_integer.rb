@@ -1,13 +1,13 @@
 # encoding: utf-8
 # frozen_string_literal: true
-require 'store_as_int'
+require "store_as_int"
 
 module MoneyInteger
   def self.convert_to_money(value)
     return StoreAsInt::Money.new(0) unless value
     if (!value.kind_of?(Numeric))
       begin
-        dollars_to_cents = (value.gsub(/\$/, '').presence || 0).to_d * StoreAsInt::Money.base
+        dollars_to_cents = (value.gsub(/\$/, "").presence || 0).to_d * StoreAsInt::Money.base
         StoreAsInt::Money.new(dollars_to_cents.to_i)
       rescue
         StoreAsInt::Money.new

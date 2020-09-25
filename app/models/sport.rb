@@ -14,9 +14,9 @@ class Sport < ApplicationRecord
   has_many :backgrounds, inverse_of: :sport
 
   # == Validations ==========================================================
-  validates_presence_of :abbr, :full
+  validates_presence_of :abbr, :name
 
-  validates :abbr_gendered, :full_gendered,
+  validates :abbr_gendered, :name_gendered,
     uniqueness: true,
     presence:   true
 

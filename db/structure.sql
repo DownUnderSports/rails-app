@@ -488,8 +488,8 @@ CREATE TABLE public.address (
     city public.citext,
     delivery public.citext,
     backup public.citext,
-    verified boolean DEFAULT false NOT NULL,
-    rejected boolean DEFAULT false NOT NULL,
+    verified_for text[] DEFAULT '{}'::text[] NOT NULL,
+    rejected_for text[] DEFAULT '{}'::text[] NOT NULL,
     created_at timestamp(6) without time zone DEFAULT now() NOT NULL,
     updated_at timestamp(6) without time zone DEFAULT now() NOT NULL
 );
@@ -534,7 +534,7 @@ CREATE TABLE public.country (
     alpha_3 public.citext NOT NULL,
     "numeric" text NOT NULL,
     short text NOT NULL,
-    "full" text NOT NULL,
+    name text NOT NULL,
     CONSTRAINT country_alpha_2_format CHECK ((alpha_2 OPERATOR(public.~*) '^[A-Z]{2}$'::public.citext)),
     CONSTRAINT country_alpha_3_format CHECK ((alpha_3 OPERATOR(public.~*) '^[A-Z]{3}$'::public.citext)),
     CONSTRAINT country_numeric_format CHECK (("numeric" ~* '^[0-9]{3}$'::text))
@@ -580,9 +580,9 @@ CREATE TABLE public.schema_migrations (
 CREATE TABLE public.sport (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     abbr text NOT NULL,
-    "full" text NOT NULL,
+    name text NOT NULL,
     abbr_gendered text NOT NULL,
-    full_gendered text NOT NULL,
+    name_gendered text NOT NULL,
     is_numbered boolean DEFAULT false NOT NULL,
     data jsonb DEFAULT '{}'::jsonb NOT NULL,
     created_at timestamp(6) without time zone DEFAULT now() NOT NULL,
@@ -596,7 +596,7 @@ CREATE TABLE public.sport (
 
 CREATE TABLE public.state (
     abbr public.citext NOT NULL,
-    "full" public.citext NOT NULL,
+    name public.citext NOT NULL,
     data jsonb DEFAULT '{}'::jsonb NOT NULL,
     created_at timestamp(6) without time zone DEFAULT now() NOT NULL,
     updated_at timestamp(6) without time zone DEFAULT now() NOT NULL,
@@ -744,17 +744,17 @@ CREATE INDEX index_address_on_country_id ON public.address USING btree (country_
 
 
 --
--- Name: index_address_on_rejected; Type: INDEX; Schema: public; Owner: -
+-- Name: index_address_on_rejected_for; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_address_on_rejected ON public.address USING btree (rejected);
+CREATE INDEX index_address_on_rejected_for ON public.address USING gin (rejected_for);
 
 
 --
--- Name: index_address_on_verified; Type: INDEX; Schema: public; Owner: -
+-- Name: index_address_on_verified_for; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_address_on_verified ON public.address USING btree (verified);
+CREATE INDEX index_address_on_verified_for ON public.address USING gin (verified_for);
 
 
 --
@@ -800,10 +800,10 @@ CREATE UNIQUE INDEX index_country_on_alpha_3 ON public.country USING btree (alph
 
 
 --
--- Name: index_country_on_full; Type: INDEX; Schema: public; Owner: -
+-- Name: index_country_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_country_on_full ON public.country USING btree ("full");
+CREATE UNIQUE INDEX index_country_on_name ON public.country USING btree (name);
 
 
 --
@@ -842,6 +842,13 @@ CREATE UNIQUE INDEX index_person_on_email ON public.person USING btree (email);
 
 
 --
+-- Name: index_sport_on_abbr; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_sport_on_abbr ON public.sport USING btree (abbr);
+
+
+--
 -- Name: index_sport_on_abbr_gendered; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -849,17 +856,24 @@ CREATE UNIQUE INDEX index_sport_on_abbr_gendered ON public.sport USING btree (ab
 
 
 --
--- Name: index_sport_on_full_gendered; Type: INDEX; Schema: public; Owner: -
+-- Name: index_sport_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_sport_on_full_gendered ON public.sport USING btree (full_gendered);
+CREATE INDEX index_sport_on_name ON public.sport USING btree (name);
 
 
 --
--- Name: index_state_on_full; Type: INDEX; Schema: public; Owner: -
+-- Name: index_sport_on_name_gendered; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_state_on_full ON public.state USING btree ("full");
+CREATE UNIQUE INDEX index_sport_on_name_gendered ON public.sport USING btree (name_gendered);
+
+
+--
+-- Name: index_state_on_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_state_on_name ON public.state USING btree (name);
 
 
 --

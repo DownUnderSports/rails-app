@@ -1,4 +1,4 @@
-require 'test_helper'
+require "test_helper"
 
 class CountryAttributesTest < ActiveSupport::TestCase
   def valid_attributes
@@ -7,7 +7,7 @@ class CountryAttributesTest < ActiveSupport::TestCase
       alpha_3: "ZZZ",
       numeric: "900",
       short:   "Testable",
-      full:    "Testable, the Republic of"
+      name:    "Testable, the Republic of"
     }
   end
 
@@ -26,7 +26,7 @@ class CountryAttributesTest < ActiveSupport::TestCase
     super Country, **opts
   end
 
-  test 'valid country' do
+  test "valid country" do
     country = Country.new(valid_attributes)
     assert country.valid?
 
@@ -41,7 +41,7 @@ class CountryAttributesTest < ActiveSupport::TestCase
     test "invalid country without #{attr}" do
       country = Country.new(attributes_without attr)
       refute country.valid?, "country is valid without #{attr}"
-      assert_not_nil country.errors[attr]
+      refute_nil country.errors[attr]
       assert_includes country.errors[attr], "can't be blank"
 
       assert_database_not_null_constraint attr
@@ -50,13 +50,13 @@ class CountryAttributesTest < ActiveSupport::TestCase
     test "invalid country with invalid #{attr}" do
       country = Country.new(valid_attributes.merge(attr => bad_val))
       refute country.valid?, "country is valid with invalid #{attr}"
-      assert_not_nil country.errors[attr]
+      refute_nil country.errors[attr]
       assert_includes country.errors[attr], "must be #{length} characters"
 
       country.errors.clear
       country.__send__(:"#{attr}=", "." * length)
       refute country.valid?, "country is valid with invalid #{attr}"
-      assert_not_nil country.errors[attr]
+      refute_nil country.errors[attr]
       assert_includes country.errors[attr], "must be only #{attr == :numeric ? "numbers" : "letters"}"
 
       checks.each {|v| assert_database_check_constraint attr, v }
@@ -65,7 +65,7 @@ class CountryAttributesTest < ActiveSupport::TestCase
     test "invalid country with reused #{attr}" do
       country = Country.new(valid_attributes.merge(attr => country_fixtures(:one).__send__(attr)))
       refute country.valid?, "country is valid with #{attr} already in use"
-      assert_not_nil country.errors[attr]
+      refute_nil country.errors[attr]
       assert_includes country.errors[attr], "has already been taken"
 
       assert_database_unique_constraint attr
@@ -74,12 +74,12 @@ class CountryAttributesTest < ActiveSupport::TestCase
 
   [
     :short,
-    :full,
+    :name,
   ].each do |attr|
     test "invalid country without #{attr}" do
       country = Country.new(attributes_without attr)
       refute country.valid?, "country is valid without #{attr}"
-      assert_not_nil country.errors[attr]
+      refute_nil country.errors[attr]
       assert_includes country.errors[attr], "can't be blank"
 
       assert_database_not_null_constraint attr
@@ -88,7 +88,7 @@ class CountryAttributesTest < ActiveSupport::TestCase
     test "invalid country with reused #{attr}" do
       country = Country.new(valid_attributes.merge(attr => country_fixtures(:one).__send__(attr)))
       refute country.valid?, "country is valid with #{attr} already in use"
-      assert_not_nil country.errors[attr]
+      refute_nil country.errors[attr]
       assert_includes country.errors[attr], "has already been taken"
 
       assert_database_unique_constraint attr

@@ -23,6 +23,7 @@ class Background < ApplicationRecord
 
   # == Validations ==========================================================
   validates :category,
+    presence:   true,
     inclusion:  {
                   in: Person::CATEGORIES,
                   allow_blank: true,

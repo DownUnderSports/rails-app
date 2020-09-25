@@ -2,14 +2,14 @@
 # frozen_string_literal: true
 
 class ThreeState
-  YES = 'Y'.freeze
-  NO = 'N'.freeze
-  UNKNOWN = 'U'.freeze
+  YES = "Y".freeze
+  NO = "N".freeze
+  UNKNOWN = "U".freeze
 
   TITLECASE = {
-    YES => 'Yes'.freeze,
-    NO => 'No'.freeze,
-    UNKNOWN => 'Unknown'.freeze,
+    YES => "Yes".freeze,
+    NO => "No".freeze,
+    UNKNOWN => "Unknown".freeze,
   }.freeze
 
   class Value

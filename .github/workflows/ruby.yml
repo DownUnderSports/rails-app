@@ -34,8 +34,8 @@ jobs:
 
       postgres:
         # Docker Hub image
-        image: postgres:12
-        # image: postgres
+        # image: postgres:12
+        image: postgres
         # Provide the password for postgres
         env:
           POSTGRES_USER: postgres
@@ -94,5 +94,6 @@ jobs:
         REDIS_URL: redis://localhost:${{ job.services.redis.ports[6379] }}/1
         DATABASE_URL: postgresql://postgres:postgres@localhost:${{ job.services.postgres.ports[5432] }}/down_under_sports_test
         RAILS_ENV: test
+        RAILS_LOG_TO_STDOUT: true
       run: |
         bundle exec rails test

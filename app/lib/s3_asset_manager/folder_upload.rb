@@ -11,10 +11,10 @@ module S3AssetManager
     # include_folder - include the root folder on the path? (default: true)
     #
     # Examples
-    #   => uploader = FolderUpload.new(folder_path: "/home/test_folder", bucket: 'your_bucket_name', prefix: "uploaded_folders/#{Date.today}")
-    #   => uploader = FolderUpload.new(folder_path: Rails.root.join("public"), bucket: 'public_bucket', prefix: "assets")
+    #   => uploader = FolderUpload.new(folder_path: "/home/test_folder", bucket: "your_bucket_name", prefix: "uploaded_folders/#{Date.today}")
+    #   => uploader = FolderUpload.new(folder_path: Rails.root.join("public"), bucket: "public_bucket", prefix: "assets")
     #
-    def initialize(folder_path:, bucket:, prefix: '', include_folder: true)
+    def initialize(folder_path:, bucket:, prefix: "", include_folder: true)
       @folder_path       = folder_path
       @files             = Dir.glob("#{folder_path}/**/*")
       @total_files       = files.length
@@ -36,12 +36,12 @@ module S3AssetManager
     #     true
     #
     # Returns true when finished the process
-    def upload(thread_count: 5, simulate: false, verbose: false)
+    def upload(thread_count: 5, simulate: false)
       file_number = 0
       mutex       = Mutex.new
       threads     = []
 
-      puts "Total files: #{total_files}... (folder #{folder_path} #{include_folder ? '' : 'not '}included)" unless verbose == :silence
+      Rails.logger.info { " Total files: #{total_files}... (folder #{folder_path} #{include_folder ? "" : "not "}included)" }
 
       verbose = false if verbose == :silence
 
@@ -56,13 +56,13 @@ module S3AssetManager
             next unless file
 
             # Define destination path
-            path = file.sub(/^#{folder_path}\//, '')
+            path = file.sub(/^#{folder_path}\//, "")
 
             path = "#{File.basename(folder_path)}/#{path}" if include_folder
 
             path = "#{prefix}/#{path}" if prefix
 
-            puts "[#{Thread.current["file_number"]}/#{total_files}] uploading..." if verbose
+            Rails.logger.debug { "[#{Thread.current["file_number"]}/#{total_files}] uploading..." }
 
             data = File.open(file)
 
@@ -71,7 +71,7 @@ module S3AssetManager
               obj.put({ acl: "public-read", body: data })
             end
 
-            puts "[#{Thread.current["file_number"]}/#{total_files}] uploaded" if verbose
+            Rails.logger.debug { "[#{Thread.current["file_number"]}/#{total_files}] uploaded" }
 
             data.close
           end

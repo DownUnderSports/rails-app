@@ -44,7 +44,7 @@ class Authenticator
 
     self.domain =
       cookie_domain ||
-      (Rails.env.production? ? '.downundersports.com' : :all)
+      (Rails.env.production? ? ".downundersports.com" : :all)
 
     set_current_information
 

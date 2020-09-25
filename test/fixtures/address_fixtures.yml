@@ -9,4 +9,4 @@ one:
   city: Logan
   delivery: 1755 N 400 E \#201
   backup:
-  verified: false
+  rejected_for: [ USPS, UPS, FedEx ]

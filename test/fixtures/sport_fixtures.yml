@@ -4,24 +4,24 @@ _fixture:
 
 anything:
   abbr: AN
-  full: Anything
+  name: Anything
   abbr_gendered: ANY
-  full_gendered: Anything
+  name_gendered: Anything
   is_numbered: false
   data: {}
 
 gtl:
   abbr: TL
-  full: Talking Loudly
+  name: Talking Loudly
   abbr_gendered: GTL
-  full_gendered: Girls Talking Loudly
+  name_gendered: Girls Talking Loudly
   is_numbered: false
   data: {}
 
 btl:
   abbr: TL
-  full: Talking Loudly
+  name: Talking Loudly
   abbr_gendered: BTL
-  full_gendered: Boys Talking Loudly
+  name_gendered: Boys Talking Loudly
   is_numbered: false
   data: {}

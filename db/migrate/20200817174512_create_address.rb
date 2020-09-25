@@ -7,13 +7,13 @@ class CreateAddress < ActiveRecord::Migration[6.0]
       t.citext :city
       t.citext :delivery
       t.citext :backup
-      t.boolean :verified, null: false, default: false
-      t.boolean :rejected, null: false, default: false
+      t.text :verified_for, null: false, array: true, default: []
+      t.text :rejected_for, null: false, array: true, default: []
 
-      t.index [ :verified ]
-      t.index [ :rejected ]
+      t.index [ :verified_for ], using: :gin
+      t.index [ :rejected_for ], using: :gin
 
-      t.timestamps default: -> { 'NOW()' }
+      t.timestamps default: -> { "NOW()" }
     end
   end
 end
