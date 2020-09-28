@@ -79,12 +79,11 @@ module TestHelper
     end
 
     def loop_app_drawer_animation
-      i = 10.0
+      i = 25.0
       loop do
         break unless (i > 0) && (app_drawer_class_list & ANIMATION_CLASSES).any?
-        i -= 1.0
 
-        sleep(1.0/i)
+        sleep(1.0/[i -= 1.0, 1.0].max)
       end
     end
 
