@@ -172,6 +172,14 @@
       background-color: whitesmoke;
     }
   }
+
+  & &__input.has-error {
+    &,
+    ~ i.material-icons,
+    ~ label {
+      @include mdc-mixins.prop(color, darken(dus-theme.$on-error, 20%));
+    }
+  }
 }
 
 // .mdc-fab {
