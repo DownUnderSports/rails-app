@@ -1,0 +1,257 @@
+@use "sass:map";
+@use "material/styles/variables" as dus-theme;
+@use "@material/top-app-bar/mixins" as top-app-bar;
+@use "@material/top-app-bar/variables" as top-app-bar-variables;
+@use "@material/image-list";
+@use "material/styles/components/banner" with (
+  $error: dus-theme.$error,
+  $on-error: dus-theme.$on-error
+);
+@use "material/styles/components/button";
+@use "material/styles/components/card" with (
+  $primary: dus-theme.$primary
+);
+@use "material/styles/components/drawer";
+@use "material/styles/components/grid";
+@use "material/styles/components/grid/mixins" as grid-mixins;
+@use "@material/theme/mixins" as mdc-mixins;
+
+.mdc-top-app-bar {
+  // @include top-app-bar.fill-color-accessible(dus-theme.$app-bar-primary);
+  // @include top-app-bar.icon-ink-color(dus-theme.$app-bar-on-primary);
+  // box-shadow: 0px 0.25rem 1rem dus-theme.$app-bar-on-primary;
+  &__row {
+    transition: height 200ms linear;
+  }
+  @media(min-width: 576px) {
+    &__row {
+      height: 96px;
+    }
+    &__title {
+      font-size: 24px;
+    }
+  }
+  @media (min-width: 1300px) {
+    &__row {
+      max-width: dus-theme.$max-width;
+      margin: auto;
+    }
+  }
+
+  @each $size in map.keys(dus-theme.$columns) {
+    @include grid-mixins.media-query_($size) {
+      $padding: map.get(dus-theme.$default-margin, $size);
+
+      &__section {
+        &--align-start {
+          padding-left: $padding;
+          // stylelint-disable-next-line declaration-block-no-duplicate-properties
+          padding-left: var(--mdc-layout-grid-margin-#{$size}, #{$padding});
+        }
+        &--align-end {
+          padding-right: $padding;
+          // stylelint-disable-next-line declaration-block-no-duplicate-properties
+          padding-right: var(--mdc-layout-grid-margin-#{$size}, #{$padding});
+        }
+      }
+    }
+  }
+
+  &__navigation-icon.edge-even {
+    &::before {
+      border: 2px solid #dcdcdc;
+      border-radius: .25rem;
+      opacity: 0.5;
+      background: transparent;
+      @include mdc-mixins.prop(border-color, dus-theme.$app-bar-primary);
+    }
+    &:hover {
+      &::before {
+        @include mdc-mixins.prop(background-color, dus-theme.$app-bar-primary);
+      }
+    }
+  }
+
+
+
+  &--fixed {
+    @media(max-width: 575px) {
+      @include top-app-bar.fill-color-accessible(dus-theme.$app-bar-primary);
+      @include top-app-bar.icon-ink-color(dus-theme.$app-bar-on-primary);
+      .mdc-top-app-bar {
+        &__navigation-icon.edge-even {
+          &::before {
+            @include mdc-mixins.prop(border-color, dus-theme.$app-bar-on-primary);
+            background: transparent;
+          }
+          &:hover {
+            &::before {
+              @include mdc-mixins.prop(background-color, dus-theme.$app-bar-on-primary);
+            }
+          }
+        }
+      }
+    }
+
+    @media(min-width: 576px) {
+      background: transparent;
+      .mdc-top-app-bar__row::before {
+        content: '';
+        display: block;
+        position: fixed;
+        top: -100px;
+        left: 0;
+        z-index: -1;
+        height: 64px;
+        width: 100%;
+        width: 100vw;
+        transition: top 200ms linear, box-shadow 200ms ease 200ms;
+        box-shadow: #dcdcdc 0px 0px 0px;
+        @include top-app-bar.fill-color-accessible(dus-theme.$app-bar-primary);
+      }
+
+      &-scrolled {
+        @include top-app-bar.fill-color-accessible(dus-theme.$app-bar-primary);
+        @include top-app-bar.icon-ink-color(dus-theme.$app-bar-on-primary);
+        background-color: transparent;
+        .mdc-top-app-bar {
+          &__row{
+            height: 64px;
+            height: top-app-bar-variables.$row-height;
+
+            &::before {
+              top: 0px;
+              box-shadow: #dcdcdc 0px 2px 10px;
+            }
+          }
+
+          &__title {
+            font-size: 20px;
+          }
+
+          &__navigation-icon.edge-even {
+            &::before {
+              @include mdc-mixins.prop(border-color, dus-theme.$app-bar-on-primary);
+              background: transparent;
+            }
+            &:hover {
+              &::before {
+                @include mdc-mixins.prop(background-color, dus-theme.$app-bar-on-primary);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  & &__title {
+    padding-right: 20px;
+  }
+}
+
+.mdc-text-field {
+  width: 100%;
+  width: stretch;
+
+  &.mdc-text-field--multiline {
+    overflow: visible;
+    height: auto;
+    padding-top: 25px;
+    textarea,
+    .mdc-text-field__input {
+      padding-top: 0;
+      align-self: auto;
+      resize: vertical;
+    }
+    .mdc-floating-label.mdc-floating-label--float-above {
+      top: 25px;
+    }
+  }
+  &.mdc-text-field--textarea {
+    &.mdc-text-field--filled:not(.mdc-text-field--disabled) {
+      background-color: whitesmoke;
+    }
+  }
+}
+
+// .mdc-fab {
+//   background-color: #153e7c;
+//   background-color: var(--mdc-theme-primary, #d52027);
+//   color: #fff;
+//   color: #fff;
+//   color: var(--mdc-theme-on-primary, #fff);
+// }
+
+.site-standard-list {
+  @include image-list.standard-columns(5);
+}
+
+.site-masonry-list {
+  @include image-list.masonry-columns(5);
+}
+
+.with-background-image {
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
+  // & > .mdc-layout-grid {
+  //   background: rgba(0,0,0,0.2);
+  //   height: 100%;
+  //   overflow-y: auto;
+  //   .mdc-layout-grid__inner {
+  //     .mdc-layout-grid__cell.flex-center {
+  //       display: flex;
+  //       justify-content: center;
+  //       align-items: center;
+  //       grid-column-end: span 12;
+  //       width: auto;
+  //     }
+  //   }
+  // }
+}
+
+.ocean-background {
+  // background-image: url(~images/mountains.webp);
+  background-image: url(~images/bg-skyline.jpg);
+}
+
+// .mdc-text-field {
+//   & &__input {
+//     caret-color: #000;
+//     caret-color: var(--mdc-theme-on-primary, #000);
+//     caret-color: rgba(0, 0, 0, 0.87)
+//   }
+//   // &--focused {
+//   //   &:not(.mdc-text-field--disabled) {
+//   //     .mdc-floating-label {
+//   //       // color: #000;
+//   //       // color: var(--mdc-theme-on-primary);
+//   //       color: rgba(0, 0, 0, 0.6)
+//   //     }
+//   //   }
+//   // }
+// }
+// .mdc-top-app-bar {
+//   background-color: #FFF;
+//   color: var(--mdc-theme-primary, #153e7c);
+//   & &__navigation-icon {
+//     color: var(--mdc-theme-primary, #153e7c);
+//   }
+//
+//   & &__title {
+//     color: var(--mdc-theme-primary, #153e7c);
+//     padding-right: 20px;
+//   }
+//   // &--fixed {
+//   //   border-bottom: 0px solid var(--mdc-theme-primary, #153e7c);
+//   //   transition: border-width 200ms linear;
+//   //   &:not(&-scrolled) {
+//   //     // color: #FFF;
+//   //     // background-color: var(--mdc-theme-primary, #153e7c);
+//   //     // & .mdc-top-app-bar__navigation-icon {
+//   //     //   color: #FFF;
+//   //     // }
+//   //     border-bottom: 1px solid var(--mdc-theme-primary, #153e7c);
+//   //   }
+//   // }
+// }

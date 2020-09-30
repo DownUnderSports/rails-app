@@ -11,11 +11,11 @@ gem "webpacker", "~> 4.0"
 gem "turbolinks", "~> 5"
 gem "jbuilder", "~> 2.7"
 gem "redis", "~> 4.2.1"
-gem "redis-namespace", "~> 1.8.0"
 gem "coerce_boolean", "~> 0.1"
 
 # extension gems
 # gem "aasm", "~> 5.0", ">= 5.0.1"
+gem "redis-namespace", "~> 1.8.0"
 gem "associate_jsonb", "~> 0.0", ">= 0.0.10"
 gem "store_as_int", "~> 0.0", ">= 0.0.19"
 gem "csv_rb", "~> 6.0.3", ">= 6.0.3.1"

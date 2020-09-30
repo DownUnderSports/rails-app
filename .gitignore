@@ -60,6 +60,9 @@ yarn-debug.log*
 !/**/*.pem.tar.b64.aes*
 !/**/*.pem.tar.nacl*
 
+# ignore coverage reports
+coverage
+
 # don't ignore keep files
 !/**/.keep
 !/**/pids/.keep

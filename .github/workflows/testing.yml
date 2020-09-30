@@ -5,7 +5,7 @@
 # This workflow will download a prebuilt Ruby version, install dependencies and run tests with Rake
 # For more information see: https://github.com/marketplace/actions/setup-ruby-jruby-and-truffleruby
 
-name: Ruby
+name: Testing
 
 on:
   push:
@@ -70,7 +70,7 @@ jobs:
         node-version: 14.12.0
 
     - name: Install Gems
-      run: bundle install
+      run: bundle install --jobs 4 --retry 3
 
     - name: Install Packages
       run: yarn install --pure-lockfile
@@ -88,7 +88,7 @@ jobs:
         bundle exec rails db:drop db:create db:migrate db:seed
         bundle exec rails db:environment:set RAILS_ENV=test
 
-    - name: Run tests
+    - name: Run Tests
       env:
         RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
         REDIS_URL: redis://localhost:${{ job.services.redis.ports[6379] }}/1
@@ -96,4 +96,6 @@ jobs:
         RAILS_ENV: test
         RAILS_LOG_TO_STDOUT: true
       run: |
+        yarn test:ci
         bundle exec rails test
+        # bundle exec rails test:system

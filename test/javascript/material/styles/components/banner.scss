@@ -1,0 +1,99 @@
+@use "@material/elevation/mixins" as elevation-mixins;
+@use "@material/theme/mixins" as theme-mixins;
+@use "@material/rtl/mixins" as rtl-mixins;
+
+$height: 52px !default;
+$mobile-breakpoint: 720px !default;
+$error: null !default;
+$on-error: null !default;
+
+@mixin base {
+  min-height: $height;
+}
+
+@mixin fill-color($color) {
+  @include theme-mixins.prop(background-color, $color);
+}
+
+@mixin container-layout {
+  @include rtl-mixins.reflexive-box(padding, left, 8px);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+
+  @media (max-width: $mobile-breakpoint) {
+    flex-wrap: wrap;
+  }
+}
+
+@mixin content-layout {
+  // display: flex;
+  flex: 1;
+  padding-top: 16px;
+  padding-right: 16px;
+  padding-bottom: 16px;
+  padding-left: 16px;
+
+  @media (max-width: $mobile-breakpoint) {
+    padding-bottom: 4px;
+  }
+}
+
+@mixin icon {
+  @include rtl-mixins.reflexive-box(margin, left, -8px);
+  @include rtl-mixins.reflexive-box(margin, right, 24px);
+
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+}
+
+@mixin actions-layout {
+  @include rtl-mixins.reflexive-box(margin, left, 74px);
+  @include rtl-mixins.reflexive-box(margin, right, 8px);
+
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  align-self: flex-end;
+  min-height: 52px;
+
+  @media (max-width: $mobile-breakpoint) {
+    flex: 1;
+    justify-content: flex-end;
+    margin-left: 36px;
+  }
+}
+
+.mdc-banner {
+  @include base;
+  @include fill-color(surface);
+  @include elevation-mixins.elevation(1);
+  @include container-layout;
+  .mdc-banner__content {
+    @include content-layout;
+  }
+
+  .mdc-banner__icon {
+    @include icon;
+  }
+
+  .mdc-banner__actions {
+    @include actions-layout;
+  }
+
+  .mdc-banner__button {
+    @include rtl-mixins.reflexive-box(margin, left, 8px);
+
+    &:first-child {
+      @include rtl-mixins.reflexive-box(margin, left, 0);
+    }
+  }
+
+  &.mdc-banner__error {
+    @include fill-color($error);
+    @include theme-mixins.prop(color, $on-error);
+  }
+}
