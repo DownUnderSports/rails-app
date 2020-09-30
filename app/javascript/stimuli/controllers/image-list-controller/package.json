@@ -1,0 +1,6 @@
+{
+  "name": "ImageListController",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./image-list-controller.js"
+}

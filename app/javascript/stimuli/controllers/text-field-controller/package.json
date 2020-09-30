@@ -1,0 +1,6 @@
+{
+  "name": "TextFieldController",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./text-field-controller.js"
+}

@@ -1,0 +1,6 @@
+{
+  "name": "CheckboxController",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./checkbox-controller.js"
+}

@@ -1,0 +1,6 @@
+{
+  "name": "ClipboardController",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./clipboard-controller.js"
+}

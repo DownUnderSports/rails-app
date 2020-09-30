@@ -1,0 +1,6 @@
+{
+  "name": "ListController",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./list-controller.js"
+}
