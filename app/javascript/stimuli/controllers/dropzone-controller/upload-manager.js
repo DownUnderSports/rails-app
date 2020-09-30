@@ -4,7 +4,7 @@ export { default as Dropzone } from "dropzone"
 
 Dropzone.autoDiscover = false
 
-export class DropzoneUploadManager {
+export class UploadManager {
   constructor(source, file) {
     this.directUpload = new DirectUpload(file, source.url, this)
     this.source = source

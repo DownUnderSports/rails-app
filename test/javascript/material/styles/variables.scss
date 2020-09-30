@@ -1,0 +1,61 @@
+/* Build a Material theme */
+// To begin customizing your theme, modify these variables. By default each theme starts off with our baseline values, so you can easily swap them out.
+
+
+/*  Typography */
+// To change your theme's typography, we recommend importing a font from Google Fonts and setting the global font-family https://fonts.google.com
+
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500');
+$header-font-family: unquote("Roboto, sans-serif");
+$font-family: unquote("Open Sans, sans-serif");
+
+$primary: #153e7c;
+$secondary: #d52027;
+$error: #333;
+$on-error: #ed8b8f;
+$app-bar-primary: #FFF;
+$app-bar-on-primary: #153e7c;
+
+$breakpoints: (
+  largedesktop: 1200px,
+  desktop: 992px,
+  tablet: 768px,
+  largephone: 576px,
+  phone: 0px
+);
+
+$columns: (
+  largedesktop: 18,
+  desktop: 18,
+  tablet: 12,
+  largephone: 6,
+  phone: 6
+);
+
+$default-margin: (
+  largedesktop: 24px,
+  desktop: 24px,
+  tablet: 16px,
+  largephone: 16px,
+  phone: 16px
+);
+
+$default-gutter: (
+  largedesktop: 24px,
+  desktop: 24px,
+  tablet: 16px,
+  largephone: 16px,
+  phone: 16px
+);
+
+$column-width: (
+  largedesktop: 72px,
+  desktop: 72px,
+  tablet: 72px,
+  largephone: 72px,
+  phone: 72px
+);
+
+$default-column-span: 6;
+
+$max-width: 1300px;

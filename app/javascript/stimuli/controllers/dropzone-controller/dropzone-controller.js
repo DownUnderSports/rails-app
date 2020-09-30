@@ -1,5 +1,6 @@
 import { Controller } from "stimuli"
-import { DirectUploadManager } from "stimuli"
+export { default as Dropzone } from "dropzone"
+import { UploadManager } from "./upload-manager"
 import { getMetaValue, findElement, removeElement, insertAfter } from "helpers"
 
 const dropzoneEvents = [
@@ -35,7 +36,7 @@ export class DropzoneController extends Controller {
   onaddedfile = (file) => {
     setTimeout(() => {
       if(file.accepted) {
-        const manager = new DirectUploadManager(this, file)
+        const manager = new UploadManager(this, file)
 
         manager.start()
       }

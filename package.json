@@ -2,6 +2,12 @@
   "name": "down_under_sports",
   "private": true,
   "version": "0.1.0",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:watch:all": "jest --watchAll",
+    "test:ci": "jest --coverage=false"
+  },
   "dependencies": {
     "@rails/actioncable": "^6.0.0",
     "@rails/activestorage": "^6.0.0",
@@ -17,6 +23,7 @@
     "turbolinks": "^5.2.0"
   },
   "devDependencies": {
+    "jest": "^26.4.2",
     "webpack-dev-server": "^3.11.0"
   }
 }

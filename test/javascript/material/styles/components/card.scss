@@ -1,0 +1,200 @@
+@use "./card/mixins" as card-mixins;
+$primary: null !default;
+$prefix: mdc-card;
+
+.#{$prefix} {
+  &--text {
+    padding: 16px;
+    h1 {
+      text-align: center;
+    }
+  }
+  &--filled {
+    @include card-mixins.filled-accessible($primary);
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+  }
+
+  &__body,
+  &__header {
+    padding: 16px;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    &--bordered {
+      border-bottom: 1px solid 222;
+    }
+
+    h2,
+    h3 {
+      margin: 0;
+    }
+  }
+
+  .framed {
+    background-color: #fff;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    color: $primary;
+    > div {
+      padding: 1rem 2rem;
+      &.no-top-padding {
+        padding-top: 0px;
+      }
+    }
+  }
+
+  .grid-media-wrapper {
+    display: flex;
+    flex-flow: column;
+  }
+
+  $media-class: #{$prefix}__media;
+
+  &__media {
+    &-content {
+      width: 100%;
+    }
+    &.#{$media-class}--16-9 {
+      .#{$media-class}-content {
+        height: 100%;
+      }
+
+      &.youtube {
+        $replay-icon: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3" +
+          "dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiB2aWV3Qm" +
+          "94PSIwIDAgNTEwIDUxMCI+PHBhdGggZD0iTTI1NSAxMDJWMEwxMjcuNSAxMjcuNSAy" +
+          "NTUgMjU1VjE1M2M4NC4xNSAwIDE1MyA2OC44NSAxNTMgMTUzcy02OC44NSAxNTMtMT" +
+          "UzIDE1My0xNTMtNjguODUtMTUzLTE1M0g1MWMwIDExMi4yIDkxLjggMjA0IDIwNCAy" +
+          "MDRzMjA0LTkxLjggMjA0LTIwNC05MS44LTIwNC0yMDQtMjA0eiIgc3Ryb2tlPSIjMD" +
+          "AwIiBzdHJva2Utd2lkdGg9IjIwIiBmaWxsPSIjRkZGIi8+PC9zdmc+Cg==";
+        $play-button-icon: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDo" +
+          "vL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEiIHdpZHRoPSIxNzA2LjY2N" +
+          "yIgaGVpZ2h0PSIxNzA2LjY2NyIgdmlld0JveD0iMCAwIDEyODAgMTI4MCI+PHBhdGg" +
+          "gZD0iTTE1Ny42MzUgMi45ODRMMTI2MC45NzkgNjQwIDE1Ny42MzUgMTI3Ny4wMTZ6I" +
+          "iBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMjAiIGZpbGw9IiNGRkYiLz48L3N" +
+          "2Zz4K";
+        $overlay-background: "https://img.youtube.com/vi/YSx01E_UiBA/maxresdefault.jpg";
+
+        .random-background-image {
+          display: none;
+        }
+
+        &.ended,
+        &.queued,
+        &.paused {
+          .random-background-image,
+          &::after {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            cursor: pointer;
+          }
+
+          &,
+          &.random-background,
+          &.no-background {
+            &::after {
+              content: "";
+              background-color: black;
+              background-repeat: no-repeat;
+              background-position: center;
+              background-size: 64px, contain;
+              background-size: 20%, contain;
+              background-image: url($replay-icon);
+            }
+          }
+
+          &::after {
+            background-image: url($replay-icon), url($overlay-background);
+          }
+          &.alt-background {
+            &::after {
+              background-size: 20%, 50%;
+              background-image: url($replay-icon), url(~images/logo.png);
+            }
+          }
+
+          &.random-background {
+            &::after {
+              background-color: transparent;
+            }
+
+            .random-background-image {
+              display: block;
+              min-width: 100%;
+              min-height: 100%;
+            }
+          }
+
+          &.fullscreen-background {
+            &::after {
+              top: 0 !important;
+              bottom: 0 !important;
+            }
+          }
+
+          &.rounded-bottom {
+            &::after {
+              border-bottom-right-radius: .25rem !important;
+              border-bottom-left-radius: .25rem !important;
+            }
+          }
+        }
+
+        &.paused {
+          &,
+          &.alt-background,
+          &.random-background,
+          &.no-background {
+            &::after {
+              top: 15%;
+              bottom: 15%;
+              background-size: 20%, contain;
+              background-image: url($play-button-icon);
+            }
+          }
+
+          &.random-background {
+            .random-background-image {
+              display: none;
+            }
+
+            &::after {
+              background-color: black;
+            }
+          }
+
+          &.paused-background {
+            &::after {
+              background-image: url($play-button-icon), url($overlay-background);
+            }
+          }
+
+          &.alt-background.paused-background {
+            &::after {
+              background-size: 20%, 50%;
+              background-image: url($play-button-icon), url(~images/logo.png);
+            }
+          }
+
+          &.random-background.paused-background {
+            &::after {
+              background-color: transparent;
+            }
+
+            .random-background-image {
+              display: block;
+              min-width: 100%;
+              min-height: 100%;
+            }
+          }
+        }
+
+      }
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "TopBarController",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./top-bar-controller.js"
+}
