@@ -25,7 +25,8 @@ module.exports = {
 
   // An array of regexp pattern strings used to skip coverage collection
   coveragePathIgnorePatterns: [
-    "/node_modules/"
+    "/node_modules/",
+    "/test\/javascript/"
   ],
 
   // Indicates which provider should be used to instrument code for coverage
@@ -66,7 +67,8 @@ module.exports = {
   // An array of directory names to be searched recursively up from the requiring module's location
   moduleDirectories: [
     "node_modules",
-    "app/javascript"
+    "app/javascript",
+    "test/javascript"
   ],
 
   // An array of file extensions your modules use

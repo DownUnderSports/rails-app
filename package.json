@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "jest": "^26.4.2",
+    "mock-socket": "^9.0.3",
     "webpack-dev-server": "^3.11.0"
   }
 }
