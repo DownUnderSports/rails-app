@@ -18,7 +18,6 @@ namespace :test do
     rescue
       args = []
     end
-    p args
     args = args.present? ? " #{args.join(" ")}" : ""
     system "yarn test#{args}"
   end

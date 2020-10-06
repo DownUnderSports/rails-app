@@ -1,4 +1,4 @@
-import { Controller } from "stimuli"
+import { Controller } from "stimuli/constants/controller"
 import StimulusReflex from "stimulus_reflex"
 
 /* This is the base client-side Reflex StimulusController

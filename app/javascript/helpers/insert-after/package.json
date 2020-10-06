@@ -1,0 +1,6 @@
+{
+  "name": "insertAfter",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./insert-after.js"
+}

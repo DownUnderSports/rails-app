@@ -1,0 +1,6 @@
+{
+  "name": "uniqueId",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./unique-id.js"
+}

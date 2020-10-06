@@ -1,4 +1,4 @@
-import { Controller } from "stimuli"
+import { Controller } from "stimuli/constants/controller"
 export { default as Dropzone } from "dropzone"
 import { UploadManager } from "./upload-manager"
 import { getMetaValue, findElement, removeElement, insertAfter } from "helpers"
@@ -13,7 +13,7 @@ const dropzoneEvents = [
 export class DropzoneController extends Controller {
   static targets = [ "input" ]
 
-  connect() {
+  connected() {
     this.dropZone = new Dropzone(this.element, {
       url: this.url,
       headers: this.headers,

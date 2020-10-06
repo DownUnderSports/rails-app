@@ -1,5 +1,5 @@
-import { Controller } from "stimuli"
-import { visibility } from "helpers"
+import { Controller } from "stimuli/constants/controller"
+import { visibility, uniqueId } from "helpers"
 
 let youtubeReady  = null,
     youtubeFailed = null,
@@ -27,21 +27,26 @@ for(let state in playerStates) {
   playerStateIds[playerStates[state]] = state
 }
 
+const ignoreErrors = (cb) => {
+  try { cb() } catch(_) {}
+}
+
 export class YoutubeController extends Controller {
   static keyName = "youtube"
   static targets = [ "wrapper", "video", "placeholder" ]
 
-  async connect() {
-    this.disconnected = false
+  async connected() {
     this.pristine = true
     this.wrapperTarget.classList.toggle("youtube", true)
+    if(this.hasVideoTarget) this._iframeHTML = this.videoTarget.outerHTML
     this.onStateChange({ data: playerStates.unstarted })
     this.loadYoutubeAPI()
   }
 
-  disconnect() {
-    this.disconnected = true
+  disconnected() {
     visibility.removeEventListener(this.onVisibilityChange)
+    ignoreErrors(() => { this.player && this.player.destroy() })
+    this.player = null
   }
 
   // Private
@@ -55,15 +60,30 @@ export class YoutubeController extends Controller {
       document.body.appendChild(tag)
     }
     await youtubeLoaded
-    if(!this.disconnected) {
-      this.createPlayer()
+    if(!this._disconnected) {
       visibility.addEventListener(this.onVisibilityChange)
+      this.createPlayer()
     }
   }
 
+  onVisibilityChange = (state) => {
+    if(this.pristine) {
+      if(state === "visible") this.onReady()
+      else this.pause()
+    }
+  }
+
+  getPlayerTarget = () => {
+    if(!this.hasVideoTarget && this._iframeHTML) {
+      this.wrapperTarget.innerHTML = this.wrapperTarget.innerHTML + this._iframeHTML
+    }
+    return this.hasVideoTarget ? this.videoTarget : this.wrapperTargetId
+  }
+
   createPlayer = () => {
-    this.player = this.player || new this.YT.Player(this.videoTarget, {
+    this.player = this.player || new this.YT.Player(this.getPlayerTarget(), {
       videoId: this.videoId,
+      host: "https://www.youtube-nocookie.com",
       playerVars: {
         modestbranding: 1,
         start: 0,
@@ -80,8 +100,10 @@ export class YoutubeController extends Controller {
 
   onReady = (ev) => {
     if(this.data.get("autoplay")) {
-      this.mute()
-      this.play()
+      if(visibility.state === "visible") {
+        this.mute()
+        this.play()
+      }
     } else {
       this.pristine = false
     }
@@ -130,6 +152,12 @@ export class YoutubeController extends Controller {
 
   pause = () => this.player && this.player.pauseVideo()
 
+  get wrapperTargetId() {
+    if(this.wrapperTarget.id) return this.wrapperTarget.id
+    this.wrapperTarget.id = uniqueId()
+    return this.wrapperTarget.id
+  }
+
   get playing() {
     return this.playerState === playerStates.playing
   }
@@ -158,5 +186,3 @@ export class YoutubeController extends Controller {
     return this.videoIds[0]
   }
 }
-
-YoutubeController.registerController()

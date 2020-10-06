@@ -1,4 +1,4 @@
-import { Controller } from "stimuli"
+import { Controller } from "stimuli/constants/controller"
 
 export class LinkListController extends Controller {
   static keyName = "link-list"
@@ -28,5 +28,3 @@ export class LinkListController extends Controller {
     return el
   }
 }
-
-LinkListController.registerController()

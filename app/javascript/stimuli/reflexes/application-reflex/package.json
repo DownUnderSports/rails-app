@@ -1,0 +1,6 @@
+{
+  "name": "ApplicationReflex",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./application-reflex.js"
+}

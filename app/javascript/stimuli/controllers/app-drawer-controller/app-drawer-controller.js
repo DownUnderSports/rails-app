@@ -1,16 +1,16 @@
-import { Controller } from "stimuli"
+import { Controller } from "stimuli/constants/controller"
 import { MDCDrawer } from '@material/drawer';
 
 export class AppDrawerController extends Controller {
   static keyName = "app-drawer"
   static targets = [ "drawer", "logo", "link" ]
 
-  connect() {
+  connected() {
     this.appDrawer = this.drawerTarget
     this.isOpen = this.isOpen
   }
 
-  disconnect() {
+  disconnected() {
     this.appDrawer.destroy()
   }
 
@@ -45,5 +45,3 @@ export class AppDrawerController extends Controller {
     this._appDrawer = new MDCDrawer(element)
   }
 }
-
-AppDrawerController.registerController()

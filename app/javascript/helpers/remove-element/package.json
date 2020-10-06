@@ -1,0 +1,6 @@
+{
+  "name": "removeElement",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./remove-element.js"
+}
