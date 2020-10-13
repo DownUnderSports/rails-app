@@ -1,6 +1,6 @@
 import * as ActionCable from "@rails/actioncable"
 import { WebSocket as MockWebSocket } from "mock-socket"
-import { websocketUrl } from "./test_helpers/websocket-url"
+import { websocketUrl } from "./test-helpers/websocket-url"
 ActionCable.adapters.WebSocket = MockWebSocket
 
 const element = document.createElement("meta")

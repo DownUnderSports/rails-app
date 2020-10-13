@@ -1,5 +1,5 @@
 import { Consumer } from "channels/constants/consumer"
-import { consumerConnectionTest } from "test_helpers/consumer-connection-test"
+import { consumerConnectionTest } from "test-helpers/consumer-connection-test"
 
 import {
   Consumer as ConsumerClass,

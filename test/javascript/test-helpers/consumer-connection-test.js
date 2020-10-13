@@ -1,6 +1,6 @@
 import * as ActionCable from "@rails/actioncable"
 import { Server } from "mock-socket"
-import { isFunction } from "test_helpers/is-function"
+import { isFunction } from "test-helpers/is-function"
 import { websocketUrl } from "./websocket-url"
 
 export const consumerConnectionTest = (options, callback) => new Promise(async (r, j) => {

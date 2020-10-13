@@ -9,7 +9,11 @@ export class TopBarController extends Controller {
   }
 
   disconnected() {
-    this.topBar.destroy()
+    if(this.element) delete this.element.topBar
+    try {
+      this.topBar && this.topBar.destroy()
+    } catch(_) {}
+    this._topBar = undefined
   }
 
   get topBar() {

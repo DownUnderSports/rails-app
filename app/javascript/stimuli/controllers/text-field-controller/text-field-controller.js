@@ -10,9 +10,11 @@ export class TextFieldController extends Controller {
   }
 
   disconnected() {
+    if(this.element) delete this.element.textField
     try {
       this.textField && this.textField.destroy()
     } catch(_) {}
+    this._textField = undefined
   }
 
   get value() {
@@ -29,7 +31,9 @@ export class TextFieldController extends Controller {
   }
 
   set textField(element) {
-    if(element && element.querySelector("input.mdc-text-field__input")) this._textField = new MDCTextField(element)
-    else throw new Error("TextField Missing Input")
+    if(element && element.querySelector("input.mdc-text-field__input")) {
+      try { this._textField && this._textField.destroy() } catch(_) {}
+      this._textField = new MDCTextField(element)
+    } else throw new Error("TextField Missing Input")
   }
 }
