@@ -1,16 +1,20 @@
-import { Controller } from "stimuli"
+import { Controller } from "stimuli/constants/controller"
 import { MDCTextField } from '@material/textfield';
 
 export class TextFieldController extends Controller {
   static keyName = "text-field"
   static targets = [ "input", "label", "icon" ]
 
-  connect() {
+  connected() {
     this.textField = this.element
   }
 
-  disconnect() {
-    this.textField.destroy()
+  disconnected() {
+    if(this.element) delete this.element.textField
+    try {
+      this.textField && this.textField.destroy()
+    } catch(_) {}
+    this._textField = undefined
   }
 
   get value() {
@@ -27,8 +31,9 @@ export class TextFieldController extends Controller {
   }
 
   set textField(element) {
-    this._textField = new MDCTextField(element)
+    if(element && element.querySelector("input.mdc-text-field__input")) {
+      try { this._textField && this._textField.destroy() } catch(_) {}
+      this._textField = new MDCTextField(element)
+    } else throw new Error("TextField Missing Input")
   }
 }
-
-TextFieldController.registerController()

@@ -1,3 +1,2 @@
-export * from "stimuli/constants"
-import "stimuli/controllers"
-// import "stimuli/reflexes"
+import "stimuli/controllers/autoregister"
+// import "stimuli/reflexes/autoregister"

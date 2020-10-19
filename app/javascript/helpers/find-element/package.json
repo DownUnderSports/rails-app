@@ -1,0 +1,6 @@
+{
+  "name": "findElement",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./find-element.js"
+}

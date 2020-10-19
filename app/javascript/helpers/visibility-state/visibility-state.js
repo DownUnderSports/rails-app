@@ -27,7 +27,16 @@ if (typeof document.hidden !== "undefined") {
 // }
 
 const listeners           = [],
-      addEventListener    = (cb) => listeners.push(cb),
+      addEventListener    = (cb) => {
+        if(cb) listeners.push(cb)
+        else {
+          try {
+            throw new Error("callback undefined")
+          } catch(e) {
+            console.error(e)
+          }
+        }
+      },
       removeEventListener = (cb) => {
         let idx
         while((idx = listeners.indexOf(cb)) !== -1) {

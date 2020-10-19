@@ -1,15 +1,19 @@
-import { Controller } from "stimuli"
+import { Controller } from "stimuli/constants/controller"
 import { MDCTopAppBar } from '@material/top-app-bar';
 
 export class TopBarController extends Controller {
   static keyName = "top-bar"
   static targets = [ "nav-button", "title" ]
-  connect() {
+  connected() {
     this.topBar = this.element
   }
 
-  disconnect() {
-    this.topBar.destroy()
+  disconnected() {
+    if(this.element) delete this.element.topBar
+    try {
+      this.topBar && this.topBar.destroy()
+    } catch(_) {}
+    this._topBar = undefined
   }
 
   get topBar() {
@@ -20,5 +24,3 @@ export class TopBarController extends Controller {
     this._topBar = new MDCTopAppBar(element)
   }
 }
-
-TopBarController.registerController()

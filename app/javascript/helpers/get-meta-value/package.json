@@ -1,0 +1,6 @@
+{
+  "name": "getMetaValue",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./get-meta-value.js"
+}

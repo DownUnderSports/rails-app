@@ -1,15 +1,15 @@
-import { Controller } from "stimuli"
+import { Controller } from "stimuli/constants/controller"
 
 export class ClipboardController extends Controller {
   static keyName = "clipboard"
   static targets = [ "source" ]
-  connect() {
+  connected() {
     if(document.queryCommandSupported("copy")) {
       this.element.classList.add("clipboard--supported")
     }
   }
 
-  disconnect() {
+  disconnected() {
     this.element.classList.remove('clipboard--supported')
   }
 
@@ -19,5 +19,3 @@ export class ClipboardController extends Controller {
     document.execCommand("copy")
   }
 }
-
-ClipboardController.registerController()

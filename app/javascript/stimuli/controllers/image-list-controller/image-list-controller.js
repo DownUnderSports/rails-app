@@ -1,4 +1,4 @@
-import { Controller } from "stimuli"
+import { Controller } from "stimuli/constants/controller"
 import { MDCImageList } from '@material/list';
 import { MDCRipple } from '@material/ripple';
 
@@ -6,11 +6,11 @@ export class ImageListController extends Controller {
   static keyName = "image-list"
   static targets = [ "list", "item" ]
 
-  connect() {
+  connected() {
     this.list = this.listTarget
   }
 
-  disconnect() {
+  disconnected() {
     if(this.list) {
       (this._ripples || []).forEach(this.destroyRipple)
       this.list.destroy()
@@ -37,11 +37,9 @@ export class ImageListController extends Controller {
   }
 
   set list(element) {
-    this._list && this.disconnect()
+    this._list && this.disconnected()
     this._list = new MDCList(element)
     this.list.listElements.forEach(this.createRipple)
     this.list.singleSelection = true
   }
 }
-
-ImageListController.registerController()

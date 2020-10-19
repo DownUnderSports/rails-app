@@ -1,5 +1,6 @@
 import { Controller as StimulusController } from "stimulus"
-import { Application } from "stimuli"
+import { Application } from "stimuli/constants/application"
+import { isDebugOrEnv } from "helpers/is-env"
 
 export class Controller extends StimulusController {
   static registerController(value) {
@@ -15,5 +16,21 @@ export class Controller extends StimulusController {
 
   static set keyName(value) {
     this._keyName = value
+  }
+
+  connect() {
+    isDebugOrEnv("development") && console.log(`connecting: ${this.identifier} - ${this.element}`)
+    this._disconnected = false
+    this.element[this.identifier] = this
+    this.connected && this.connected()
+  }
+
+  disconnect() {
+    isDebugOrEnv("development") && console.log(`disconnecting: ${this.identifier} - ${this.element}`)
+    this._disconnected = true
+    try {
+      delete this.element[this.identifier]
+    } catch(_) {}
+    this.disconnected && this.disconnected()
   }
 }

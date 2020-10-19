@@ -1,15 +1,15 @@
-import { Controller } from "stimuli"
+import { Controller } from "stimuli/constants/controller"
 export { MDCCheckbox } from '@material/checkbox';
 
 export class CheckboxController extends Controller {
   static keyName = "checkbox"
   static targets = [ "nav-button", "title" ]
 
-  connect() {
+  connected() {
     this.checkbox = this.element
   }
 
-  disconnect() {
+  disconnected() {
     this.checkbox.destroy()
   }
 
@@ -57,5 +57,3 @@ export class CheckboxController extends Controller {
     this._checkbox = new MDCCheckbox(element)
   }
 }
-
-CheckboxController.registerController()
