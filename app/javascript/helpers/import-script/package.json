@@ -1,0 +1,6 @@
+{
+  "name": "importScript",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./import-script.js"
+}

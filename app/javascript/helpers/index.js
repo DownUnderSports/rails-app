@@ -1,5 +1,6 @@
-export { findElement }   from "./find-element"
+export { findElement }    from "./find-element"
 export { getMetaValue }  from "./get-meta-value"
+export { importScript }  from "./import-script"
 export { insertAfter }   from "./insert-after"
 export { isDebugOrEnv }  from "./is-env"
 export { removeElement } from "./remove-element"

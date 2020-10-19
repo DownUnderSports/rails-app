@@ -73,6 +73,59 @@ describe("Stimuli", () => {
           expect(controller.topBar.scrollTarget_).toBe(window)
         })
       })
+
+      describe("on disconnect", () => {
+        const withDisconnect = (cb, opts) => {
+          let { setup, teardown } = opts || {}
+          return async () => {
+            const { wrapper } = getElements()
+            try {
+              setup = (setup && await setup(wrapper))
+              delete wrapper.dataset.controller
+              await sleepAsync()
+              cb = await cb(wrapper, setup)
+              teardown && await teardown(wrapper, setup, cb)
+            } finally {
+              wrapper.dataset.controller = "top-bar"
+              await sleepAsync()
+            }
+          }
+        }
+
+        it("removes [top-bar] from the element",
+          withDisconnect(wrapper => {
+            expect(wrapper["top-bar"]).toBe(undefined)
+          })
+        )
+
+        it("calls #destroy on .topBar",
+          withDisconnect(
+            (_, { mock }) => {
+              expect(mock).toHaveBeenCalledTimes(1)
+              expect(mock).toHaveBeenLastCalledWith()
+            },
+            {
+              setup: wrapper => {
+                const topBar = wrapper["top-bar"].topBar,
+                      destroy = topBar.destroy,
+                      mock = jest.fn()
+                        .mockImplementation(destroy)
+                        .mockName("destroy")
+
+                Object.defineProperty(topBar, "destroy", {
+                  value: mock,
+                  configurable: true
+                })
+
+                return { mock, topBar }
+              },
+              teardown: (_, { topBar }) => {
+                if(topBar.hasOwnProperty("destroy")) delete topBar.destroy
+              }
+            }
+          )
+        )
+      })
     })
   })
 })

@@ -1,16 +1,9 @@
 import { Controller } from "stimuli/constants/controller"
-import { visibility, uniqueId } from "helpers"
+import { visibility, uniqueId, importScript } from "helpers"
 
-let youtubeReady  = null,
-    youtubeFailed = null,
-    ytAPIStarted  = null
-
-const youtubeLoaded = new Promise((resolve, reject) => {
-  youtubeReady = resolve
-  youtubeFailed = reject
+export const youtubeLoaded = new Promise(resolve => {
+  window.onYouTubeIframeAPIReady = resolve
 })
-
-window.onYouTubeIframeAPIReady = () => youtubeReady()
 
 const playerStates = {
   unstarted: -1,
@@ -39,7 +32,7 @@ export class YoutubeController extends Controller {
     this.pristine = true
     this.wrapperTarget.classList.toggle("youtube", true)
     if(this.hasVideoTarget) this._iframeHTML = this.videoTarget.outerHTML
-    this.onStateChange({ data: playerStates.unstarted })
+    this.onStateChange()
     this.loadYoutubeAPI()
   }
 
@@ -49,53 +42,11 @@ export class YoutubeController extends Controller {
     this.player = null
   }
 
-  // Private
-  async loadYoutubeAPI() {
-    if(!ytAPIStarted) {
-      ytAPIStarted = true
-      // 2. This code loads the IFrame Player API code asynchronously.
-      const tag = document.createElement('script');
-
-      tag.src = "https://www.youtube.com/iframe_api";
-      document.body.appendChild(tag)
-    }
-    await youtubeLoaded
-    if(!this._disconnected) {
-      visibility.addEventListener(this.onVisibilityChange)
-      this.createPlayer()
-    }
-  }
-
   onVisibilityChange = (state) => {
     if(this.pristine) {
       if(state === "visible") this.onReady()
       else this.pause()
     }
-  }
-
-  getPlayerTarget = () => {
-    if(!this.hasVideoTarget && this._iframeHTML) {
-      this.wrapperTarget.innerHTML = this.wrapperTarget.innerHTML + this._iframeHTML
-    }
-    return this.hasVideoTarget ? this.videoTarget : this.wrapperTargetId
-  }
-
-  createPlayer = () => {
-    this.player = this.player || new this.YT.Player(this.getPlayerTarget(), {
-      videoId: this.videoId,
-      host: "https://www.youtube-nocookie.com",
-      playerVars: {
-        modestbranding: 1,
-        start: 0,
-        domain: window.location.origin,
-        enablejsapi: 1,
-        autoplay: 1
-      },
-      events: {
-        onReady: this.onReady,
-        onStateChange: this.onStateChange
-      }
-    })
   }
 
   onReady = (ev) => {
@@ -118,7 +69,7 @@ export class YoutubeController extends Controller {
       this.pristine
       && this.data.get("autoplay")
       && current === playerStates.paused
-      && this.isMuted()
+      && this.isMuted
       && visibility.state === "visible"
     ) {
       this.pristine = false
@@ -128,10 +79,45 @@ export class YoutubeController extends Controller {
       this.videoIds.shift()
       if(this.videoId) this.player.loadVideoById(this.videoId)
       else {
-        this.resetVideoIds
+        this.resetVideoIds()
         this.player.cueVideoById(this.videoId)
       }
     }
+  }
+
+  // Private
+  async loadYoutubeAPI() {
+    await importScript("https://www.youtube.com/iframe_api")
+    await youtubeLoaded
+    if(!this._disconnected) {
+      visibility.addEventListener(this.onVisibilityChange)
+      this.createPlayer()
+    }
+  }
+
+  getPlayerTarget = () => {
+    if(!this.hasVideoTarget && this._iframeHTML) {
+      this.wrapperTarget.innerHTML = this.wrapperTarget.innerHTML + this._iframeHTML
+    }
+    return this.hasVideoTarget ? this.videoTarget : this.wrapperTargetId
+  }
+
+  createPlayer = () => {
+    this.player = this.player || new this.YT.Player(this.getPlayerTarget(), {
+      videoId: this.videoId,
+      host: "https://www.youtube-nocookie.com",
+      playerVars: {
+        modestbranding: 1,
+        start: 0,
+        domain: window.location.origin,
+        enablejsapi: 1,
+        autoplay: 0
+      },
+      events: {
+        onReady: this.onReady,
+        onStateChange: this.onStateChange
+      }
+    })
   }
 
   setWrapperClass = (id) => {
@@ -142,8 +128,6 @@ export class YoutubeController extends Controller {
 
   toggle = () => this.playing ? this.pause() : this.play()
 
-  isMuted = () => this.player && this.player.isMuted()
-
   mute = () => this.player && this.player.mute()
 
   unMute = () => this.player && this.player.unMute()
@@ -151,6 +135,8 @@ export class YoutubeController extends Controller {
   play = () => this.player && this.player.playVideo()
 
   pause = () => this.player && this.player.pauseVideo()
+
+  resetVideoIds = () => this._videoIds = this.data.get("ids").split(",")
 
   get wrapperTargetId() {
     if(this.wrapperTarget.id) return this.wrapperTarget.id
@@ -175,14 +161,14 @@ export class YoutubeController extends Controller {
   }
 
   get videoIds() {
-    return this._videoIds = this._videoIds || this.resetVideoIds
-  }
-
-  get resetVideoIds() {
-    return this._videoIds = this.data.get("ids").split(",")
+    return this._videoIds = this._videoIds || this.resetVideoIds()
   }
 
   get videoId() {
     return this.videoIds[0]
+  }
+
+  get isMuted() {
+    return this.player && this.player.isMuted()
   }
 }

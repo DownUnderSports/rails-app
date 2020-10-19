@@ -9,7 +9,7 @@ const genId = () =>
   + '-' + genChar(12)
 
 
-export const uniqueId = () => {
+export function uniqueId() {
   let id
   while(!id || document.getElementById(id)) id = genId()
   return id
