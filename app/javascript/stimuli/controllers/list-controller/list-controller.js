@@ -10,12 +10,17 @@ export class ListController extends Controller {
     this.list = this.listTarget
   }
 
-  async disconnected() {
-    if(this.list) {
-      for(let r = this.ripples.length; r > 0; r--) {
-        await this.destroyRipple(this.ripples[r - 1])
+  async disconnected(list, ripples) {
+    if(!list) {
+      list = this.list
+      ripples = this.ripples
+    }
+
+    if(list) {
+      for(let r = ripples.length; r > 0; r--) {
+        await this.destroyRipple(ripples[r - 1])
       }
-      await this.list.destroy()
+      await list.destroy()
     }
   }
 
@@ -27,7 +32,10 @@ export class ListController extends Controller {
 
   destroyRipple = async (ripple) => {
     await ripple.destroy()
-    this.ripples.splice(this.ripples.indexOf(ripple), 1)
+    let idx
+    while((idx = this.ripples.indexOf(ripple)) !== -1) {
+      this.ripples.splice(idx, 1)
+    }
   }
 
   get ripples () {
@@ -39,7 +47,7 @@ export class ListController extends Controller {
   }
 
   set list(element) {
-    this._list && this.disconnected()
+    if(this._list) this.disconnected(this._list, [...this.ripples])
     this._list = new MDCList(element)
     this.list.listElements.forEach(this.createRipple)
     this.list.singleSelection = true

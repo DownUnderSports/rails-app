@@ -25,9 +25,12 @@ export class ImageListController extends Controller {
     return ripple
   }
 
-  destroyRipple = (ripple) => {
+  destroyRipple = async (ripple) => {
     await ripple.destroy()
-    this.ripples.splice(this.ripples.indexOf(ripple), 1)
+    let idx
+    while((idx = this.ripples.indexOf(ripple)) !== -1) {
+      this.ripples.splice(idx, 1)
+    }
   }
 
   get ripples () {
