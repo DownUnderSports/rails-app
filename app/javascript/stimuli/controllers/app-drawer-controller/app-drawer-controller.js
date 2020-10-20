@@ -5,13 +5,13 @@ export class AppDrawerController extends Controller {
   static keyName = "app-drawer"
   static targets = [ "drawer", "logo", "link" ]
 
-  connected() {
+  async connected() {
     this.appDrawer = this.drawerTarget
     this.isOpen = this.isOpen
   }
 
-  disconnected() {
-    this.appDrawer.destroy()
+  async disconnected() {
+    this.appDrawer && await this.appDrawer.destroy()
   }
 
   get isOpen() {
