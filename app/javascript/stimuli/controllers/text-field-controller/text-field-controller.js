@@ -5,15 +5,13 @@ export class TextFieldController extends Controller {
   static keyName = "text-field"
   static targets = [ "input", "label", "icon" ]
 
-  connected() {
+  async connected() {
     this.textField = this.element
   }
 
-  disconnected() {
+  async disconnected() {
     if(this.element) delete this.element.textField
-    try {
-      this.textField && this.textField.destroy()
-    } catch(_) {}
+    this.textField && await this.textField.destroy()
     this._textField = undefined
   }
 

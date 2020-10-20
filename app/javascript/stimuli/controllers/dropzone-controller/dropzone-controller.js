@@ -13,7 +13,7 @@ const dropzoneEvents = [
 export class DropzoneController extends Controller {
   static targets = [ "input" ]
 
-  connected() {
+  async connected() {
     this.dropZone = new Dropzone(this.element, {
       url: this.url,
       headers: this.headers,

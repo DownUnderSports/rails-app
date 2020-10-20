@@ -2,6 +2,7 @@
 import { MDCTopAppBar } from '@material/top-app-bar';
 import { YoutubeController, youtubeLoaded } from "stimuli/controllers/youtube-controller"
 import { sleepAsync } from "test-helpers/sleep-async"
+import { removeControllers } from "test-helpers/remove-controllers"
 import { Player } from "test-helpers/mocks/yt/player"
 import { importScript } from "helpers/import-script"
 import { uniqueId } from "helpers/unique-id"
@@ -66,6 +67,8 @@ describe("Stimuli", () => {
         YoutubeController.registerController()
       })
 
+      afterEach(removeControllers)
+
       it("has keyName 'youtube'", () => {
         expect(YoutubeController.keyName).toEqual("youtube")
       })
@@ -79,13 +82,13 @@ describe("Stimuli", () => {
         it("sets [youtube] to be the controller instance", () => {
           const { wrapper } = getElements()
 
-          expect(wrapper["youtube"])
+          expect(wrapper["controllers"]["youtube"])
             .toBeInstanceOf(YoutubeController)
         })
 
         it("stores the html of [videoTarget] if exists", () => {
           const { wrapper, frame } = getElements(),
-                controller = wrapper["youtube"]
+                controller = wrapper["controllers"]["youtube"]
 
           expect(controller.videoTarget).toBe(frame)
           expect(controller._iframeHTML).toEqual(frame.outerHTML)
@@ -93,7 +96,7 @@ describe("Stimuli", () => {
 
         it("sets [pristine] to be true", () => {
           const { wrapper } = getElements(),
-                controller = wrapper["youtube"]
+                controller = wrapper["controllers"]["youtube"]
 
           expect(controller.pristine).toBe(true)
         })
@@ -107,7 +110,7 @@ describe("Stimuli", () => {
         describe("[data-youtube-autoplay] = true", () => {
           beforeEach(async () => {
             const { wrapper } = getElements(),
-                  controller = wrapper["youtube"]
+                  controller = wrapper["controllers"]["youtube"]
 
             controller.data.set("autoplay", true)
             controller.player.onReady()
@@ -116,7 +119,7 @@ describe("Stimuli", () => {
 
           it("starts playing", () => {
             const { wrapper } = getElements(),
-                  controller = wrapper["youtube"]
+                  controller = wrapper["controllers"]["youtube"]
 
             expect(wrapper.classList).not.toContain("unstarted")
             expect(wrapper.classList).toContain("playing")
@@ -126,7 +129,7 @@ describe("Stimuli", () => {
 
           it("starts muted", () => {
             const { wrapper } = getElements(),
-                  controller = wrapper["youtube"]
+                  controller = wrapper["controllers"]["youtube"]
 
             expect(controller.player.mute).toHaveBeenCalledTimes(1)
             expect(controller.player.mute).toHaveBeenLastCalledWith()
@@ -135,14 +138,14 @@ describe("Stimuli", () => {
 
           it("keeps [pristine] true", () => {
             const { wrapper } = getElements(),
-                  controller = wrapper["youtube"]
+                  controller = wrapper["controllers"]["youtube"]
 
             expect(controller.pristine).toBe(true)
           })
 
           it("disables [pristine] and unmutes on status change", async () => {
             const { wrapper } = getElements(),
-                  controller = wrapper["youtube"]
+                  controller = wrapper["controllers"]["youtube"]
 
             expect(controller.pristine).toBe(true)
             expect(controller.player.playVideo).toHaveBeenCalledTimes(1)
@@ -173,7 +176,7 @@ describe("Stimuli", () => {
         describe("[data-youtube-autoplay] = false", () => {
           beforeEach(async () => {
             const { wrapper } = getElements(),
-                  controller = wrapper["youtube"]
+                  controller = wrapper["controllers"]["youtube"]
 
             controller.data.delete("autoplay")
             controller.player.onReady()
@@ -182,7 +185,7 @@ describe("Stimuli", () => {
 
           it("does not start playing ", () => {
             const { wrapper } = getElements(),
-                  controller = wrapper["youtube"]
+                  controller = wrapper["controllers"]["youtube"]
 
             expect(wrapper.classList).not.toContain("playing")
             expect(wrapper.classList).toContain("unstarted")
@@ -191,14 +194,14 @@ describe("Stimuli", () => {
 
           it("sets [pristine] false", () => {
             const { wrapper } = getElements(),
-                  controller = wrapper["youtube"]
+                  controller = wrapper["controllers"]["youtube"]
 
             expect(controller.pristine).toBe(false)
           })
 
           it("is not muted", () => {
             const { wrapper } = getElements(),
-                  controller = wrapper["youtube"]
+                  controller = wrapper["controllers"]["youtube"]
 
             expect(controller.player.mute).not.toHaveBeenCalled()
             expect(controller.isMuted).toBe(false)
@@ -207,64 +210,40 @@ describe("Stimuli", () => {
       })
 
       describe("on disconnect", () => {
-        const withDisconnect = (cb, opts) => {
-          let { setup, teardown } = opts || {}
-          return async () => {
-            const { wrapper } = getElements()
-            try {
-              await youtubeLoaded
-              setup = (setup && await setup(wrapper))
-              delete wrapper.dataset.controller
-              await sleepAsync()
-              cb = await cb(wrapper, setup)
-              teardown && await teardown(wrapper, setup, cb)
-            } finally {
-              wrapper.dataset.controller = "youtube"
-              await sleepAsync()
-            }
-          }
-        }
+        it("removes [youtube] from the element", async () => {
+          const { wrapper } = getElements()
+          expect(wrapper["controllers"]["youtube"]).toBeInstanceOf(YoutubeController)
+          await wrapper["controllers"]["youtube"].disconnect()
+          expect(wrapper["controllers"]["youtube"]).toBe(undefined)
+        })
 
-        it("removes [youtube] from the element",
-          withDisconnect(wrapper => {
-            expect(wrapper["youtube"]).toBe(undefined)
+        it("calls #destroy on .player", async () => {
+          const { wrapper } = getElements(),
+                player = wrapper["controllers"]["youtube"].player,
+                destroy = player.destroy,
+                mock = jest.fn()
+                  .mockImplementation(destroy)
+                  .mockName("destroy")
+
+          Object.defineProperty(player, "destroy", {
+            value: mock,
+            configurable: true
           })
-        )
 
-        it("calls #destroy on .player",
-          withDisconnect(
-            (_, { mock }) => {
-              expect(mock).toHaveBeenCalledTimes(1)
-              expect(mock).toHaveBeenLastCalledWith()
-            },
-            {
-              setup: wrapper => {
-                const player = wrapper["youtube"].player,
-                      destroy = player.destroy,
-                      mock = jest.fn()
-                        .mockImplementation(destroy)
-                        .mockName("destroy")
+          await wrapper["controllers"]["youtube"].disconnect()
 
-                Object.defineProperty(player, "destroy", {
-                  value: mock,
-                  configurable: true
-                })
+          expect(mock).toHaveBeenCalledTimes(1)
+          expect(mock).toHaveBeenLastCalledWith()
 
-                return { mock, player }
-              },
-              teardown: (_, { player }) => {
-                if(player.hasOwnProperty("destroy")) delete player.destroy
-              }
-            }
-          )
-        )
+          if(player.hasOwnProperty("destroy")) delete player.destroy
+        })
       })
 
       describe("getters", () => {
         describe("[wrapperTargetId]", () => {
           it("is the id of [wrapperTarget]", () => {
             const { wrapper } = getElements(),
-                  controller = wrapper["youtube"]
+                  controller = wrapper["controllers"]["youtube"]
 
             expect(controller.wrapperTargetId).toEqual("test-youtube")
             expect(controller.wrapperTargetId).toEqual(wrapper.id)
@@ -272,7 +251,7 @@ describe("Stimuli", () => {
 
           it("sets a uniqueId if [wrapperTarget][id] is empty", () => {
             const { wrapper } = getElements(),
-                  controller = wrapper["youtube"]
+                  controller = wrapper["controllers"]["youtube"]
 
             try {
               i = 0
@@ -368,7 +347,7 @@ describe("Stimuli", () => {
         describe("[videoIds]", () => {
           it("is the comma split list of [data-youtube-ids]", () => {
             const { wrapper } = getElements(),
-                  controller = wrapper["youtube"]
+                  controller = wrapper["controllers"]["youtube"]
 
             expect(controller.videoIds).toEqual(["Yh5CjpY35BM","C-gkKvFNL88"])
             expect(controller.videoIds).toEqual(wrapper.dataset.youtubeIds.split(","))
@@ -390,7 +369,7 @@ describe("Stimuli", () => {
         describe("[isMuted]", () => {
           beforeEach(async () => {
             const { wrapper } = getElements(),
-                  controller = wrapper["youtube"]
+                  controller = wrapper["controllers"]["youtube"]
 
             controller.player && controller.player.clearMocks()
             await sleepAsync()
@@ -400,7 +379,7 @@ describe("Stimuli", () => {
             let currentPlayer
 
             const { wrapper } = getElements(),
-                  controller = wrapper["youtube"],
+                  controller = wrapper["controllers"]["youtube"],
                   player = controller.player,
                   get = jest.fn().mockImplementation(() => currentPlayer),
                   set = jest.fn().mockImplementation(value => currentPlayer = value)
@@ -729,7 +708,7 @@ describe("Stimuli", () => {
       describe("actions", () => {
         beforeEach(async () => {
           const { wrapper } = getElements(),
-                controller = wrapper["youtube"]
+                controller = wrapper["controllers"]["youtube"]
 
           controller.data.delete("autoplay")
           controller.player.onReady()
@@ -740,7 +719,7 @@ describe("Stimuli", () => {
         describe(".toggle", () => {
           beforeEach(async () => {
             const { wrapper } = getElements(),
-                  controller = wrapper["youtube"]
+                  controller = wrapper["controllers"]["youtube"]
 
             controller.player.clearMocks()
             await sleepAsync()
@@ -748,7 +727,7 @@ describe("Stimuli", () => {
 
           it("toggles the current playing state", async () => {
             const { wrapper } = getElements(),
-                  controller = wrapper["youtube"]
+                  controller = wrapper["controllers"]["youtube"]
 
             expect(wrapper.classList).toContain("unstarted")
             expect(wrapper.classList).not.toContain("paused")
@@ -788,7 +767,7 @@ describe("Stimuli", () => {
           describe(`.${method}`, () => {
             beforeEach(async () => {
               const { wrapper } = getElements(),
-                    controller = wrapper["youtube"]
+                    controller = wrapper["controllers"]["youtube"]
 
               controller.player.clearMocks()
               await sleepAsync()
@@ -798,7 +777,7 @@ describe("Stimuli", () => {
               let currentPlayer
 
               const { wrapper } = getElements(),
-                    controller = wrapper["youtube"],
+                    controller = wrapper["controllers"]["youtube"],
                     player = controller.player,
                     get = jest.fn().mockImplementation(() => currentPlayer),
                     set = jest.fn().mockImplementation(value => currentPlayer = value),
@@ -852,7 +831,7 @@ describe("Stimuli", () => {
         describe(".resetVideoIds", () => {
           it("sets [videoIds] back to default", () => {
             const { wrapper } = getElements(),
-                  controller = wrapper["youtube"]
+                  controller = wrapper["controllers"]["youtube"]
 
             controller._videoIds = []
 
@@ -905,7 +884,7 @@ describe("Stimuli", () => {
         describe(".getPlayerTarget", () => {
           it("returns [videoTarget] if [hasVideoTarget]", () => {
             const { frame, wrapper } = getElements(),
-                  controller = wrapper["youtube"]
+                  controller = wrapper["controllers"]["youtube"]
             expect(controller.getPlayerTarget()).toBe(frame)
           })
 

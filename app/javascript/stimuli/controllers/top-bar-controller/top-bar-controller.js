@@ -4,15 +4,13 @@ import { MDCTopAppBar } from '@material/top-app-bar';
 export class TopBarController extends Controller {
   static keyName = "top-bar"
   static targets = [ "nav-button", "title" ]
-  connected() {
+  async connected() {
     this.topBar = this.element
   }
 
-  disconnected() {
+  async disconnected() {
     if(this.element) delete this.element.topBar
-    try {
-      this.topBar && this.topBar.destroy()
-    } catch(_) {}
+    this.topBar && await this.topBar.destroy()
     this._topBar = undefined
   }
 

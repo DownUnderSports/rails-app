@@ -2,6 +2,7 @@
 import { MDCTextField } from "@material/textfield";
 import { TextFieldController } from "stimuli/controllers/text-field-controller"
 import { sleepAsync } from "test-helpers/sleep-async"
+import { removeControllers } from "test-helpers/remove-controllers"
 
 const getElements = () => {
   const wrapper = document.getElementById("test-text-field"),
@@ -27,6 +28,7 @@ describe("Stimuli", () => {
         `
         TextFieldController.registerController()
       })
+      afterEach(removeControllers)
 
       it("has keyName 'text-field'", () => {
         expect(TextFieldController.keyName).toEqual("text-field")
@@ -41,13 +43,13 @@ describe("Stimuli", () => {
         it("sets [text-field] to be the controller instance", () => {
           const { wrapper } = getElements()
 
-          expect(wrapper["text-field"])
+          expect(wrapper["controllers"]["text-field"])
             .toBeInstanceOf(TextFieldController)
         })
 
         it("sets .textField to an MDCTextField of element", () => {
           const { wrapper, input } = getElements(),
-                controller = wrapper["text-field"]
+                controller = wrapper["controllers"]["text-field"]
 
           expect(controller.textField).toBeInstanceOf(MDCTextField)
           expect(controller.textField.root_).toBe(wrapper)
@@ -56,62 +58,43 @@ describe("Stimuli", () => {
       })
 
       describe("on disconnect", () => {
-        const withDisconnect = (cb, opts) => {
-          let { setup, teardown } = opts || {}
-          return async () => {
-            const { wrapper } = getElements()
-            try {
-              setup = (setup && await setup(wrapper))
-              delete wrapper.dataset.controller
-              await sleepAsync()
-              cb = await cb(wrapper, setup)
-              teardown && await teardown(wrapper, setup, cb)
-            } finally {
-              wrapper.dataset.controller = "text-field"
-              await sleepAsync()
-            }
+        it("removes [text-field] from the element", async () => {
+          const { wrapper } = getElements()
+          expect(wrapper["controllers"]["text-field"]).toBeInstanceOf(TextFieldController)
+          try {
+            await wrapper["controllers"]["text-field"].disconnect()
+          } catch(err) {
+            console.error(err)
           }
-        }
+          expect(wrapper["controllers"]["text-field"]).toBe(undefined)
+        })
 
-        it("removes [text-field] from the element",
-          withDisconnect(wrapper => {
-            expect(wrapper["text-field"]).toBe(undefined)
+        it("calls #destroy on .textField", async () => {
+          const { wrapper } = getElements(),
+                textField = wrapper["controllers"]["text-field"].textField,
+                destroy = textField.destroy,
+                mock = jest.fn()
+                  .mockImplementation(destroy)
+                  .mockName("destroy")
+
+          Object.defineProperty(textField, "destroy", {
+            value: mock,
+            configurable: true
           })
-        )
 
-        it("calls #destroy on .textField",
-          withDisconnect(
-            (_, { mock }) => {
-              expect(mock).toHaveBeenCalledTimes(1)
-              expect(mock).toHaveBeenLastCalledWith()
-            },
-            {
-              setup: wrapper => {
-                const textField = wrapper["text-field"].textField,
-                      destroy = textField.destroy,
-                      mock = jest.fn()
-                        .mockImplementation(destroy)
-                        .mockName("destroy")
+          await wrapper["controllers"]["text-field"].disconnect()
 
-                Object.defineProperty(textField, "destroy", {
-                  value: mock,
-                  configurable: true
-                })
+          expect(mock).toHaveBeenCalledTimes(1)
+          expect(mock).toHaveBeenLastCalledWith()
 
-                return { mock, textField }
-              },
-              teardown: (_, { textField }) => {
-                if(textField.hasOwnProperty("destroy")) delete textField.destroy
-              }
-            }
-          )
-        )
+          if(textField.hasOwnProperty("destroy")) delete textField.destroy
+        })
       })
 
       describe(".value", () => {
         it("returns the value of .textField", () => {
           const { wrapper } = getElements(),
-                controller = wrapper["text-field"]
+                controller = wrapper["controllers"]["text-field"]
 
           try {
             let i = 0
@@ -135,7 +118,7 @@ describe("Stimuli", () => {
 
         it("is equal to the inputTarget value", () => {
           const { wrapper } = getElements(),
-                controller = wrapper["text-field"]
+                controller = wrapper["controllers"]["text-field"]
 
           controller.inputTarget.value = "test-input-match"
 
@@ -145,7 +128,7 @@ describe("Stimuli", () => {
 
         it("is an empty string if falsy", () => {
           const { wrapper } = getElements(),
-                controller = wrapper["text-field"]
+                controller = wrapper["controllers"]["text-field"]
           try {
             let i = 0
             Object.defineProperty(controller, "textField", {
@@ -170,7 +153,7 @@ describe("Stimuli", () => {
       describe(".value=", () => {
         it("sets the value of .textField", () => {
           const { wrapper } = getElements(),
-                controller = wrapper["text-field"]
+                controller = wrapper["controllers"]["text-field"]
 
           let i = 0
           while(i < 20) {
@@ -183,7 +166,7 @@ describe("Stimuli", () => {
 
         it("returns the new value", () => {
           const { wrapper } = getElements(),
-                controller = wrapper["text-field"]
+                controller = wrapper["controllers"]["text-field"]
 
           let i = 0
           while(i < 20) {
@@ -198,7 +181,7 @@ describe("Stimuli", () => {
       describe(".textField", () => {
         it("is an MDCTextField of element", () => {
           const { wrapper, input } = getElements(),
-                controller = wrapper["text-field"]
+                controller = wrapper["controllers"]["text-field"]
 
           expect(controller.textField).toBeInstanceOf(MDCTextField)
           expect(controller.textField.root_).toBe(wrapper)
@@ -207,7 +190,7 @@ describe("Stimuli", () => {
 
         it("returns [_textField]", () => {
           const { wrapper } = getElements(),
-                controller = wrapper["text-field"],
+                controller = wrapper["controllers"]["text-field"],
                 tf = controller._textField
           try {
             expect(controller.textField).toBe(controller._textField)
@@ -224,7 +207,7 @@ describe("Stimuli", () => {
       describe(".textField=", () => {
         it("throws an error if missing input", () => {
           const { wrapper } = getElements(),
-                controller = wrapper["text-field"]
+                controller = wrapper["controllers"]["text-field"]
 
           expect(() => { controller.textField = document.createElement("DIV") })
             .toThrow("TextField Missing Input")
@@ -232,7 +215,7 @@ describe("Stimuli", () => {
 
         it("sets .textField to an MDCTextField", () => {
           const { wrapper } = getElements(),
-                controller = wrapper["text-field"],
+                controller = wrapper["controllers"]["text-field"],
                 div = document.createElement("DIV")
 
           div.innerHTML = `

@@ -6,14 +6,16 @@ export class ListController extends Controller {
   static keyName = "list"
   static targets = [ "list", "item" ]
 
-  connected() {
+  async connected() {
     this.list = this.listTarget
   }
 
-  disconnected() {
+  async disconnected() {
     if(this.list) {
-      (this._ripples || []).forEach(this.destroyRipple)
-      this.list.destroy()
+      for(let r = this.ripples.length; r > 0; r--) {
+        await this.destroyRipple(this.ripples[r - 1])
+      }
+      await this.list.destroy()
     }
   }
 
@@ -23,13 +25,13 @@ export class ListController extends Controller {
     return ripple
   }
 
-  destroyRipple = (ripple) => {
-    ripple.destroy()
+  destroyRipple = async (ripple) => {
+    await ripple.destroy()
     this.ripples.splice(this.ripples.indexOf(ripple), 1)
   }
 
   get ripples () {
-    return this._ripples || (this._ripples || [])
+    return this._ripples || (this._ripples = [])
   }
 
   get list() {

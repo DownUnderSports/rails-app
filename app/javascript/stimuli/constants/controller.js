@@ -2,6 +2,8 @@ import { Controller as StimulusController } from "stimulus"
 import { Application } from "stimuli/constants/application"
 import { isDebugOrEnv } from "helpers/is-env"
 
+// export const ActiveControllers = {}
+
 export class Controller extends StimulusController {
   static registerController(value) {
     const key = value || this.keyName
@@ -18,19 +20,33 @@ export class Controller extends StimulusController {
     this._keyName = value
   }
 
-  connect() {
+  async connect() {
+    // let resolve
+    // const promise = new Promise(r => resolve = r)
+    // ActiveControllers[this] = {
+    //   promise,
+    //   resolve,
+    // }
+
     isDebugOrEnv("development") && console.log(`connecting: ${this.identifier} - ${this.element}`)
     this._disconnected = false
-    this.element[this.identifier] = this
-    this.connected && this.connected()
+    this.element["controllers"] = this.element["controllers"] || {}
+    this.element["controllers"][this.identifier] = this
+    this.connected && await this.connected()
   }
 
-  disconnect() {
+  async disconnect() {
     isDebugOrEnv("development") && console.log(`disconnecting: ${this.identifier} - ${this.element}`)
     this._disconnected = true
     try {
-      delete this.element[this.identifier]
+      delete this.element["controllers"][this.identifier]
     } catch(_) {}
-    this.disconnected && this.disconnected()
+    try {
+      this.disconnected && await this.disconnected()
+    } catch(err) {
+      console.error(err)
+    }
+    // ActiveControllers[this] && ActiveControllers[this].resolve()
+    // delete ActiveControllers[this]
   }
 }

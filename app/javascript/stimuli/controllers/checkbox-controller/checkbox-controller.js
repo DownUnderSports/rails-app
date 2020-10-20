@@ -5,12 +5,12 @@ export class CheckboxController extends Controller {
   static keyName = "checkbox"
   static targets = [ "nav-button", "title" ]
 
-  connected() {
+  async connected() {
     this.checkbox = this.element
   }
 
-  disconnected() {
-    this.checkbox.destroy()
+  async disconnected() {
+    this.checkbox && await this.checkbox.destroy()
   }
 
   get checked() {

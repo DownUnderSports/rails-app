@@ -36,9 +36,9 @@ export class YoutubeController extends Controller {
     this.loadYoutubeAPI()
   }
 
-  disconnected() {
+  async disconnected() {
     visibility.removeEventListener(this.onVisibilityChange)
-    ignoreErrors(() => { this.player && this.player.destroy() })
+    this.player && await this.player.destroy()
     this.player = null
   }
 
