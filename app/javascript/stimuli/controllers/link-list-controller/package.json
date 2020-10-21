@@ -1,6 +1,0 @@
-{
-  "name": "LinkListController",
-  "version": "0.0.0",
-  "private": true,
-  "main": "./link-list-controller.js"
-}

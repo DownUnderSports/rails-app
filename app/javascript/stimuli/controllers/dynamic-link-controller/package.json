@@ -1,0 +1,6 @@
+{
+  "name": "DynamicLinkController",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./dynamic-link-controller.js"
+}
