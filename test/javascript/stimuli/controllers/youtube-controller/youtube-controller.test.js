@@ -425,7 +425,7 @@ describe("Stimuli", () => {
       describe("listeners", () => {
         describe(".onVisibilityChange", () => {
           const truthy = [ true, 1, "truthy" ],
-                falsy = [ false, 0, "" ];
+                falsy = [ false, 0, "", null, undefined ];
 
           describe("[pristine] truthy", () => {
             describe("arg[0] === 'visible'", () => {
