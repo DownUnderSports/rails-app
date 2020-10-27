@@ -1,5 +1,5 @@
 import { Controller } from "stimuli/constants/controller"
-export { default as Dropzone } from "dropzone"
+import { default as Dropzone } from "dropzone"
 import { UploadManager } from "./upload-manager"
 import { getMetaValue, findElement, removeElement, insertAfter } from "helpers"
 
@@ -10,8 +10,10 @@ const dropzoneEvents = [
   "processing",
   "queuecomplete"
 ]
+
 export class DropzoneController extends Controller {
-  static targets = [ "input" ]
+  static keyName = "dropzone"
+  static targets = [ "dropzone", "input" ]
 
   async connected() {
     this.dropZone = new Dropzone(this.element, {
@@ -27,10 +29,30 @@ export class DropzoneController extends Controller {
     this.bindEvents()
   }
 
+  async disconnected() {
+    this.unbindEvents()
+    this.showFileInput()
+    this.dropZone && this.dropZone.destroy()
+    this.dropZone = null
+  }
+
 // Private
   hideFileInput = () => {
+    this._input = this.inputTarget
+    this._inputDisplay = this.inputTarget.style.display
+    this.inputTarget.controller = this
     this.inputTarget.disabled = true
     this.inputTarget.style.display = "none"
+  }
+
+  showFileInput = () => {
+    if(this._input && this._input.controller === this) {
+      this._input.disabled = false
+      this._input.style.display = this._inputDisplay
+      delete this._input.controller
+      delete this._input
+      delete this._inputDisplay
+    }
   }
 
   onaddedfile = (file) => {
@@ -56,7 +78,10 @@ export class DropzoneController extends Controller {
     this.submitButton.disabled = false
 
   bindEvents = () =>
-    dropZoneEvents.map(ev => this.dropZone.on(ev, this[`on${ev}`]))
+    dropzoneEvents.map(ev => this.dropZone.on(ev, this[`on${ev}`]))
+
+  unbindEvents = () =>
+    this.dropZone && this.dropZone.off()
 
   get headers() { return { "X-CSRF-Token": getMetaValue("csrf-token") } }
 
@@ -66,9 +91,20 @@ export class DropzoneController extends Controller {
 
   get maxFileSize() { return this.data.get("maxFileSize") || 256 }
 
-  get acceptedFiles() { return this.data.get("acceptedFiles") }
+  get acceptedFiles() { return this.data.get("acceptedFiles") || null }
 
-  get addRemoveLinks() { return this.data.get("addRemoveLinks") || true }
+  get addRemoveLinks() {
+    const value = this.data.get("addRemoveLinks")
+    switch (value && value.toString().toLowerCase()) {
+      case "0":
+      case "f":
+      case "false":
+      case false:
+        return false
+      default:
+        return true
+    }
+  }
 
   get form() { return this.element.closest("form") }
 

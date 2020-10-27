@@ -1,6 +1,6 @@
 import { DirectUpload } from "@rails/activestorage"
 import { findElement, removeElement, insertAfter } from "helpers"
-export { default as Dropzone } from "dropzone"
+import { default as Dropzone } from "dropzone"
 
 Dropzone.autoDiscover = false
 

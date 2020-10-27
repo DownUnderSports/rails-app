@@ -2,7 +2,6 @@
 import { MDCList } from "@material/list";
 import { MDCRipple } from '@material/ripple';
 import { ListController } from "stimuli/controllers/list-controller"
-import { sleepAsync } from "test-helpers/sleep-async"
 import { removeControllers } from "test-helpers/remove-controllers"
 
 const getElements = () => {
