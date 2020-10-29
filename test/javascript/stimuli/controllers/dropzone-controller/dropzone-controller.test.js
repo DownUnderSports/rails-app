@@ -238,7 +238,7 @@ describe("Stimuli", () => {
         })
       })
 
-      describe("getters", () => {
+      describe("getters/setters", () => {
         describe("[headers]", () => {
           it("returns a header object with the result of getMetaValue('csrf-token')", () => {
             const controller = new DropzoneController()
@@ -254,8 +254,6 @@ describe("Stimuli", () => {
           it("returns [data-direct-upload-url] from inputTarget)", () => {
             const controller = new DropzoneController(),
                   input = document.createElement("input")
-
-            class WrongError extends Error {}
 
             expect(() => controller.url).toThrow(TypeError)
             expect(() => controller.url).toThrow(new TypeError("Cannot read property 'getAttribute' of undefined"))

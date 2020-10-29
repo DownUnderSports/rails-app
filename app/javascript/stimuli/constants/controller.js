@@ -2,8 +2,6 @@ import { Controller as StimulusController } from "stimulus"
 import { Application } from "stimuli/constants/application"
 import { isDebugOrEnv } from "helpers/is-env"
 
-// export const ActiveControllers = {}
-
 export class Controller extends StimulusController {
   static registerController(value) {
     const key = value || this.keyName
@@ -20,14 +18,13 @@ export class Controller extends StimulusController {
     this._keyName = value
   }
 
-  async connect() {
-    // let resolve
-    // const promise = new Promise(r => resolve = r)
-    // ActiveControllers[this] = {
-    //   promise,
-    //   resolve,
-    // }
+  get disconnectPromises() {
+    return this._disconnectPromises = this._disconnectPromises || []
+  }
 
+  nextDisconnect = () => new Promise(resolve => this.disconnectPromises.push(resolve))
+
+  async connect() {
     isDebugOrEnv("development") && console.log(`connecting: ${this.identifier} - ${this.element}`)
     this._disconnected = false
     this.element["controllers"] = this.element["controllers"] || {}
@@ -46,7 +43,8 @@ export class Controller extends StimulusController {
     } catch(err) {
       console.error(err)
     }
-    // ActiveControllers[this] && ActiveControllers[this].resolve()
-    // delete ActiveControllers[this]
+    const promises = this.disconnectPromises || []
+    this._disconnectPromises = []
+    promises.forEach(resolve => resolve())
   }
 }

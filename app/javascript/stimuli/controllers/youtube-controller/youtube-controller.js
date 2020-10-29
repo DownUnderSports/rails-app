@@ -136,7 +136,7 @@ export class YoutubeController extends Controller {
 
   pause = () => this.player && this.player.pauseVideo()
 
-  resetVideoIds = () => this._videoIds = this.data.get("ids").split(",")
+  resetVideoIds = () => this._videoIds = this.data.get("ids").split(",").map(v => v.replace(/^\s+|\s+$/g, ""))
 
   get wrapperTargetId() {
     if(this.wrapperTarget.id) return this.wrapperTarget.id

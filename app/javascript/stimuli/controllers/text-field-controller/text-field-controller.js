@@ -29,9 +29,9 @@ export class TextFieldController extends Controller {
   }
 
   set textField(element) {
-    if(element && element.querySelector("input.mdc-text-field__input")) {
+    if(element.querySelector("input.mdc-text-field__input")) {
       try { this._textField && this._textField.destroy() } catch(_) {}
       this._textField = new MDCTextField(element)
-    } else throw new Error("TextField Missing Input")
+    } else throw new TypeError("TextField Missing Input")
   }
 }

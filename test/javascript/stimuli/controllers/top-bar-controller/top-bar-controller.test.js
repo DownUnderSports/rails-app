@@ -3,51 +3,17 @@ import { MDCTopAppBar } from '@material/top-app-bar';
 import { TopBarController } from "stimuli/controllers/top-bar-controller"
 import { sleepAsync } from "test-helpers/sleep-async"
 import { removeControllers } from "test-helpers/remove-controllers"
+import {
+          getElements,
+          registerController,
+          template
+                              } from "./constants"
 
-const getElements = () => {
-  const wrapper = document.getElementById("test-top-bar"),
-        title = wrapper.querySelector(".mdc-top-app-bar__title"),
-        icon = wrapper.querySelector("#drawer-toggle-button")
-
-  return { wrapper, title, icon }
-}
 
 
 describe("Stimuli", () => {
   describe("Controllers", () => {
     describe("TopBarController", () => {
-      beforeEach(() => {
-        document.body.innerHTML = `
-          <section>
-            <header
-              id="test-top-bar"
-              class="mdc-top-app-bar mdc-top-app-bar--fixed"
-              data-controller="top-bar"
-            >
-              <div class="mdc-top-app-bar__row">
-                <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start h-100 flex-grow">
-                </section>
-                <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end">
-                  <span class="mdc-top-app-bar__title" data-target="top-bar.title">
-                    Title
-                  </span>
-                  <button
-                    id="drawer-toggle-button"
-                    class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button edge-even"
-                    data-target="top-bar.nav-button"
-                    data-action="app-drawer#toggle"
-                  >
-                    menu
-                  </button>
-                </section>
-              </div>
-            </header>
-          </section>
-        `
-        TopBarController.registerController()
-      })
-      afterEach(removeControllers)
-
       it("has keyName 'top-bar'", () => {
         expect(TopBarController.keyName).toEqual("top-bar")
       })
@@ -57,52 +23,79 @@ describe("Stimuli", () => {
           .toEqual([ "nav-button", "title" ])
       })
 
-      describe("on connect", () => {
-        it("sets [top-bar] to be the controller instance", () => {
-          const { wrapper } = getElements()
+      describe("lifecycles", () => {
+        beforeEach(registerController)
+        afterEach(removeControllers)
 
-          expect(wrapper["controllers"]["top-bar"])
-            .toBeInstanceOf(TopBarController)
+        describe("on connect", () => {
+          it("sets [top-bar] to be the controller instance", () => {
+            const { wrapper } = getElements()
+
+            expect(wrapper["controllers"]["top-bar"])
+              .toBeInstanceOf(TopBarController)
+          })
+
+          it("sets .topBar to an MDCTopAppBar of element", () => {
+            const { wrapper, icon } = getElements(),
+                  controller = wrapper["controllers"]["top-bar"]
+
+            expect(controller.topBar).toBeInstanceOf(MDCTopAppBar)
+            expect(controller.topBar.root_).toBe(wrapper)
+            expect(controller.topBar.navIcon_).toBe(icon)
+            expect(controller.topBar.scrollTarget_).toBe(window)
+          })
         })
 
-        it("sets .topBar to an MDCTopAppBar of element", () => {
-          const { wrapper, icon } = getElements(),
-                controller = wrapper["controllers"]["top-bar"]
+        describe("on disconnect", () => {
+          it("removes [top-bar] from the element", async () => {
+            const { wrapper } = getElements()
+            expect(wrapper["controllers"]["top-bar"]).toBeInstanceOf(TopBarController)
+            await wrapper["controllers"]["top-bar"].disconnect()
+            expect(wrapper["controllers"]["top-bar"]).toBe(undefined)
+          })
 
-          expect(controller.topBar).toBeInstanceOf(MDCTopAppBar)
-          expect(controller.topBar.root_).toBe(wrapper)
-          expect(controller.topBar.navIcon_).toBe(icon)
-          expect(controller.topBar.scrollTarget_).toBe(window)
+          it("calls #destroy on .topBar", async () => {
+            const { wrapper } = getElements(),
+                  topBar = wrapper["controllers"]["top-bar"].topBar,
+                  destroy = topBar.destroy,
+                  mock = jest.fn()
+                    .mockImplementation(destroy)
+                    .mockName("destroy")
+
+            Object.defineProperty(topBar, "destroy", {
+              value: mock,
+              configurable: true
+            })
+
+            await wrapper["controllers"]["top-bar"].disconnect()
+
+            expect(mock).toHaveBeenCalledTimes(1)
+            expect(mock).toHaveBeenLastCalledWith()
+
+            if(topBar.hasOwnProperty("destroy")) delete topBar.destroy
+          })
         })
       })
 
-      describe("on disconnect", () => {
-        it("removes [top-bar] from the element", async () => {
-          const { wrapper } = getElements()
-          expect(wrapper["controllers"]["top-bar"]).toBeInstanceOf(TopBarController)
-          await wrapper["controllers"]["top-bar"].disconnect()
-          expect(wrapper["controllers"]["top-bar"]).toBe(undefined)
-        })
+      describe("getters/setters", () => {
+        describe("[topBar]", () => {
+          it("does not have a default", () => {
+            const controller = new TopBarController()
 
-        it("calls #destroy on .topBar", async () => {
-          const { wrapper } = getElements(),
-                topBar = wrapper["controllers"]["top-bar"].topBar,
-                destroy = topBar.destroy,
-                mock = jest.fn()
-                  .mockImplementation(destroy)
-                  .mockName("destroy")
-
-          Object.defineProperty(topBar, "destroy", {
-            value: mock,
-            configurable: true
+            expect(controller.topBar).toBe(undefined)
           })
 
-          await wrapper["controllers"]["top-bar"].disconnect()
+          it("creates an MDCTopAppBar of the given element", () => {
+            const controller = new TopBarController()
 
-          expect(mock).toHaveBeenCalledTimes(1)
-          expect(mock).toHaveBeenLastCalledWith()
+            expect(() => controller.topBar = null).toThrow(TypeError)
+            expect(() => controller.topBar = null).toThrow(new TypeError("Cannot read property 'querySelector' of null"))
 
-          if(topBar.hasOwnProperty("destroy")) delete topBar.destroy
+            expect(() => controller.topBar = document.createElement("div")).not.toThrow()
+
+
+            expect(controller.topBar).toBeInstanceOf(MDCTopAppBar)
+          })
         })
       })
     })
