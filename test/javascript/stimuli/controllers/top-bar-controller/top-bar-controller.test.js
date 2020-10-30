@@ -1,15 +1,13 @@
 // stimuli/controllers/top-bar-controller/top-bar-controller.test.js
 import { MDCTopAppBar } from '@material/top-app-bar';
 import { TopBarController } from "stimuli/controllers/top-bar-controller"
-import { sleepAsync } from "test-helpers/sleep-async"
-import { removeControllers } from "test-helpers/remove-controllers"
+import { sleepAsync } from "helpers/sleep-async"
 import {
           getElements,
           registerController,
-          template
-                              } from "./constants"
-
-
+          template,
+          unregisterController
+                                } from "./constants"
 
 describe("Stimuli", () => {
   describe("Controllers", () => {
@@ -25,7 +23,7 @@ describe("Stimuli", () => {
 
       describe("lifecycles", () => {
         beforeEach(registerController)
-        afterEach(removeControllers)
+        afterEach(unregisterController)
 
         describe("on connect", () => {
           it("sets [top-bar] to be the controller instance", () => {
@@ -48,10 +46,15 @@ describe("Stimuli", () => {
 
         describe("on disconnect", () => {
           it("removes [top-bar] from the element", async () => {
-            const { wrapper } = getElements()
+            const { wrapper } = getElements(),
+                  controller = wrapper["controllers"]["top-bar"]
             expect(wrapper["controllers"]["top-bar"]).toBeInstanceOf(TopBarController)
-            await wrapper["controllers"]["top-bar"].disconnect()
+
+            await controller.disconnect()
+
             expect(wrapper["controllers"]["top-bar"]).toBe(undefined)
+
+            await controller.connect()
           })
 
           it("calls #destroy on .topBar", async () => {

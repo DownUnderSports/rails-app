@@ -3,11 +3,18 @@ import { Application } from "stimuli/constants/application"
 import { isDebugOrEnv } from "helpers/is-env"
 
 export class Controller extends StimulusController {
-  static registerController(value) {
+  static load(value) {
     const key = value || this.keyName
     if(!key) throw new Error("Controller Key Required")
 
     Application.register(key, this)
+  }
+
+  static unload(value) {
+    const key = value || this.keyName
+    if(!key) throw new Error("Controller Key Required")
+
+    Application.unload(key)
   }
 
   static get keyName() {

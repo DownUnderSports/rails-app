@@ -1,6 +1,6 @@
 import { TextFieldController } from "stimuli/controllers/text-field-controller"
-import { Scope } from "test-helpers/mocks/stimulus/scope"
-import { sleepAsync } from "test-helpers/sleep-async"
+import { controllerRegistration } from "test-helpers/generators/stimulus/controller-registration"
+import { TemplateController } from "test-helpers/generators/stimulus/template-controller"
 
 TextFieldController.bless()
 
@@ -23,30 +23,6 @@ export const template = `
 </div>
 `
 
-export const registerController = async () => {
-  document.body.innerHTML = template
+export const createTemplateController = TemplateController(TextFieldController, template, "#test-text-field")
 
-  TextFieldController.registerController()
-  await sleepAsync()
-}
-
-export const mockScope = async (controller, element) => {
-  const scope = new Scope(TextFieldController.keyName, element)
-
-  if(!controller.testName) controller.testName = window.testName || expect.getState().currentTestName
-
-  Object.defineProperty(controller, "scope", {
-    value: scope,
-    configurable: true,
-    writable: true
-  })
-}
-
-export const createTemplateController = () => {
-  document.body.innerHTML = template
-  const { wrapper } = getElements()
-  const controller = new TextFieldController()
-  controller.testName = window.testName || expect.getState().currentTestName
-  mockScope(controller, wrapper)
-  return controller
-}
+export const { registerController, unregisterController } = controllerRegistration(TextFieldController, template)

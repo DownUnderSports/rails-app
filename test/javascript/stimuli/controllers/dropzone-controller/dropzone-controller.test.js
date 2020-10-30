@@ -1,73 +1,35 @@
 // stimuli/controllers/dropzone-controller/dropzone-controller.test.js
-import { DropzoneController } from "stimuli/controllers/dropzone-controller"
-import { default as Dropzone } from "dropzone"
-import { removeControllers } from "test-helpers/remove-controllers"
-import { getMetaValue } from "helpers/get-meta-value"
-import { findElement } from "helpers/find-element"
-
+import {
+          createTemplateController,
+          Dropzone,
+          DropzoneController,
+          dropzoneMockOff,
+          dropzoneMockOn,
+          findElement,
+          findElementImplementation,
+          getElements,
+          getMetaValue,
+          getMetaValueImplementation,
+          registerController,
+          sleepAsync,
+          template,
+          UploadManager,
+          unregisterController
+                                      } from "./constants.dropzone-controller"
 jest.mock("helpers/get-meta-value")
 jest.mock("helpers/find-element")
-const { findElement: originalFindElement } = jest.requireActual("helpers/find-element")
+jest.mock("stimuli/controllers/dropzone-controller/upload-manager")
 
-getMetaValue.mockImplementation(v => `Meta Value: ${v}`)
-findElement.mockImplementation(originalFindElement)
-
-const getElements = () => {
-  const wrapper = document.getElementById("dropzone-wrapper"),
-        label = document.querySelector("label.label"),
-        input = document.getElementById("image"),
-        messageWrapper = document.getElementById("dropzone-message")
-
-  return { wrapper, label, input, messageWrapper }
-}
-const dropzoneOn = Dropzone.prototype.on,
-      dropzoneOff = Dropzone.prototype.off,
-      mockDropzoneOn = jest.fn().mockImplementation(dropzoneOn),
-      mockDropzoneOff = jest.fn().mockImplementation(dropzoneOff)
-
-Dropzone.prototype.on = mockDropzoneOn
-Dropzone.prototype.off = mockDropzoneOff
+getMetaValue.mockImplementation(getMetaValueImplementation)
+findElement.mockImplementation(findElementImplementation)
 
 const clearMocks = () => {
-  mockDropzoneOn.mockClear()
-  mockDropzoneOff.mockClear()
+  dropzoneMockOn.mockClear()
+  dropzoneMockOff.mockClear()
   getMetaValue.mockClear()
+  findElement.mockClear()
+  UploadManager.mockClear()
 }
-
-const template = `
-  <label
-    for="image"
-    class="label"
-  >
-    Image
-  </label>
-  <div
-    id="dropzone-wrapper"
-    data-controller="dropzone"
-    data-dropzone-max-file-size="2"
-    data-dropzone-max-files="1"
-    data-target="dropzone.dropzone"
-  >
-    <input
-      type="file"
-      id="image"
-      name="image"
-      data-target="dropzone.input"
-      data-direct-upload-url="/upload-file"
-    />
-    <div
-      id="dropzone-message"
-      class="dropzone-msg dz-message"
-    >
-      <h3 class="dropzone-msg-title">
-        Drag here to upload or click here to browse
-      </h3>
-      <span class="dropzone-msg-desc">
-        2 MB file size maximum. Allowed file types png, jpg.
-      </span>
-    </div>
-  </div>
-`
 
 describe("Stimuli", () => {
   describe("Controllers", () => {
@@ -85,11 +47,8 @@ describe("Stimuli", () => {
       })
 
       describe("lifecycles", () => {
-        beforeEach(() => {
-          document.body.innerHTML = template
-          DropzoneController.registerController()
-        })
-        afterEach(removeControllers)
+        beforeEach(registerController)
+        afterEach(unregisterController)
 
         describe("on connect", () => {
           it("sets [dropzone] to be the controller instance", () => {
@@ -139,7 +98,7 @@ describe("Stimuli", () => {
 
             for (let i = 0; i < controller.dropZone.events.length; i++) {
               const event = controller.dropZone.events[i],
-                    calls = mockDropzoneOn.mock.calls.filter(([ name, _ ]) => event === name)
+                    calls = dropzoneMockOn.mock.calls.filter(([ name, _ ]) => event === name)
 
               if(boundEvents.indexOf(event) === -1) {
                 expect(controller[`on${event}`]).toBe(undefined)
@@ -151,12 +110,11 @@ describe("Stimuli", () => {
                     expect(controller[key]).not.toEqual(func)
                   }
                 }
-              }
-              else {
+              } else {
                 const [_, func ] = calls[calls.length - 1]
                 expect(controller[`on${event}`]).toBeInstanceOf(Function)
                 expect([2, 3]).toContain(calls.length)
-                expect(mockDropzoneOn).toHaveBeenCalledWith(event, controller[`on${event}`])
+                expect(dropzoneMockOn).toHaveBeenCalledWith(event, controller[`on${event}`])
                 expect(func).toBe(controller[`on${event}`])
                 ++called
               }
@@ -184,31 +142,40 @@ describe("Stimuli", () => {
         })
 
         describe("on disconnect", () => {
-          test.todo("on disconnect")
           it("removes [dropzone] from the element controllers", async () => {
-            const { wrapper } = getElements()
+            const { wrapper } = getElements(),
+                  controller = wrapper["controllers"]["dropzone"]
+
             expect(wrapper["controllers"]["dropzone"]).toBeInstanceOf(DropzoneController)
-            await wrapper["controllers"]["dropzone"].disconnect()
+            await controller.disconnect()
             expect(wrapper["controllers"]["dropzone"]).toBe(undefined)
+
+            await controller.connect()
           })
 
           it("unbinds dropzone events", async () => {
-            const { wrapper } = getElements()
+            const { wrapper } = getElements(),
+                  controller = wrapper["controllers"]["dropzone"]
 
-            await wrapper["controllers"]["dropzone"].disconnect()
+            await controller.disconnect()
 
-            expect(mockDropzoneOff).toHaveBeenCalledTimes(1)
-            expect(mockDropzoneOff).toHaveBeenCalledWith()
+            expect(dropzoneMockOff).toHaveBeenCalledTimes(1)
+            expect(dropzoneMockOff).toHaveBeenCalledWith()
+
+            await controller.connect()
           })
 
           it("unhides the original inputTarget", async () => {
-            const { wrapper, input } = getElements()
+            const { wrapper, input } = getElements(),
+                  controller = wrapper["controllers"]["dropzone"]
 
-            await wrapper["controllers"]["dropzone"].disconnect()
+            await controller.disconnect()
 
             expect(input.controller).toBe(undefined)
             expect(input.disabled).toBe(false)
             expect(input.style.display).toBe("")
+
+            await controller.connect()
           })
 
           it("destroys [dropZone]", async () => {
@@ -234,6 +201,8 @@ describe("Stimuli", () => {
             } finally {
               if(dropZone.hasOwnProperty("destroy")) delete dropZone.destroy
             }
+
+            await controller.connect()
           })
         })
       })
@@ -273,16 +242,10 @@ describe("Stimuli", () => {
         })
 
         describe("[maxFiles]", () => {
-          beforeEach(() => {
-            document.body.innerHTML = template
-            DropzoneController.registerController()
-          })
-          afterEach(removeControllers)
-
           it("returns [data-dropzone-max-files] from element)", () => {
-            const { wrapper } = getElements(),
-                  controller = wrapper["controllers"]["dropzone"],
-                  unitiatedController = new DropzoneController()
+            const controller = createTemplateController(),
+                  unitiatedController = new DropzoneController(),
+                  { wrapper } = getElements()
 
             expect(() => unitiatedController.maxFiles).toThrow(TypeError)
             expect(() => unitiatedController.maxFiles).toThrow(new TypeError("Cannot read property 'scope' of undefined"))
@@ -294,8 +257,8 @@ describe("Stimuli", () => {
           })
 
           it("defaults to 1", () => {
-            const { wrapper } = getElements(),
-                  controller = wrapper["controllers"]["dropzone"]
+            const controller = createTemplateController(),
+                  { wrapper } = getElements()
 
             wrapper.removeAttribute("data-dropzone-max-files")
 
@@ -333,16 +296,10 @@ describe("Stimuli", () => {
         })
 
         describe("[maxFileSize]", () => {
-          beforeEach(() => {
-            document.body.innerHTML = template
-            DropzoneController.registerController()
-          })
-          afterEach(removeControllers)
-
           it("returns [data-dropzone-max-file-size] from element)", () => {
-            const { wrapper } = getElements(),
-                  controller = wrapper["controllers"]["dropzone"],
-                  unitiatedController = new DropzoneController()
+            const controller = createTemplateController(),
+                  unitiatedController = new DropzoneController(),
+                  { wrapper } = getElements()
 
             expect(() => unitiatedController.maxFileSize).toThrow(TypeError)
             expect(() => unitiatedController.maxFileSize).toThrow(new TypeError("Cannot read property 'scope' of undefined"))
@@ -354,8 +311,8 @@ describe("Stimuli", () => {
           })
 
           it("defaults to 256", () => {
-            const { wrapper } = getElements(),
-                  controller = wrapper["controllers"]["dropzone"]
+            const controller = createTemplateController(),
+                  { wrapper } = getElements()
 
             wrapper.removeAttribute("data-dropzone-max-file-size")
 
@@ -393,16 +350,10 @@ describe("Stimuli", () => {
         })
 
         describe("[acceptedFiles]", () => {
-          beforeEach(() => {
-            document.body.innerHTML = template
-            DropzoneController.registerController()
-          })
-          afterEach(removeControllers)
-
           it("returns [data-dropzone-accepted-files] from element)", () => {
-            const { wrapper } = getElements(),
-                  controller = wrapper["controllers"]["dropzone"],
-                  unitiatedController = new DropzoneController()
+            const controller = createTemplateController(),
+                  unitiatedController = new DropzoneController(),
+                  { wrapper } = getElements()
 
             expect(() => unitiatedController.acceptedFiles).toThrow(TypeError)
             expect(() => unitiatedController.acceptedFiles).toThrow(new TypeError("Cannot read property 'scope' of undefined"))
@@ -414,8 +365,8 @@ describe("Stimuli", () => {
           })
 
           it("defaults to null", () => {
-            const { wrapper } = getElements(),
-                  controller = wrapper["controllers"]["dropzone"]
+            const controller = createTemplateController(),
+                  { wrapper } = getElements()
 
             wrapper.removeAttribute("data-dropzone-accepted-files")
 
@@ -464,16 +415,10 @@ describe("Stimuli", () => {
         })
 
         describe("[addRemoveLinks]", () => {
-          beforeEach(() => {
-            document.body.innerHTML = template
-            DropzoneController.registerController()
-          })
-          afterEach(removeControllers)
-
           it("returns a boolean of [data-dropzone-add-remove-links] from element)", () => {
-            const { wrapper } = getElements(),
-                  controller = wrapper["controllers"]["dropzone"],
-                  unitiatedController = new DropzoneController()
+            const controller = createTemplateController(),
+                  unitiatedController = new DropzoneController(),
+                  { wrapper } = getElements()
 
             expect(() => unitiatedController.addRemoveLinks).toThrow(TypeError)
             expect(() => unitiatedController.addRemoveLinks).toThrow(new TypeError("Cannot read property 'scope' of undefined"))
@@ -497,8 +442,8 @@ describe("Stimuli", () => {
           })
 
           it("defaults to true", () => {
-            const { wrapper } = getElements(),
-                  controller = wrapper["controllers"]["dropzone"]
+            const controller = createTemplateController(),
+                  { wrapper } = getElements()
 
             wrapper.removeAttribute("data-dropzone-add-remove-links")
 
@@ -588,10 +533,6 @@ describe("Stimuli", () => {
                   input = document.createElement("input"),
                   getElement = jest.fn().mockImplementation(() => element)
 
-            form.appendChild(element)
-            form.appendChild(button)
-            form.appendChild(input)
-
             Object.defineProperty(controller, "element", {
               get: getElement,
               set: value => Object.defineProperty(controller, "element", {
@@ -604,27 +545,35 @@ describe("Stimuli", () => {
 
             expect(controller.submitButton).toBe(null)
             expect(getElement).toHaveBeenCalledTimes(1)
+            expect(findElement).not.toHaveBeenCalled()
+
+            form.appendChild(element)
+            form.appendChild(button)
+            form.appendChild(input)
+
+            expect(controller.submitButton).toBe(null)
+            expect(getElement).toHaveBeenCalledTimes(2)
             expect(findElement).toHaveBeenCalledTimes(1)
             expect(findElement).toHaveBeenLastCalledWith(form, "input[type=submit], button[type=submit]")
 
             button.type = "submit"
 
             expect(controller.submitButton).toBe(button)
-            expect(getElement).toHaveBeenCalledTimes(2)
+            expect(getElement).toHaveBeenCalledTimes(3)
             expect(findElement).toHaveBeenCalledTimes(2)
             expect(findElement).toHaveBeenLastCalledWith(form, "input[type=submit], button[type=submit]")
 
             input.type = "submit"
 
             expect(controller.submitButton).toBe(button)
-            expect(getElement).toHaveBeenCalledTimes(3)
+            expect(getElement).toHaveBeenCalledTimes(4)
             expect(findElement).toHaveBeenCalledTimes(3)
             expect(findElement).toHaveBeenLastCalledWith(form, "input[type=submit], button[type=submit]")
 
             button.type = "button"
 
             expect(controller.submitButton).toBe(input)
-            expect(getElement).toHaveBeenCalledTimes(4)
+            expect(getElement).toHaveBeenCalledTimes(5)
             expect(findElement).toHaveBeenCalledTimes(4)
             expect(findElement).toHaveBeenLastCalledWith(form, "input[type=submit], button[type=submit]")
 
@@ -633,7 +582,7 @@ describe("Stimuli", () => {
             form.appendChild(button)
 
             expect(controller.submitButton).toBe(input)
-            expect(getElement).toHaveBeenCalledTimes(5)
+            expect(getElement).toHaveBeenCalledTimes(6)
             expect(findElement).toHaveBeenCalledTimes(5)
             expect(findElement).toHaveBeenLastCalledWith(form, "input[type=submit], button[type=submit]")
           })
@@ -651,6 +600,78 @@ describe("Stimuli", () => {
       describe("listeners", () => {
         describe(".onaddedfile", () => {
           test.todo(".onaddedfile")
+          it("expects a file object", async () => {
+            expect(new DropzoneController().onaddedfile())
+              .rejects
+              .toThrow(TypeError)
+
+            expect(new DropzoneController().onaddedfile())
+              .rejects
+              .toThrow(new TypeError("Cannot read property 'accepted' of undefined"))
+          })
+
+          it("waits for the file object to be accepted or rejected", async () => {
+            let done = false
+            const file = {},
+                  rejected = new DropzoneController()
+                    .onaddedfile(file)
+                    .then((value) => { done = true; return value })
+
+            let i = 0
+            while(file.accepted === undefined) {
+              expect(done).toBe(false)
+              if(++i > 99) file.accepted = false
+              await sleepAsync()
+            }
+
+            expect(done).toBe(true)
+            expect(await rejected).toBe(undefined)
+            expect(i).toBe(100)
+
+            done = false
+            delete file.accepted
+            const accepted = new DropzoneController()
+              .onaddedfile(file)
+              .then((value) => { done = true; return value })
+
+            i = 0
+            while(file.accepted === undefined) {
+              expect(done).toBe(false)
+              if(++i > 99) file.accepted = true
+              await sleepAsync()
+            }
+
+            expect(done).toBe(true)
+            expect(await accepted).toBe(file)
+            expect(i).toBe(100)
+          })
+
+          it("calls start on a new UploadManager if file is accepted", async () => {
+            let done = false
+            const file = { accepted: true },
+                  controller = new DropzoneController()
+
+            await controller.onaddedfile(file)
+
+            expect(UploadManager).toHaveBeenCalledTimes(1)
+            expect(UploadManager).toHaveBeenNthCalledWith(1, controller, file)
+
+            expect(UploadManager.mock.instances.length).toBe(1)
+            const uploaderInstance = UploadManager.mock.instances[0]
+            expect(uploaderInstance.start).toHaveBeenCalledTimes(1)
+            expect(uploaderInstance.start).toHaveBeenNthCalledWith(1)
+          })
+
+          it("does nothing if file is rejected", async () => {
+            let done = false
+            const file = { accepted: false },
+                  controller = new DropzoneController()
+
+            await controller.onaddedfile(file)
+
+            expect(UploadManager).not.toHaveBeenCalled()
+            expect(UploadManager.mock.instances.length).toBe(0)
+          })
         })
 
         describe(".onremovedfile", () => {

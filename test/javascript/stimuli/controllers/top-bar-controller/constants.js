@@ -1,4 +1,5 @@
 import { TopBarController } from "stimuli/controllers/top-bar-controller"
+import { controllerRegistration } from "test-helpers/generators/stimulus/controller-registration"
 
 export const getElements = () => {
   const wrapper = document.getElementById("test-top-bar"),
@@ -36,8 +37,4 @@ export const template = `
 </section>
 `
 
-export const registerController = () => {
-  document.body.innerHTML = template
-
-  TopBarController.registerController()
-}
+export const { registerController, unregisterController } = controllerRegistration(TopBarController, template)

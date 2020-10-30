@@ -1,20 +1,19 @@
 // stimuli/controllers/text-field-controller/text-field-controller.test.js
 import { MDCTextField } from "@material/textfield";
 import { TextFieldController } from "stimuli/controllers/text-field-controller"
-import { sleepAsync } from "test-helpers/sleep-async"
-import { removeControllers } from "test-helpers/remove-controllers"
+import { sleepAsync } from "helpers/sleep-async"
 import {
           createTemplateController,
           getElements,
           mockScope,
           registerController,
-          template
+          template,
+          unregisterController
                                       } from "./constants"
 
 describe("Stimuli", () => {
   describe("Controllers", () => {
     describe("TextFieldController", () => {
-      afterEach(removeControllers)
 
       it("has keyName 'text-field'", () => {
         expect(TextFieldController.keyName).toEqual("text-field")
@@ -27,6 +26,7 @@ describe("Stimuli", () => {
 
       describe("lifecycles", () => {
         beforeEach(registerController)
+        afterEach(unregisterController)
 
         describe("on connect", () => {
           it("sets [text-field] to be the controller instance", () => {
@@ -40,8 +40,6 @@ describe("Stimuli", () => {
             const { wrapper, input } = getElements(),
                   controller = wrapper["controllers"]["text-field"]
 
-            controller.testName = "sets [textField] to an MDCTextField of element"
-
             expect(controller.textField).toBeInstanceOf(MDCTextField)
             expect(controller.textField.root_).toBe(wrapper)
             expect(controller.textField.input_).toBe(input)
@@ -50,39 +48,40 @@ describe("Stimuli", () => {
 
         describe("on disconnect", () => {
           it("removes [text-field] from the element", async () => {
-            const { wrapper } = getElements()
-            expect(wrapper["controllers"]["text-field"]).toBeInstanceOf(TextFieldController)
-            wrapper["controllers"]["text-field"].testName = "removes [text-field] from the element"
+            const { wrapper } = getElements(),
+                  controller = wrapper["controllers"]["text-field"]
 
-            try {
-              await wrapper["controllers"]["text-field"].disconnect()
-            } catch(err) {
-              console.error(err)
-            }
+            expect(wrapper["controllers"]["text-field"]).toBeInstanceOf(TextFieldController)
+
+            await controller.disconnect()
+
             expect(wrapper["controllers"]["text-field"]).toBe(undefined)
+
+            await controller.connect()
           })
 
           it("calls #destroy on .textField", async () => {
             const { wrapper } = getElements(),
-                  textField = wrapper["controllers"]["text-field"].textField,
+                  controller = wrapper["controllers"]["text-field"],
+                  textField = controller.textField,
                   destroy = textField.destroy,
                   mock = jest.fn()
                     .mockImplementation(destroy)
                     .mockName("destroy")
-
-            wrapper["controllers"]["text-field"].testName = "calls #destroy on .textField"
 
             Object.defineProperty(textField, "destroy", {
               value: mock,
               configurable: true
             })
 
-            await wrapper["controllers"]["text-field"].disconnect()
+            await controller.disconnect()
 
             expect(mock).toHaveBeenCalledTimes(1)
             expect(mock).toHaveBeenLastCalledWith()
 
             if(textField.hasOwnProperty("destroy")) delete textField.destroy
+
+            await controller.connect()
           })
         })
       })
@@ -97,8 +96,6 @@ describe("Stimuli", () => {
                   setTextField = jest.fn().mockImplementation(() => textField),
                   getValue = jest.fn().mockImplementation(() => value),
                   setValue = jest.fn().mockImplementation(v => value = v)
-
-            controller.testName = "is [textField][value] || ''"
 
             Object.defineProperty(controller, "textField", {
               get: getTextField,
@@ -154,7 +151,6 @@ describe("Stimuli", () => {
           it("is equal to the inputTarget value", () => {
             const controller = createTemplateController(),
                   { wrapper } = getElements()
-            controller.testName = "is equal to the inputTarget value"
 
             controller.textField = wrapper
             controller.inputTarget.value = "test-input-match"
@@ -166,7 +162,6 @@ describe("Stimuli", () => {
           it("sets [textField][value]", () => {
             const controller = createTemplateController(),
                   { wrapper } = getElements()
-            controller.testName = "sets [textField][value]"
 
             controller.textField = wrapper
 
@@ -183,7 +178,6 @@ describe("Stimuli", () => {
         describe("[textField]", () => {
           it("has no default", () => {
             const controller = new TextFieldController()
-            controller.testName = "has no default"
 
             expect(controller.textField).toBe(undefined)
           })
@@ -192,8 +186,6 @@ describe("Stimuli", () => {
             const controller = new TextFieldController(),
                   div = document.createElement("div"),
                   input = document.createElement("input")
-
-            controller.testName = "requires an input child with the proper class"
 
             expect(() => controller.textField = null).toThrow(TypeError)
             expect(() => controller.textField = null).toThrow(new TypeError("Cannot read property 'querySelector' of null"))

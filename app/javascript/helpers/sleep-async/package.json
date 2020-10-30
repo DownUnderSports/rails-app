@@ -1,0 +1,6 @@
+{
+  "name": "sleepAsync",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./sleep-async.js"
+}

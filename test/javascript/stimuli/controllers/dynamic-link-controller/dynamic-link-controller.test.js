@@ -1,92 +1,17 @@
 // stimuli/controllers/dynamic-link-controller/dynamic-link-controller.test.js
 import { DynamicLinkController } from "stimuli/controllers/dynamic-link-controller"
-import { removeControllers } from "test-helpers/remove-controllers"
 import { allStandardTags } from "test-helpers/all-standard-tags"
+import {
+          createTemplateController,
+          getElements,
+          registerController,
+          unregisterController
+                                    } from "./constants"
 
-const getElements = () => {
-  const wrapper            = document.getElementById("controller-wrapper"),
-        firstLink          = document.getElementById("first-link"),
-        secondLink         = document.getElementById("second-link"),
-        noReplacePhoneIcon = document.getElementById("no-replace-phone-icon"),
-        noReplacePhoneSpan = document.getElementById("no-replace-phone-span"),
-        replacePhoneIcon   = document.getElementById("replace-phone-icon"),
-        replacePhoneSpan   = document.getElementById("replace-phone-span"),
-        replaceAllDiv      = document.getElementById("replace-all-div"),
-        nestedWrapper       = document.getElementById("nested-wrapper"),
-        nestedLink         = document.getElementById("nested-link"),
-        nestedReplace      = document.getElementById("nested-replace")
-
-  return {
-    wrapper,
-    firstLink,
-    secondLink,
-    noReplacePhoneIcon,
-    noReplacePhoneSpan,
-    replacePhoneIcon,
-    replacePhoneSpan,
-    replaceAllDiv,
-    nestedWrapper,
-    nestedLink,
-    nestedReplace
-  }
-}
 
 describe("Stimuli", () => {
   describe("Controllers", () => {
     describe("DynamicLinkController", () => {
-      beforeEach(() => {
-        document.body.innerHTML = `
-          <div id="controller-wrapper" data-controller="dynamic-link">
-            <a
-              id="first-link"
-              data-action="click->dynamic-link#follow"
-              href="mailto:mail@downundersports.com"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              mail@downundersports.com
-            </a>
-            <a
-              id="second-link"
-              data-action="click->dynamic-link#follow"
-              href="tel:+14357534732"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              <i id="no-replace-phone-icon">
-                phone
-              </i>
-              <span id="no-replace-phone-span">
-                435-753-4732
-              </span>
-              <i id="replace-phone-icon" data-replace="tel|sms">
-                sms
-              </i>
-              <span id="replace-phone-span" data-replace="tel|sms">
-                Send Text
-              </span>
-              <div id="replace-all-div" data-replace="tel:+14357534732|https://downundersports.com">
-                Replace All
-              </div>
-            </a>
-            <div
-              id="nested-wrapper"
-              click="click->dynamic-link#follow"
-            >
-              <a id="nested-link" href="https://google.com">Google</a>
-              <span
-                id="nested-replace"
-                data-replace="google|youtube"
-              >
-                Replace Google
-              </span>
-            </div>
-          </div>
-        `
-        DynamicLinkController.registerController()
-      })
-      afterEach(removeControllers)
-
       it("has keyName 'dynamic-link'", () => {
         expect(DynamicLinkController.keyName).toEqual("dynamic-link")
       })
@@ -95,21 +20,32 @@ describe("Stimuli", () => {
         expect(DynamicLinkController.targets).toEqual([])
       })
 
-      describe("on connect", () => {
-        it("sets [dynamic-link] to be the controller instance", () => {
-          const { wrapper } = getElements()
+      describe("lifecycles", () => {
+        beforeEach(registerController)
+        afterEach(unregisterController)
 
-          expect(wrapper["controllers"]["dynamic-link"])
-            .toBeInstanceOf(DynamicLinkController)
+        describe("on connect", () => {
+          it("sets [dynamic-link] to be the controller instance", () => {
+            const { wrapper } = getElements()
+
+            expect(wrapper["controllers"]["dynamic-link"])
+              .toBeInstanceOf(DynamicLinkController)
+          })
         })
-      })
 
-      describe("on disconnect", () => {
-        it("removes [dynamic-link] from the element", async () => {
-          const { wrapper } = getElements()
-          expect(wrapper["controllers"]["dynamic-link"]).toBeInstanceOf(DynamicLinkController)
-          await wrapper["controllers"]["dynamic-link"].disconnect()
-          expect(wrapper["controllers"]["dynamic-link"]).toBe(undefined)
+        describe("on disconnect", () => {
+          it("removes [dynamic-link] from the element", async () => {
+            const { wrapper } = getElements(),
+                  controller = wrapper["controllers"]["dynamic-link"]
+
+            expect(wrapper["controllers"]["dynamic-link"]).toBeInstanceOf(DynamicLinkController)
+
+            await controller.disconnect()
+
+            expect(wrapper["controllers"]["dynamic-link"]).toBe(undefined)
+
+            await controller.connect()
+          })
         })
       })
 
@@ -170,7 +106,8 @@ describe("Stimuli", () => {
 
           it("calls .click on a modified href replaced by [target][data-replace]", () => {
             let link, calledTimes = 0
-            const {
+            const controller = createTemplateController(),
+                  {
                     wrapper,
                     firstLink,
                     secondLink,
@@ -183,7 +120,6 @@ describe("Stimuli", () => {
                     nestedLink,
                     nestedReplace
                   } = getElements(),
-                  controller = new DynamicLinkController(),
                   links = [],
                   getLinkFromTarget = controller.getLinkFromTarget,
                   click = jest.fn(),

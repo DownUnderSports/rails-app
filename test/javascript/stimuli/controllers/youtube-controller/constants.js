@@ -1,6 +1,8 @@
 import { YoutubeController } from "stimuli/controllers/youtube-controller"
-import { Scope } from "test-helpers/mocks/stimulus/scope"
+import { controllerRegistration } from "test-helpers/generators/stimulus/controller-registration"
+import { TemplateController } from "test-helpers/generators/stimulus/template-controller"
 import { Player } from "test-helpers/mocks/yt/player"
+export { mockScope } from "test-helpers/generators/stimulus/mock-scope"
 export { importScript } from "helpers/import-script"
 export { uniqueId } from "helpers/unique-id"
 
@@ -58,30 +60,8 @@ export const template = `
   </div>
 `
 
-export const mockScope = async (controller, element) => {
-  const scope = new Scope(YoutubeController.keyName, element)
+export const createTemplateController = TemplateController(YoutubeController, template, "#test-youtube")
 
-  Object.defineProperty(controller, "scope", {
-    value: scope,
-    configurable: true,
-    writable: true
-  })
-}
-
-export const createTemplateController = () => {
-  document.body.innerHTML = template
-  const { wrapper } = getElements()
-  const controller = new YoutubeController()
-  mockScope(controller, wrapper)
-  return controller
-}
-
-export const registerController = () => {
-  document.body.innerHTML = template
-
-  Player.clearMocks()
-
-  YoutubeController.registerController()
-}
+export const { registerController, unregisterController } = controllerRegistration(YoutubeController, template)
 
 export { Player }

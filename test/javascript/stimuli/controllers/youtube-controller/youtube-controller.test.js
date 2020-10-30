@@ -1,8 +1,7 @@
 // stimuli/controllers/youtube-controller/youtube-controller.test.js
 import { MDCTopAppBar } from '@material/top-app-bar';
 import { YoutubeController, youtubeLoaded } from "stimuli/controllers/youtube-controller"
-import { sleepAsync } from "test-helpers/sleep-async"
-import { removeControllers } from "test-helpers/remove-controllers"
+import { sleepAsync } from "helpers/sleep-async"
 import { visibility } from "helpers/visibility-state"
 import {
           createTemplateController,
@@ -15,7 +14,8 @@ import {
           registerController,
           template,
           uniqueId,
-          uniqueIdImplementation
+          uniqueIdImplementation,
+          unregisterController
                                       } from "./constants"
 
 jest.mock("helpers/import-script")
@@ -40,7 +40,7 @@ describe("Stimuli", () => {
 
       describe("lifecycles", () => {
         beforeEach(registerController)
-        afterEach(removeControllers)
+        afterEach(unregisterController)
 
         describe("on connect", () => {
           it("sets [youtube] to be the controller instance", () => {
@@ -365,12 +365,8 @@ describe("Stimuli", () => {
         })
 
         describe("[isMuted]", () => {
-          beforeEach(async () => {
-            const controller = await createTemplateController()
-
-            controller.player && controller.player.clearMocks()
-            await sleepAsync()
-          })
+          beforeEach(registerController)
+          afterEach(unregisterController)
 
           it("returns .isMuted from [player]", async () => {
             let currentPlayer
@@ -704,6 +700,7 @@ describe("Stimuli", () => {
 
       describe("actions", () => {
         beforeEach(async () => {
+          await registerController()
           const { wrapper } = getElements(),
                 controller = wrapper["controllers"]["youtube"]
 
@@ -712,6 +709,7 @@ describe("Stimuli", () => {
           controller.player.clearMocks()
           await sleepAsync()
         })
+        afterEach(unregisterController)
 
         describe(".toggle", () => {
           beforeEach(async () => {

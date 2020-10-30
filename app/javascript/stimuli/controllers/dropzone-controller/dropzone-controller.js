@@ -1,7 +1,13 @@
 import { Controller } from "stimuli/constants/controller"
 import { default as Dropzone } from "dropzone"
 import { UploadManager } from "./upload-manager"
-import { getMetaValue, findElement, removeElement, insertAfter } from "helpers"
+import {
+          getMetaValue,
+          findElement,
+          insertAfter,
+          removeElement,
+          sleepAsync
+                          } from "helpers"
 
 const dropzoneEvents = [
   "addedfile",
@@ -55,14 +61,14 @@ export class DropzoneController extends Controller {
     }
   }
 
-  onaddedfile = (file) => {
-    setTimeout(() => {
-      if(file.accepted) {
-        const manager = new UploadManager(this, file)
+  onaddedfile = async (file) => {
+    while(file.accepted === undefined) await sleepAsync()
+    if(file.accepted) {
+      const manager = new UploadManager(this, file)
 
-        manager.start()
-      }
-    }, 500)
+      manager.start()
+      return file
+    }
   }
 
   onremovedfile = (file) =>
@@ -71,11 +77,15 @@ export class DropzoneController extends Controller {
   oncanceled = (file) =>
     file.controller && file.controller.xhr.abort()
 
-  onprocessing = () =>
-    this.submitButton.disabled = true
+  onprocessing = () => {
+    const submitButton = this.submitButton
+    if(submitButton) submitButton.disabled = true
+  }
 
-  onqueuecomplete = () =>
-    this.submitButton.disabled = false
+  onqueuecomplete = () => {
+    const submitButton = this.submitButton
+    if(submitButton) submitButton.disabled = false
+  }
 
   bindEvents = () =>
     dropzoneEvents.map(ev => this.dropZone.on(ev, this[`on${ev}`]))
@@ -108,7 +118,10 @@ export class DropzoneController extends Controller {
 
   get form() { return this.element.closest("form") }
 
-  get submitButton() { return findElement(this.form, this.submitButtonQuery) }
+  get submitButton() {
+    const form = this.form
+    return form ? findElement(form, this.submitButtonQuery) : null
+  }
 
   get submitButtonQuery() { return "input[type=submit], button[type=submit]" }
 
