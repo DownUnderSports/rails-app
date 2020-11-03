@@ -72,10 +72,10 @@ export class DropzoneController extends Controller {
   }
 
   onremovedfile = (file) =>
-    file.controller && removeElement(file.controller.hiddenInput)
+    file.manager && removeElement(file.manager.hiddenInput)
 
   oncanceled = (file) =>
-    file.controller && file.controller.xhr.abort()
+    file.manager && file.manager.xhr.abort()
 
   onprocessing = () => {
     const submitButton = this.submitButton

@@ -7,12 +7,12 @@ Dropzone.autoDiscover = false
 export class UploadManager {
   constructor(source, file) {
     this.directUpload = new DirectUpload(file, source.url, this)
-    this.source = source
+    this.controller = source
     this.file = file
   }
 
   start() {
-    this.file.controller = this
+    this.file.manager = this
     this.hiddenInput = this.createHiddenInput()
     this.directUpload.create((error, attributes) => {
       if (error) {
@@ -29,8 +29,8 @@ export class UploadManager {
   createHiddenInput = () => {
     const input = document.createElement("input")
     input.type = "hidden"
-    input.name = this.source.inputTarget.name
-    insertAfter(input, this.source.inputTarget)
+    input.name = this.controller.inputTarget.name
+    insertAfter(input, this.controller.inputTarget)
     return input
   }
 
@@ -45,7 +45,7 @@ export class UploadManager {
   }
 
   uploadRequestDidProgress = (event) => {
-    const element  = this.source.element,
+    const element  = this.controller.element,
           progress = event.loaded / event.total * 100,
           template = findElement(this.file.previewTemplate, ".dz-upload")
 
@@ -54,18 +54,18 @@ export class UploadManager {
 
   emitDropzoneUploading = () => {
     this.file.status = Dropzone.UPLOADING
-    this.source.dropZone.emit("processing", this.file)
+    this.controller.dropZone.emit("processing", this.file)
   }
 
   emitDropzoneError = (error) => {
     this.file.status = Dropzone.ERROR
-    this.source.dropZone.emit("error", this.file, error)
-    this.source.dropZone.emit("complete", this.file)
+    this.controller.dropZone.emit("error", this.file, error)
+    this.controller.dropZone.emit("complete", this.file)
   }
 
   emitDropzoneSuccess = () => {
     this.file.status = Dropzone.SUCCESS
-    this.source.dropZone.emit("success", this.file)
-    this.source.dropZone.emit("complete", this.file)
+    this.controller.dropZone.emit("success", this.file)
+    this.controller.dropZone.emit("complete", this.file)
   }
 }

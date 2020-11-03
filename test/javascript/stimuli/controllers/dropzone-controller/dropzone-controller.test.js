@@ -11,6 +11,8 @@ import {
           getMetaValue,
           getMetaValueImplementation,
           registerController,
+          removeElement,
+          removeElementImplementation,
           sleepAsync,
           template,
           UploadManager,
@@ -18,16 +20,19 @@ import {
                                       } from "./constants.dropzone-controller"
 jest.mock("helpers/get-meta-value")
 jest.mock("helpers/find-element")
+jest.mock("helpers/remove-element")
 jest.mock("stimuli/controllers/dropzone-controller/upload-manager")
 
 getMetaValue.mockImplementation(getMetaValueImplementation)
 findElement.mockImplementation(findElementImplementation)
+removeElement.mockImplementation(removeElementImplementation)
 
 const clearMocks = () => {
   dropzoneMockOn.mockClear()
   dropzoneMockOff.mockClear()
   getMetaValue.mockClear()
   findElement.mockClear()
+  removeElement.mockClear()
   UploadManager.mockClear()
 }
 
@@ -225,7 +230,7 @@ describe("Stimuli", () => {
                   input = document.createElement("input")
 
             expect(() => controller.url).toThrow(TypeError)
-            expect(() => controller.url).toThrow(new TypeError("Cannot read property 'getAttribute' of undefined"))
+            expect(() => controller.url).toThrow(new TypeError("Cannot read property 'scope' of undefined"))
 
             Object.defineProperty(controller, "inputTarget", {
               value: input,
@@ -599,7 +604,6 @@ describe("Stimuli", () => {
 
       describe("listeners", () => {
         describe(".onaddedfile", () => {
-          test.todo(".onaddedfile")
           it("expects a file object", async () => {
             expect(new DropzoneController().onaddedfile())
               .rejects
@@ -675,34 +679,249 @@ describe("Stimuli", () => {
         })
 
         describe(".onremovedfile", () => {
-          test.todo(".onremovedfile")
+          it("expects an file object with [manager] assigned", () => {
+            expect(() => new DropzoneController().onremovedfile())
+              .toThrow(TypeError)
+
+            expect(() => new DropzoneController().onremovedfile())
+              .toThrow(new TypeError("Cannot read property 'manager' of undefined"))
+          })
+
+          it("calls removeElement with the UploadManager [hiddenInput] property", async () => {
+            let done = false
+            const manager = {},
+                  input = document.createElement("INPUT"),
+                  getInput = jest.fn().mockImplementation(() => input),
+                  setInput = jest.fn(),
+                  file = {},
+                  getManager = jest.fn().mockImplementation(() => manager),
+                  setManager = jest.fn(),
+                  controller = new DropzoneController()
+
+            Object.defineProperty(manager, "hiddenInput", {
+              get: getInput,
+              set: setInput
+            })
+
+            Object.defineProperty(file, "manager", {
+              get: getManager,
+              set: setManager
+            })
+
+            await controller.onremovedfile(file)
+
+            expect(getManager).toHaveBeenCalledTimes(2)
+            expect(setManager).not.toHaveBeenCalled()
+            expect(getInput).toHaveBeenCalledTimes(1)
+            expect(setInput).not.toHaveBeenCalled()
+            expect(removeElement).toHaveBeenCalledTimes(1)
+            expect(removeElement).toHaveBeenNthCalledWith(1, input)
+          })
         })
 
         describe(".oncanceled", () => {
-          test.todo(".oncanceled")
+          it("expects an file object with [manager] assigned", () => {
+            expect(() => new DropzoneController().oncanceled())
+              .toThrow(TypeError)
+
+            expect(() => new DropzoneController().oncanceled())
+              .toThrow(new TypeError("Cannot read property 'manager' of undefined"))
+          })
+
+          it("calls abort on the UploadManager [xhr] property", async () => {
+            let done = false
+            const manager = {},
+                  xhr = { abort: jest.fn() },
+                  getXhr = jest.fn().mockImplementation(() => xhr),
+                  setXhr = jest.fn(),
+                  file = {},
+                  getManager = jest.fn().mockImplementation(() => manager),
+                  setManager = jest.fn(),
+                  controller = new DropzoneController()
+
+            Object.defineProperty(manager, "xhr", {
+              get: getXhr,
+              set: setXhr
+            })
+
+            Object.defineProperty(file, "manager", {
+              get: getManager,
+              set: setManager
+            })
+
+            await controller.oncanceled(file)
+
+            expect(getManager).toHaveBeenCalledTimes(2)
+            expect(setManager).not.toHaveBeenCalled()
+            expect(getXhr).toHaveBeenCalledTimes(1)
+            expect(setXhr).not.toHaveBeenCalled()
+            expect(xhr.abort).toHaveBeenCalledTimes(1)
+            expect(xhr.abort).toHaveBeenNthCalledWith(1)
+          })
         })
 
         describe(".onprocessing", () => {
-          test.todo(".onprocessing")
+          it("sets [submitButton][disabled] to true if exists", async () => {
+            let submitButton = undefined
+            const controller = new DropzoneController(),
+                  getSubmitButton = jest.fn().mockImplementation(() => submitButton)
+
+            Object.defineProperty(controller, "submitButton", {
+              get: getSubmitButton
+            })
+
+            expect(controller.onprocessing).not.toThrow()
+            expect(getSubmitButton).toHaveBeenCalledTimes(1)
+
+            submitButton = {}
+            expect(controller.onprocessing).not.toThrow()
+            expect(getSubmitButton).toHaveBeenCalledTimes(2)
+            expect(submitButton.disabled).toBe(true)
+          })
         })
 
         describe(".onqueuecomplete", () => {
-          test.todo(".onqueuecomplete")
+          it("sets [submitButton][disabled] to false if exists", async () => {
+            let submitButton = undefined
+            const controller = new DropzoneController(),
+                  getSubmitButton = jest.fn().mockImplementation(() => submitButton)
+
+            Object.defineProperty(controller, "submitButton", {
+              get: getSubmitButton
+            })
+
+            expect(controller.onqueuecomplete).not.toThrow()
+            expect(getSubmitButton).toHaveBeenCalledTimes(1)
+
+            submitButton = {}
+            expect(controller.onqueuecomplete).not.toThrow()
+            expect(getSubmitButton).toHaveBeenCalledTimes(2)
+            expect(submitButton.disabled).toBe(false)
+          })
         })
       })
 
       describe("actions", () => {
         describe(".hideFileInput", () => {
-          test.todo(".hideFileInput")
+          it("caches and hides and disables [inputTarget]", async () => {
+            const basicController = new DropzoneController(),
+                  controller = createTemplateController(),
+                  { input } = getElements()
+
+            expect(basicController.hideFileInput).toThrow(TypeError)
+            expect(basicController.hideFileInput).toThrow(new TypeError("Cannot read property 'scope' of undefined"))
+
+            expect(input.controller).toBe(undefined)
+            expect(input.disabled).toBe(false)
+            expect(input.style.display).toBe("")
+
+            expect(controller.hideFileInput).not.toThrow()
+            expect(input.controller).toBe(controller)
+            expect(input.disabled).toBe(true)
+            expect(input.style.display).toBe("none")
+          })
         })
         describe(".showFileInput", () => {
-          test.todo(".showFileInput")
+          it("uncaches and unhides [_input] after .hideFileInput", async () => {
+            const basicController = new DropzoneController(),
+                  controller = createTemplateController(),
+                  { input } = getElements()
+
+            input.disabled = true
+            input.style.display = "none"
+
+            expect(basicController.showFileInput).not.toThrow()
+
+            expect(input.disabled).toBe(true)
+            expect(input.style.display).toBe("none")
+
+            expect(controller.showFileInput).not.toThrow()
+            expect(input.disabled).toBe(true)
+            expect(input.style.display).toBe("none")
+
+            input.style.display = "flex"
+            controller.hideFileInput()
+            expect(input.style.display).toBe("none")
+
+            expect(controller.showFileInput).not.toThrow()
+            expect(input.disabled).toBe(false)
+            expect(input.style.display).toBe("flex")
+
+            controller.hideFileInput()
+            expect(input.style.display).toBe("none")
+
+            input.controller = null
+
+            expect(controller.showFileInput).not.toThrow()
+            expect(input.disabled).toBe(true)
+            expect(input.style.display).toBe("none")
+
+            input.controller = controller
+
+            expect(controller.showFileInput).not.toThrow()
+            expect(input.disabled).toBe(false)
+            expect(input.style.display).toBe("flex")
+          })
         })
+
         describe(".bindEvents", () => {
-          test.todo(".bindEvents")
+          it("expects [dropZone] to have been set", () => {
+            expect(() => new DropzoneController().bindEvents())
+              .toThrow(TypeError)
+
+            expect(() => new DropzoneController().bindEvents())
+              .toThrow(new TypeError("Cannot read property 'on' of undefined"))
+          })
+
+          it("calls [dropZone].on with each on{event} listener", () => {
+            const controller = new DropzoneController(),
+                  eventList = [
+                    "addedfile",
+                    "removedfile",
+                    "canceled",
+                    "processing",
+                    "queuecomplete"
+                  ]
+
+            controller.dropZone = {
+              on: jest.fn()
+            }
+
+            expect(controller.bindEvents).not.toThrow()
+            expect(controller.dropZone.on).toHaveBeenCalledTimes(5)
+            for(let i = 0; i < eventList.length; i++) {
+              const name = eventList[i],
+                    func = controller[`on${name}`]
+              expect(func).toBeInstanceOf(Function)
+              expect(controller.dropZone.on).toHaveBeenCalledWith(name, func)
+            }
+          })
         })
+
         describe(".unbindEvents", () => {
           test.todo(".unbindEvents")
+          it("does not expect [dropZone] to be set", () => {
+            expect(() => new DropzoneController().unbindEvents()).not.toThrow()
+          })
+
+          it("calls [dropZone].off", () => {
+            const controller = new DropzoneController(),
+                  eventList = [
+                    "addedfile",
+                    "removedfile",
+                    "canceled",
+                    "processing",
+                    "queuecomplete"
+                  ]
+
+            controller.dropZone = {
+              off: jest.fn()
+            }
+
+            expect(controller.unbindEvents).not.toThrow()
+            expect(controller.dropZone.off).toHaveBeenCalledTimes(1)
+            expect(controller.dropZone.off).toHaveBeenNthCalledWith(1)
+          })
         })
       })
     })
