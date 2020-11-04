@@ -1,0 +1,6 @@
+{
+  "name": "TimeSyncController",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./time-sync-controller.js"
+}

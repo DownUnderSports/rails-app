@@ -92,7 +92,7 @@ module LayoutTests
                         "[1]"
 
       [
-        [ "Tuesday - Thursday", "2 PM - 4 PM (MDT)" ],
+        [ "Tuesday - Thursday", "2 PM - 4 PM (MST)" ],
         [ "Friday", "Closed" ]
       ].each do |label, time|
         list.assert_selector primary_css, text: label
