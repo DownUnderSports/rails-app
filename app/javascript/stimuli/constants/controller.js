@@ -5,14 +5,14 @@ import { isDebugOrEnv } from "helpers/is-env"
 export class Controller extends StimulusController {
   static load(value) {
     const key = value || this.keyName
-    if(!key) throw new Error("Controller Key Required")
+    if(!key) throw new TypeError("Controller Key Required")
 
     Application.register(key, this)
   }
 
   static unload(value) {
     const key = value || this.keyName
-    if(!key) throw new Error("Controller Key Required")
+    if(!key) throw new TypeError("Controller Key Required")
 
     Application.unload(key)
   }
@@ -33,7 +33,7 @@ export class Controller extends StimulusController {
 
   async connect() {
     isDebugOrEnv("development") && console.log(`connecting: ${this.identifier} - ${this.element}`)
-    this._disconnected = false
+    this._isConnected = true
     this.element["controllers"] = this.element["controllers"] || {}
     this.element["controllers"][this.identifier] = this
     this.connected && await this.connected()
@@ -41,7 +41,7 @@ export class Controller extends StimulusController {
 
   async disconnect() {
     isDebugOrEnv("development") && console.log(`disconnecting: ${this.identifier} - ${this.element}`)
-    this._disconnected = true
+    this._isConnected = false
     try {
       delete this.element["controllers"][this.identifier]
     } catch(_) {}

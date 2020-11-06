@@ -1,4 +1,4 @@
-// stimuli/controllers/dynamic-link-controller/dynamic-link-controller.test.js
+// stimuli/controllers/dynamic-link-controller/dynamic-link-controller.js
 import { DynamicLinkController } from "stimuli/controllers/dynamic-link-controller"
 import { allStandardTags } from "test-helpers/all-standard-tags"
 import {
@@ -6,7 +6,7 @@ import {
           getElements,
           registerController,
           unregisterController
-                                    } from "./constants"
+                                    } from "./_constants"
 
 
 describe("Stimuli", () => {

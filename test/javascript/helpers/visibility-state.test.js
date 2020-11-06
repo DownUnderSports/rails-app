@@ -1,3 +1,3 @@
-describe("helpers/visibility-state.test.js", () => {
-  test.todo("write tests for helpers/visibility-state.test.js")
+describe("helpers/visibility-state.js", () => {
+  test.todo("write tests for helpers/visibility-state.js")
 })

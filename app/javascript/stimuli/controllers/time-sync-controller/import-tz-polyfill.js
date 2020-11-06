@@ -1,19 +1,24 @@
 let tzPolyfillImport
 
-export async function importTZPolyfill() {
+export function importTZPolyfill() {
   try {
-    if(tzPolyfillImport) return await tzPolyfillImport
+    if(tzPolyfillImport) return tzPolyfillImport
     else {
       try {
         new Intl.DateTimeFormat('en', {
             timeZone: 'America/Los_Angeles',
             timeZoneName: 'long'
         }).format();
-        tzPolyfillImport = Promise.resolve()
+
+        tzPolyfillImport = Promise.resolve({})
+
+        return tzPolyfillImport
       } catch(err) {
         console.error(err)
+
         tzPolyfillImport = import("date-time-format-timezone")
-        return await tzPolyfillImport
+
+        return tzPolyfillImport
       }
     }
   } catch(err) {
@@ -21,3 +26,9 @@ export async function importTZPolyfill() {
     throw err
   }
 }
+
+Object.defineProperty(importTZPolyfill, "tzPolyfillImport", {
+  get: () => tzPolyfillImport,
+  set: v => tzPolyfillImport = v,
+  configurable: false
+})

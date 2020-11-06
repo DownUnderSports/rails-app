@@ -89,7 +89,7 @@ export class YoutubeController extends Controller {
   async loadYoutubeAPI() {
     await importScript("https://www.youtube.com/iframe_api")
     await youtubeLoaded
-    if(!this._disconnected) {
+    if(this._isConnected) {
       visibility.addEventListener(this.onVisibilityChange)
       this.createPlayer()
     }

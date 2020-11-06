@@ -1,4 +1,4 @@
-// stimuli/controllers/top-bar-controller/top-bar-controller.test.js
+// stimuli/controllers/top-bar-controller/top-bar-controller.js
 import { MDCTopAppBar } from '@material/top-app-bar';
 import { TopBarController } from "stimuli/controllers/top-bar-controller"
 import { sleepAsync } from "helpers/sleep-async"
@@ -7,7 +7,7 @@ import {
           registerController,
           template,
           unregisterController
-                                } from "./constants"
+                                } from "./_constants"
 
 describe("Stimuli", () => {
   describe("Controllers", () => {

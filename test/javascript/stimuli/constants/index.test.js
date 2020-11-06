@@ -1,3 +1,3 @@
-describe("stimuli/constants/index.test.js", () => {
-  test.todo("write tests for stimuli/constants/index.test.js")
+describe("stimuli/constants/index.js", () => {
+  test.todo("write tests for stimuli/constants/index.js")
 })

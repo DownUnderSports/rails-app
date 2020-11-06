@@ -1,3 +1,3 @@
-describe("stimuli/reflexes/example-reflex.test.js", () => {
-  test.todo("write tests for stimuli/reflexes/example-reflex.test.js")
+describe("stimuli/reflexes/example-reflex.js", () => {
+  test.todo("write tests for stimuli/reflexes/example-reflex.js")
 })

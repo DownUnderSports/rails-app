@@ -1,3 +1,3 @@
-describe("helpers/to-array.test.js", () => {
-  test.todo("write tests for helpers/to-array.test.js")
+describe("helpers/to-array.js", () => {
+  test.todo("write tests for helpers/to-array.js")
 })

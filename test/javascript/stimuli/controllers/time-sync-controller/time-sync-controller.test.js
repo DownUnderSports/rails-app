@@ -1,7 +1,6 @@
-// stimuli/controllers/time-sync-controller/time-sync-controller.test.js
+// stimuli/controllers/time-sync-controller/time-sync-controller.js
 import { MDCTextField } from "@material/textfield";
 import { TimeSyncController } from "stimuli/controllers/time-sync-controller"
-import { sleepAsync } from "helpers/sleep-async"
 import {
           createTemplateController,
           getElements,
@@ -9,7 +8,7 @@ import {
           registerController,
           template,
           unregisterController
-                                      } from "./constants"
+                                      } from "./_constants.time-sync-controller"
 
 describe("Stimuli", () => {
   describe("Controllers", () => {

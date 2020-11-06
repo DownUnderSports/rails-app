@@ -1,4 +1,4 @@
-// stimuli/controllers/text-field-controller/text-field-controller.test.js
+// stimuli/controllers/text-field-controller/text-field-controller.js
 import { MDCTextField } from "@material/textfield";
 import { TextFieldController } from "stimuli/controllers/text-field-controller"
 import { sleepAsync } from "helpers/sleep-async"
@@ -9,7 +9,7 @@ import {
           registerController,
           template,
           unregisterController
-                                      } from "./constants"
+                                      } from "./_constants"
 
 describe("Stimuli", () => {
   describe("Controllers", () => {

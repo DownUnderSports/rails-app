@@ -1,4 +1,4 @@
-// stimuli/controllers/dropzone-controller/dropzone-controller.test.js
+// stimuli/controllers/dropzone-controller/dropzone-controller.js
 import {
           createTemplateController,
           Dropzone,
@@ -17,7 +17,8 @@ import {
           template,
           UploadManager,
           unregisterController
-                                      } from "./constants.dropzone-controller"
+                                      } from "./_constants.dropzone-controller"
+
 jest.mock("helpers/get-meta-value")
 jest.mock("helpers/find-element")
 jest.mock("helpers/remove-element")
@@ -605,13 +606,13 @@ describe("Stimuli", () => {
       describe("listeners", () => {
         describe(".onaddedfile", () => {
           it("expects a file object", async () => {
-            expect(new DropzoneController().onaddedfile())
-              .rejects
-              .toThrow(TypeError)
+            await expect(new DropzoneController().onaddedfile())
+                    .rejects
+                    .toThrow(TypeError)
 
-            expect(new DropzoneController().onaddedfile())
-              .rejects
-              .toThrow(new TypeError("Cannot read property 'accepted' of undefined"))
+            await expect(new DropzoneController().onaddedfile())
+                    .rejects
+                    .toThrow(new TypeError("Cannot read property 'accepted' of undefined"))
           })
 
           it("waits for the file object to be accepted or rejected", async () => {

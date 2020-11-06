@@ -1,4 +1,4 @@
-// stimuli/controllers/list-controller/list-controller.test.js
+// stimuli/controllers/list-controller/list-controller.js
 import { MDCList } from "@material/list";
 import { MDCRipple } from '@material/ripple';
 import { ListController } from "stimuli/controllers/list-controller"
@@ -7,7 +7,7 @@ import {
           getElements,
           registerController,
           unregisterController
-                                } from "./constants"
+                                } from "./_constants"
 
 
 describe("Stimuli", () => {
@@ -222,8 +222,8 @@ describe("Stimuli", () => {
             expect(fakeRipple.destroy).toHaveBeenLastCalledWith()
 
             await expect(controller.destroyRipple(1))
-              .rejects
-              .toThrow(new TypeError("ripple.destroy is not a function"))
+                    .rejects
+                    .toThrow(new TypeError("ripple.destroy is not a function"))
           })
 
           it("removes the given ripple from ripples", async () => {
@@ -251,8 +251,8 @@ describe("Stimuli", () => {
 
             for (let i = 0; i < ripples.length; i++) {
               await expect(controller.destroyRipple(ripples[i]))
-                .rejects
-                .toThrow(new TypeError("ripple.destroy is not a function"))
+                      .rejects
+                      .toThrow(new TypeError("ripple.destroy is not a function"))
 
               expect(ripples).toEqual([ 1, 2 ])
             }

@@ -1,4 +1,4 @@
-// stimuli/controllers/youtube-controller/youtube-controller.test.js
+// stimuli/controllers/youtube-controller/youtube-controller.js
 import { MDCTopAppBar } from '@material/top-app-bar';
 import { YoutubeController, youtubeLoaded } from "stimuli/controllers/youtube-controller"
 import { sleepAsync } from "helpers/sleep-async"
@@ -16,7 +16,7 @@ import {
           uniqueId,
           uniqueIdImplementation,
           unregisterController
-                                      } from "./constants"
+                                      } from "./_constants"
 
 jest.mock("helpers/import-script")
 jest.mock("helpers/unique-id")
@@ -984,34 +984,68 @@ describe("Stimuli", () => {
         })
 
         describe(".loadYoutubeAPI", () => {
-          it("adds a visibility listener and creates [player] after loading youtube API", async () => {
-            const addEventListener = visibility.addEventListener
-            try {
-              const controller = new YoutubeController()
+          it("loads the youtube API", async () => {
+            importScript.mockClear()
 
-              visibility.addEventListener = jest.fn()
+            const controller = new YoutubeController()
 
-              Object.defineProperty(controller, "createPlayer", {
-                value: jest.fn()
-              })
+            expect(importScript).not.toHaveBeenCalled()
 
-              await controller.loadYoutubeAPI()
+            await controller.loadYoutubeAPI()
 
-              expect(controller.createPlayer).toHaveBeenCalledTimes(1)
-              expect(visibility.addEventListener).toHaveBeenCalledTimes(1)
-              expect(visibility.addEventListener).toHaveBeenLastCalledWith(controller.onVisibilityChange)
+            expect(importScript).toHaveBeenCalledTimes(1)
+            expect(importScript).toHaveBeenLastCalledWith("https://www.youtube.com/iframe_api")
 
-              controller._disconnected = true
-              controller.createPlayer.mockClear()
-              visibility.addEventListener.mockClear()
+            await controller.loadYoutubeAPI()
+            expect(importScript).toHaveBeenCalledTimes(2)
+            expect(importScript).toHaveBeenLastCalledWith("https://www.youtube.com/iframe_api")
+          })
 
-              await controller.loadYoutubeAPI()
+          describe("if [_isConnected]", () => {
+            it("adds a visibility listener and creates [player] after loading youtube API", async () => {
+              const addEventListener = visibility.addEventListener
+              try {
+                const controller = new YoutubeController()
 
-              expect(controller.createPlayer).not.toHaveBeenCalled()
-              expect(visibility.addEventListener).not.toHaveBeenCalled()
-            } finally {
-              visibility.addEventListener = addEventListener
-            }
+                controller._isConnected = true
+                visibility.addEventListener = jest.fn()
+
+                Object.defineProperty(controller, "createPlayer", {
+                  value: jest.fn()
+                })
+
+                await controller.loadYoutubeAPI()
+
+                expect(controller.createPlayer).toHaveBeenCalledTimes(1)
+                expect(visibility.addEventListener).toHaveBeenCalledTimes(1)
+                expect(visibility.addEventListener).toHaveBeenLastCalledWith(controller.onVisibilityChange)
+              } finally {
+                visibility.addEventListener = addEventListener
+              }
+            })
+          })
+
+          describe("if ![_isConnected]", () => {
+            it("adds a visibility listener and creates [player] after loading youtube API", async () => {
+              const addEventListener = visibility.addEventListener
+              try {
+                const controller = new YoutubeController()
+
+                controller._isConnected = false
+                visibility.addEventListener = jest.fn()
+
+                Object.defineProperty(controller, "createPlayer", {
+                  value: jest.fn()
+                })
+
+                await controller.loadYoutubeAPI()
+
+                expect(controller.createPlayer).not.toHaveBeenCalled()
+                expect(visibility.addEventListener).not.toHaveBeenCalled()
+              } finally {
+                visibility.addEventListener = addEventListener
+              }
+            })
           })
         })
       })
