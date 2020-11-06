@@ -19,6 +19,8 @@ class User < Person
 
   nacl_password :single_use, skip_validations: true
 
+  # == Attachments ==========================================================
+
   # == Relationships ========================================================
   has_many :sessions, inverse_of: :user
 

@@ -12,6 +12,8 @@ class Background < ApplicationRecord
   enum category: Person::CATEGORIES.to_db_enum, _suffix: :type
   liberal_enum :category
 
+  # == Attachments ==========================================================
+
   # == Relationships ========================================================
   belongs_to :person,
     required:   true,

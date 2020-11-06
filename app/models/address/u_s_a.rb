@@ -9,6 +9,8 @@ class Address < ApplicationRecord
 
     # == Extensions ===========================================================
 
+    # == Attachments ==========================================================
+
     # == Relationships ========================================================
     belongs_to :state, primary_key: :abbr, foreign_key: :region, optional: true
 

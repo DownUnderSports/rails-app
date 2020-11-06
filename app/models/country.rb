@@ -9,6 +9,8 @@ class Country < ApplicationRecord
 
   # == Extensions ===========================================================
 
+  # == Attachments ==========================================================
+
   # == Relationships ========================================================
   has_many :addresses, inverse_of: :country
 

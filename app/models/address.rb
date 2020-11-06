@@ -23,6 +23,8 @@ class Address < ApplicationRecord
 
   # == Extensions ===========================================================
 
+  # == Attachments ==========================================================
+
   # == Relationships ========================================================
   belongs_to :country,
     inverse_of: :addresses,

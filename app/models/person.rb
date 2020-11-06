@@ -19,6 +19,8 @@ class Person < ApplicationRecord
 
   attr_readonly *PASSWORD_COLUMNS
 
+  # == Attachments ==========================================================
+
   # == Relationships ========================================================
   has_many :backgrounds, inverse_of: :person
 

@@ -10,6 +10,8 @@ class Sport < ApplicationRecord
   # == Attributes ===========================================================
   data_column_attribute :test_id, :integer
 
+  # == Attachments ==========================================================
+
   # == Relationships ========================================================
   has_many :backgrounds, inverse_of: :sport
 

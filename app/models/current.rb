@@ -11,6 +11,8 @@ class Current < ActiveSupport::CurrentAttributes
   attribute :session
   attribute :request_id, :browser_id, :user_agent, :ip_address
 
+  # == Attachments ==========================================================
+
   # == Relationships ========================================================
 
   # == Validations ==========================================================
