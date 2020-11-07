@@ -14,6 +14,7 @@ class UsersController < ApplicationController
   end
 
   def create
+    purge_previous_avatar
     @user = User.new(category: :athlete, **whitelisted_user_params)
     if @user.save
       login(@user)
@@ -36,7 +37,20 @@ class UsersController < ApplicationController
                :last_names,
                :email,
                :password,
-               :password_confirmation
+               :password_confirmation,
+               :avatar
              )
+    end
+
+    def purge_previous_avatar
+      if params[:user][:existing_avatar] \
+            && params[:user][:avatar].present? \
+            && (params[:user][:avatar] != params[:user][:existing_avatar])
+
+        ActiveStorage::Blob.find_signed(params[:user][:existing_avatar])&.purge_later
+
+      end
+    rescue
+      nil
     end
 end

@@ -20,6 +20,7 @@ class Person < ApplicationRecord
   attr_readonly *PASSWORD_COLUMNS
 
   # == Attachments ==========================================================
+  has_one_attached :avatar
 
   # == Relationships ========================================================
   has_many :backgrounds, inverse_of: :person
@@ -28,8 +29,8 @@ class Person < ApplicationRecord
   validates_presence_of :first_names, :last_names
 
   validates_uniqueness_of :email,
-    allow_blank: true,
-    if:          :email_needs_validation?
+    allow_blank:  true,
+    if:           :email_needs_validation?
 
   validates_presence_of :email,
     message:  "required for login",
@@ -42,6 +43,13 @@ class Person < ApplicationRecord
                   allow_blank: true,
                   message: "is not recognized"
                 }
+
+  validates :avatar,
+    blob: {
+            type: /^image\/[a-z\-._+]+$/i,
+            size: 0..2.megabytes,
+            allow_blank: true
+          }
 
   # == Scopes ===============================================================
 

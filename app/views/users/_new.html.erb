@@ -72,6 +72,35 @@
         <div class="mdc-line-ripple"></div>
       </div>
     <% end %>
+    <%= cell_tag base: 18 do %>
+      <% is_attached = @user.avatar.attached? %>
+      <div
+        class="dropzone dropzone-default dz-clickable"
+        data-controller="dropzone"
+        data-dropzone-max-file-size="2"
+        data-dropzone-max-files="1"
+        data-dropzone-accepted-files="image/*"
+      >
+        <%= form.label :avatar, class: "label dropzone-label" %>
+        <i class="material-icons" data-target="text-field.icon">
+          face
+        </i>
+        <% if is_attached %>
+          <div class="dz-existing-preview">
+            <div class="dz-image">
+              <%= image_tag url_for(@user.avatar), alt: 'Uploaded Avatar' %>
+              <%= (form.hidden_field :existing_avatar, value: @user.avatar.blob.signed_id) rescue is_attached = nil %>
+              <%= (form.hidden_field :avatar, value: @user.avatar.blob.signed_id) rescue is_attached = nil %>
+            </div>
+          </div>
+        <% end %>
+        <%= form.file_field :avatar, direct_upload: true, data: { target: 'dropzone.input' }, accept: "image/*", required: !is_attached %>
+        <div class="dropzone-msg dz-message">
+          <h3 class="dropzone-msg-title">Drag and Drop or Click Here to <%= is_attached ? "Change The Avatar Above" : "Select Your Avatar" %> </h3>
+          <span class="dropzone-msg-desc">Accepts images with a max size of 2MB</span>
+        </div>
+      </div>
+    <% end %>
     <%= cell_tag do %>
       <button class="mdc-button mdc-button--unelevated" type="submit">
         <div class="mdc-button__ripple"></div>

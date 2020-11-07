@@ -7,7 +7,7 @@ test:
   access_key_id: <%= Rails.application.credentials.dig(:minio, :access_key_id) %>
   secret_access_key: <%= Rails.application.credentials.dig(:minio, :secret_access_key) %>
   endpoint: <%= Rails.application.credentials.dig(:minio, :endpoint) %>
-  bucket: dus_rails_app_test
+  bucket: dus-rails-app-test
   region: us-west-1
   force_path_style: true
 
@@ -16,7 +16,7 @@ development:
   access_key_id: <%= Rails.application.credentials.dig(:minio, :access_key_id) %>
   secret_access_key: <%= Rails.application.credentials.dig(:minio, :secret_access_key) %>
   endpoint: <%= Rails.application.credentials.dig(:minio, :endpoint) %>
-  bucket: dus_rails_app_development
+  bucket: dus-rails-app-development
   region: us-west-1
   force_path_style: true
 
