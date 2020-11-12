@@ -2,8 +2,10 @@
 import { UploadManager } from "stimuli/controllers/dropzone-controller/upload-manager"
 import { DirectUpload } from "@rails/activestorage"
 import { removeElement } from "helpers/remove-element"
+import { insertAfter } from "helpers/insert-after"
 
 jest.mock("helpers/remove-element")
+jest.mock("helpers/insert-after")
 
 const createUploadMock = jest.fn().mockImplementation((cb) => {
   cb(null, { signed_id: 'signedId' })
@@ -174,15 +176,106 @@ describe("Stimuli", () => {
             })
 
             describe(".createHiddenInput", () => {
-              test.todo(".createHiddenInput")
+              it("creates a new input using [controller][inputTarget][name] and inserts it after [controller][inputTarget]", () => {
+                const fakeController = { url: "/fake-url" },
+                      manager = new UploadManager(fakeController),
+                      nameTargetFn = jest.fn().mockImplementation(() => "fake-input"),
+                      inputTarget = {},
+                      inputTargetFn = jest.fn().mockImplementation(() => inputTarget)
+
+                Object.defineProperty(inputTarget, "name", { get: nameTargetFn })
+
+                expect(() => manager.createHiddenInput())
+                  .toThrow(TypeError)
+
+                expect(() => manager.createHiddenInput())
+                  .toThrow(new TypeError("Cannot read property 'name' of undefined"))
+
+                Object.defineProperty(fakeController, "inputTarget", { get: inputTargetFn })
+
+                const input = manager.createHiddenInput()
+
+                expect(input).toBeInstanceOf(HTMLElement)
+                expect(insertAfter).toHaveBeenCalledTimes(1)
+                expect(insertAfter).toHaveBeenNthCalledWith(1, input, inputTarget)
+                expect(inputTargetFn).toHaveBeenCalled()
+                expect(nameTargetFn).toHaveBeenCalled()
+                expect(input.name).toBe("fake-input")
+              })
+
+              it("does not cache the result", () => {
+                const fakeController = { url: "/fake-url" },
+                      manager = new UploadManager(fakeController),
+                      nameTargetFn = jest.fn().mockImplementationOnce(() => "fake-input")
+                                              .mockImplementationOnce(() => "fake-input2"),
+                      inputTarget = {},
+                      inputTargetFn = jest.fn().mockImplementation(() => inputTarget)
+
+                Object.defineProperty(inputTarget, "name", { get: nameTargetFn })
+                Object.defineProperty(fakeController, "inputTarget", { get: inputTargetFn })
+
+                const input = manager.createHiddenInput()
+
+                expect(input).toBeInstanceOf(HTMLElement)
+                expect(insertAfter).toHaveBeenCalledTimes(1)
+                expect(insertAfter).toHaveBeenNthCalledWith(1, input, inputTarget)
+                expect(inputTargetFn).toHaveBeenCalled()
+                expect(nameTargetFn).toHaveBeenCalled()
+                expect(input.name).toBe("fake-input")
+
+                const input2 = manager.createHiddenInput()
+
+                expect(input2).toBeInstanceOf(HTMLElement)
+                expect(insertAfter).toHaveBeenCalledTimes(2)
+                expect(insertAfter).toHaveBeenNthCalledWith(2, input2, inputTarget)
+                expect(input2.name).toBe("fake-input2")
+                expect(input2).not.toBe(input)
+              })
             })
 
             describe(".directUploadWillStoreFileWithXHR", () => {
-              test.todo(".directUploadWillStoreFileWithXHR")
+              it("calls .bindProgressEvent with the given param and .emitDropzoneUploading", () => {
+                const fakeController = { url: "/fake-url" },
+                      manager = new UploadManager(fakeController),
+                      paramGiven = {}
+
+                manager.bindProgressEvent = jest.fn()
+                manager.emitDropzoneUploading = jest.fn()
+
+                manager.directUploadWillStoreFileWithXHR(paramGiven)
+
+                expect(manager.bindProgressEvent).toHaveBeenCalledTimes(1)
+                expect(manager.bindProgressEvent).toHaveBeenNthCalledWith(1, paramGiven)
+
+                expect(manager.emitDropzoneUploading).toHaveBeenCalledTimes(1)
+                expect(manager.emitDropzoneUploading).toHaveBeenNthCalledWith(1)
+              })
             })
 
             describe(".bindProgressEvent", () => {
-              test.todo(".bindProgressEvent")
+              it("assigns the given param to [xhr] and calls [xhr][upload][addEventListener] with 'progress' and .uploadRequestDidProgress", () => {
+                const fakeController = { url: "/fake-url" },
+                      manager = new UploadManager(fakeController),
+                      paramGiven = {}
+
+                expect(manager.xhr).toBe(undefined)
+
+                expect(() => manager.bindProgressEvent(paramGiven))
+                  .toThrow(TypeError)
+
+                expect(() => manager.bindProgressEvent(paramGiven))
+                  .toThrow(new TypeError("Cannot read property 'addEventListener' of undefined"))
+
+                expect(manager.xhr).toBe(paramGiven)
+
+                paramGiven.upload = { addEventListener: jest.fn() }
+
+                manager.bindProgressEvent(paramGiven)
+
+                expect(manager.xhr).toBe(paramGiven)
+                expect(paramGiven.upload.addEventListener).toHaveBeenCalledTimes(1)
+                expect(paramGiven.upload.addEventListener).toHaveBeenNthCalledWith(1, "progress", manager.uploadRequestDidProgress)
+              })
             })
 
             describe(".uploadRequestDidProgress", () => {
